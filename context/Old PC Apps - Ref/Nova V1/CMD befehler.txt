@@ -1,0 +1,5 @@
+			cd "C:\Users\guerk\OneDrive\Desktop\Nova V1.2"
+			cd "C:\Users\guerk\OneDrive\Desktop\Nova V1.3"
+			cd "C:\Users\guerk\OneDrive\Desktop\Nova V1.4"
+			cd "C:\Users\guerk\OneDrive\Desktop\Nova V1.5 Web App"
+script starten: 	python nova_chat.py

@@ -1,0 +1,32 @@
+{
+  "name": "nova",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^33.2.1",
+    "electron-builder": "^22.0.0"
+  },
+  "build": {
+    "appId": "com.example.mynewapp",
+    "productName": "Nova",
+    "files": [
+      "**/*"
+    ],
+    "mac": {
+      "icon": "icon.icns"
+    },
+    "win": {
+      "icon": "icon.ico"
+    },
+    "linux": {
+      "icon": "icon.png"
+    }
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

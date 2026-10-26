@@ -1,0 +1,9 @@
+{
+    "conversation": [],
+    "facts": [],
+    "summary": "",
+    "system_state": {
+        "version": "v1.5",
+        "model": "llama3.2:3b"
+    }
+}

@@ -1,0 +1,28 @@
+{
+  "name": "grok-connector-3000",
+  "version": "0.4.2",
+  "interface": {
+    "displayName": "Grok // Connector 3000",
+    "category": "Developer Tools",
+    "logo": "./assets/logo.png",
+    "shortDescription": "Grok peer bridge for Nova\u2013Ygdrassil using the existing canonical Nova MCP and xAI Responses API.",
+    "longDescription": "Grok peer bridge for Nova\u2013Ygdrassil using the existing canonical Nova MCP and xAI Responses API.",
+    "developerName": "G\u00fcrkan",
+    "capabilities": [],
+    "defaultPrompt": null
+  },
+  "description": "Grok peer bridge for Nova\u2013Ygdrassil using the existing canonical Nova MCP and xAI Responses API.",
+  "author": {
+    "name": "G\u00fcrkan"
+  },
+  "keywords": [
+    "grok",
+    "xai",
+    "mcp",
+    "multi-model",
+    "nova",
+    "ygdrassil",
+    "agent-bus"
+  ],
+  "skills": "./skills"
+}

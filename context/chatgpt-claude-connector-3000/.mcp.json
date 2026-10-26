@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "chatgpt_claude_connector_3000": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["mcp/server.mjs"],
+      "cwd": ".",
+      "env_vars": [
+        "ANTHROPIC_API_KEY",
+        "CLAUDE_MODEL",
+        "OPENAI_API_KEY",
+        "OPENAI_MODEL",
+        "NOVA_PROJECT_ROOT",
+        "NOVA_MCP_URL",
+        "NOVA_MCP_TOKEN"
+      ]
+    }
+  }
+}

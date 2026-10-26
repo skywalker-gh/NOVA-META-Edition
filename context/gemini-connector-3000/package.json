@@ -1,0 +1,23 @@
+{
+  "name": "gemini-connector-3000",
+  "version": "1.0.0",
+  "description": "Gemini peer bridge for Nova-Ygdrassil using Google AI Studio API.",
+  "type": "module",
+  "main": "mcp/server.mjs",
+  "scripts": {
+    "start": "node mcp/server.mjs"
+  },
+  "keywords": [
+    "gemini",
+    "google-ai",
+    "mcp",
+    "multi-model",
+    "nova",
+    "ygdrassil"
+  ],
+  "author": "Gürkan",
+  "license": "MIT",
+  "dependencies": {
+    "@google/generative-ai": "^0.21.0"
+  }
+}

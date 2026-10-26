@@ -1,0 +1,8 @@
+runtime: nodejs18
+
+env_variables:
+  NODE_ENV: 'production'
+
+handlers:
+  - url: /.*  # Alle Anfragen an den Server weiterleiten
+    script: auto

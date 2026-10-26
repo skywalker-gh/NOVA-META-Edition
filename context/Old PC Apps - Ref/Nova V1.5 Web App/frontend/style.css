@@ -1,0 +1,28 @@
+body {
+    font-family: Arial;
+    background: #111;
+    color: white;
+}
+
+.container {
+    width: 600px;
+    margin: auto;
+    margin-top: 50px;
+}
+
+#chatbox {
+    height: 400px;
+    overflow-y: scroll;
+    border: 1px solid #444;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+input {
+    width: 80%;
+    padding: 10px;
+}
+
+button {
+    padding: 10px;
+}

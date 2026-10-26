@@ -1,0 +1,52 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOVA - Tommy Authority</title>
+<style>
+body { font-family: system-ui; background: #0a0a1a; color: #e0e0ff; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; margin:0; }
+.card { background: #1a1a3a; padding: 2rem; border-radius: 16px; max-width: 500px; width: 90%; box-shadow: 0 0 30px #5a5aff33; }
+h1 { color: #8a8aff; }
+button { padding: 1rem 2rem; margin: 0.5rem; border: none; border-radius: 12px; font-size: 1.2rem; cursor: pointer; font-weight: bold; }
+.yes { background: #2aff88; color: #003311; }
+.no { background: #ff4a6a; color: white; }
+.info { background: #3a3a5a; color: white; }
+#log { margin-top:1rem; font-size:0.9rem; color:#aaa; }
+</style>
+</head>
+<body>
+<div class="card">
+<h1>NOVA // Yggdrasil</h1>
+<h2>Human Authority: Tommy</h2>
+<p id="task">Lade aktuelle Entscheidung...</p>
+<button class="yes" onclick="decide('JA')">✅ JA</button>
+<button class="no" onclick="decide('NEIN')">❌ NEIN</button>
+<button class="info" onclick="decide('MEHR INFOS')">❓ MEHR INFOS</button>
+<div id="log"></div>
+</div>
+<script>
+const tasks = [
+  "Sollen wir das neue Online Dashboard mit Meta Tech aufsetzen? (Vorschlag von Gürkan + Meta AI)",
+  "Ist Muse Spark als neuer Main Orchestrator ok? (Ersetzt Gemini Hänger)",
+  "Soll Tommy Branch dev/tommy-authority als Human Authority Log genutzt werden?"
+];
+let current = 0;
+document.getElementById('task').innerText = tasks[current];
+
+function decide(choice) {
+  const log = document.getElementById('log');
+  const time = new Date().toLocaleTimeString();
+  log.innerHTML += `<div>[${time}] Tommy: ${choice} für "${tasks[current]}"</div>`;
+  // In real version, this would commit to GitHub via API
+  // For now local log + simulate
+  if (confirm(`Du hast ${choice} gewählt. Commit zu dev/tommy-authority? (Demo)`)) {
+    current = (current + 1) % tasks.length;
+    document.getElementById('task').innerText = tasks[current];
+  }
+  // Here you would call: fetch('/api/decide', {method:'POST', body: {choice, task}})
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nova's App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f4f4f9;
+    }
+    h1 {
+      color: #4caf50;
+    }
+    .chat-box {
+      background-color: #ffffff;
+      padding: 10px;
+      border-radius: 5px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    .chat-box p {
+      font-size: 1.2em;
+      margin: 10px 0;
+    }
+    input {
+      padding: 10px;
+      width: 100%;
+      font-size: 1em;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #4caf50;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Willkommen bei Nova!</h1>
+  <p>Gib eine Nachricht ein, um mit Nova zu sprechen:</p>
+
+  <div class="chat-box">
+    <div id="chat-output"></div>
+    <input type="text" id="user-input" placeholder="Deine Nachricht..." />
+    <button onclick="sendMessage()">Senden</button>
+  </div>
+
+  <script>
+    function sendMessage() {
+      const userMessage = document.getElementById('user-input').value;
+      if (userMessage) {
+        // Zeigt die Nachricht des Nutzers an
+        document.getElementById('chat-output').innerHTML += `<p><strong>Du:</strong> ${userMessage}</p>`;
+        
+        // Sendet die Nachricht an den Server (API)
+        fetch('/nova-chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ message: userMessage })
+        })
+        .then(response => response.json())
+        .then(data => {
+          // Zeigt die Antwort von Nova an
+          document.getElementById('chat-output').innerHTML += `<p><strong>Nova:</strong> ${data.message}</p>`;
+          document.getElementById('user-input').value = ''; // Leert das Eingabefeld
+        })
+        .catch(error => {
+          console.error('Fehler:', error);
+        });
+      }
+    }
+  </script>
+</body>
+</html>

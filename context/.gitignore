@@ -1,0 +1,15 @@
+# Dependencies
+node_modules/
+
+# Environment files and secrets
+.env
+*.env
+.env.*
+!.env.example
+
+# Logs and OS files
+*.log
+.DS_Store
+Thumbs.db
+*.psd 
+*.psd 

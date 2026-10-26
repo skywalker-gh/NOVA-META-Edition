@@ -1,0 +1,39 @@
+{
+  "apps": "./.app.json",
+  "interface": {
+    "displayName": "Codex // Connector 3000",
+    "shortDescription": "ChatGPT \u2194 local Codex project bridge",
+    "longDescription": "A local MCP bridge that lets an authorized host invoke Codex against the configured project, inspect project state, continue Codex sessions, and preserve execution provenance. It never silently grants OS permissions; Codex sandbox and approval settings remain authoritative.",
+    "developerName": "G\u00fcrkan",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Ask local Codex to inspect this project.",
+      "Have Codex implement this task and run the tests.",
+      "Ask Codex for a project status and verification report."
+    ],
+    "brandColor": "#111111",
+    "logo": "./assets/logo.png"
+  },
+  "name": "codex-connector-3000",
+  "version": "0.2.3",
+  "description": "A local ChatGPT/Codex bridge for controlled Codex execution, project inspection, session continuation, and provenance-preserving handoffs.",
+  "author": {
+    "name": "G\u00fcrkan"
+  },
+  "keywords": [
+    "codex",
+    "openai",
+    "connector",
+    "mcp",
+    "nova",
+    "ygdrassil",
+    "project",
+    "agent"
+  ],
+  "skills": "./skills"
+}

@@ -1,0 +1,22 @@
+{
+  "name": "codex-connector-3000-v3",
+  "version": "3.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "test:integration": "node --test test/*.integration.test.js",
+    "start:gateway": "node src/gateway.js",
+    "start:worker": "node src/worker.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/node": "2.1.1",
+    "@modelcontextprotocol/server": "2.3.1",
+    "pg": "8.23.1",
+    "ws": "8.22.0",
+    "zod": "4.2.0"
+  }
+}

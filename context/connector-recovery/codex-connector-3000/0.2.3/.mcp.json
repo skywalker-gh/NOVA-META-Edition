@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "codex_connector_3000": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["mcp/server.mjs"],
+      "cwd": ".",
+      "env_vars": ["NOVA_PROJECT_ROOT", "CODEX_BIN"]
+    }
+  }
+}

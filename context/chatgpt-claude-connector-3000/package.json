@@ -1,0 +1,21 @@
+{
+  "name": "chatgpt-claude-connector-3000",
+  "version": "1.0.0",
+  "description": "Dual-model MCP bridge for Claude and ChatGPT connecting to Nova-Ygdrassil project state and Anthropic/OpenAI APIs.",
+  "type": "module",
+  "main": "mcp/server.mjs",
+  "scripts": {
+    "start": "node mcp/server.mjs"
+  },
+  "keywords": [
+    "claude",
+    "chatgpt",
+    "openai",
+    "anthropic",
+    "mcp",
+    "nova",
+    "ygdrassil"
+  ],
+  "author": "Gürkan",
+  "license": "MIT"
+}

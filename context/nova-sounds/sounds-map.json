@@ -1,0 +1,29 @@
+{
+  "version": "1.0.0",
+  "source": "Ali Tat – Ghost (Gee Remix)",
+  "bpm": 128,
+  "created": "2026-10-25",
+  "basePath": "/nova-sounds/",
+  "sounds": {
+    "introAmbient": { "file": "nova_intro_video_ambient.mp3", "duration": 14.03, "type": "ambient", "volumeHint": 0.3 },
+    "ambientPad": { "file": "nova_ambient_intro_pad.mp3", "duration": 8.05, "type": "ambient", "volumeHint": 0.25 },
+    "clickSoft": { "file": "nova_ui_click_soft.mp3", "duration": 0.39, "type": "ui", "volumeHint": 0.65 },
+    "clickSharp": { "file": "nova_ui_click_sharp.mp3", "duration": 0.31, "type": "ui", "volumeHint": 0.7 },
+    "blip": { "file": "nova_ui_blip.mp3", "duration": 0.63, "type": "ui", "volumeHint": 0.6 },
+    "confirm": { "file": "nova_ui_confirm.mp3", "duration": 1.65, "type": "ui", "volumeHint": 0.45 },
+    "bassHit": { "file": "nova_ui_bass_hit.mp3", "duration": 1.23, "type": "ui", "volumeHint": 0.6 },
+    "bassThump": { "file": "nova_ui_bass_thump.mp3", "duration": 2.04, "type": "ui", "volumeHint": 0.55 },
+    "whoosh": { "file": "nova_ui_whoosh.mp3", "duration": 1.83, "type": "ui", "volumeHint": 0.55 },
+    "whooshReverse": { "file": "nova_ui_whoosh_reverse.mp3", "duration": 1.54, "type": "ui", "volumeHint": 0.55 },
+    "hoverPad": { "file": "nova_ui_hover_pad.mp3", "duration": 2.53, "type": "ui", "volumeHint": 0.2 },
+    "decayTail": { "file": "nova_ui_decay_tail.mp3", "duration": 2.85, "type": "ui", "volumeHint": 0.4 }
+  },
+  "pairings": {
+    "normalClick": ["clickSharp", "confirm"],
+    "importantAction": ["bassThump"],
+    "panelOpen": ["whoosh"],
+    "panelClose": ["whooshReverse"],
+    "notification": ["blip"],
+    "hover": ["hoverPad"]
+  }
+}

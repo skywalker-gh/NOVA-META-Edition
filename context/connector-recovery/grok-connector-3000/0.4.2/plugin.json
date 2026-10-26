@@ -1,0 +1,11 @@
+{
+  "$schema":"https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name":"grok-connector-3000",
+  "version":"0.4.2",
+  "description":"Grok peer bridge for Nova–Ygdrassil using the existing canonical Nova MCP and xAI Responses API.",
+  "author":{"name":"Gürkan"},
+  "keywords":["grok","xai","mcp","multi-model","nova","ygdrassil","agent-bus"],
+  "skills":"./skills/",
+  "mcpServers":"./.mcp.json",
+  "interface":{"displayName":"Grok // Connector 3000","shortDescription":"Grok peer for the canonical Nova MCP","longDescription":"Connect Grok to Nova–Ygdrassil through the existing canonical MCP path. Includes a standards-aware MCP handshake and endpoint probe; it does not create a second Nova MCP server.","developerName":"Gürkan","category":"Developer Tools","capabilities":["Interactive","Read","Write"],"defaultPrompt":["Probe the existing Nova MCP endpoint.","Run the Grok security audit for Nova.","Create a Grok handoff for Nova–Ygdrassil."],"brandColor":"#111111","logo":"./assets/logo.png"}
+}

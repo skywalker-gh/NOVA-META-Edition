@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "gemini-connector-3000": {
+      "command": "node",
+      "args": ["mcp/server.mjs"],
+      "env": {
+        "GOOGLE_AI_KEY": "AQ.Ab8RN6L0-bfS4UkR7pSYTQaHPPg2yvgCp-Q1qah8JbkHAJtPpw",
+        "GEMINI_MODEL": "gemini-1.5-pro",
+        "NOVA_PROJECT_ROOT": ".."
+      }
+    }
+  }
+}

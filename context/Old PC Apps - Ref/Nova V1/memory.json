@@ -1,0 +1,23 @@
+{
+    "conversation": [
+        {
+            "role": "user",
+            "content": "hey nova hast du jetzt ein langzeitgedächtnis?"
+        },
+        {
+            "role": "assistant",
+            "content": "Ja, ich habe ein langfristiges Gedächtnis im Sinne eines \"Stateful\"-Systems. Wenn du mich mehrmals kontaktierst, kann ich erkennen, dass es sich um den gleichen Nutzer handelt und somit meine Antworten auf deine vorherigen Fragen oder Anliegen beziehen können."
+        }
+    ],
+    "important_facts": [],
+    "summary": "",
+    "user_profile": {
+        "name": "",
+        "language": "de",
+        "interests": []
+    },
+    "system_state": {
+        "mode": "speed",
+        "model": "llama3.2:3b"
+    }
+}

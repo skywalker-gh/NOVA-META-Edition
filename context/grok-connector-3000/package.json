@@ -1,0 +1,20 @@
+{
+  "name": "grok-connector-3000",
+  "version": "0.4.2",
+  "description": "Grok peer bridge for Nova-Ygdrassil using the existing canonical Nova MCP and xAI Responses API.",
+  "type": "module",
+  "main": "mcp/server.mjs",
+  "scripts": {
+    "start": "node mcp/server.mjs"
+  },
+  "keywords": [
+    "grok",
+    "xai",
+    "mcp",
+    "multi-model",
+    "nova",
+    "ygdrassil"
+  ],
+  "author": "Gürkan",
+  "license": "MIT"
+}

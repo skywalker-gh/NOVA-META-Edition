@@ -1,0 +1,33 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "gemini-connector-3000",
+  "version": "1.0.0",
+  "description": "Dedicated Gemini MCP bridge for Nova-Ygdrassil project state and Google AI Studio APIs.",
+  "author": {
+    "name": "Gürkan"
+  },
+  "keywords": [
+    "gemini",
+    "google-ai",
+    "mcp",
+    "nova",
+    "ygdrassil"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Gemini // Connector 3000",
+    "shortDescription": "Dedicated Gemini peer bridge for Nova",
+    "longDescription": "Connect Google Gemini (Pro/Flash) to Nova-Ygdrassil through a unified Stdio MCP server. Supports massive context analysis, multimodal architecture reviews, and canonical Nova MCP probing.",
+    "developerName": "Gürkan",
+    "category": "Developer Tools",
+    "capabilities": ["Interactive", "Read", "Write"],
+    "defaultPrompt": [
+      "Ask Gemini for a project-wide architecture audit.",
+      "Run Gemini multimodal review on architecture images.",
+      "Probe the canonical Nova MCP endpoint via Gemini."
+    ],
+    "brandColor": "#4285F4",
+    "logo": "./assets/logo.png"
+  }
+}

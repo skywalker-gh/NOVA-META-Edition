@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOVA // Ygddrasil - Multi Agent-Bus Ecosystem & Workflow Manager</title>
+    <link rel="icon" href="logo.ico" type="image/x-icon">
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(17, 24, 39, 0.85);
+            --border-color: rgba(31, 41, 55, 0.9);
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --accent-blue: #2563eb;
+            --accent-purple: #7c3aed;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-yellow: #f59e0b;
+            --accent-magenta: #ec4899;
+            --node-bg: #1e293b;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-primary); min-height: 100vh; padding: 1.5rem; background-image: radial-gradient(circle at 15% 15%, rgba(124, 58, 237, 0.12) 0%, transparent 40%), radial-gradient(circle at 85% 85%, rgba(16, 185, 129, 0.08) 0%, transparent 40%); }
+        
+        header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; position: relative; }
+        
+        .logo-area { display: flex; align-items: center; gap: 1rem; position: relative; }
+        .logo-area::before { content: ''; position: absolute; top: -12px; left: -12px; right: -12px; bottom: -12px; background: radial-gradient(circle, rgba(168, 85, 247, 0.3) 0%, rgba(16, 185, 129, 0.15) 50%, transparent 80%); filter: blur(18px); z-index: -1; border-radius: 20px; }
+        
+        .logo-area img { width: 55px; height: 55px; border-radius: 14px; object-fit: contain; box-shadow: 0 0 30px rgba(168, 85, 247, 0.6); }
+        
+        h1 { font-size: 1.7rem; letter-spacing: -0.025em; display: flex; align-items: baseline; gap: 0.5rem; text-shadow: 0 0 15px rgba(168, 85, 247, 0.4); }
+        h1 .nova-title { font-weight: 900; font-style: italic; background: linear-gradient(135deg, #60a5fa 0%, #c084fc 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        h1 .ygg-title { font-weight: 200; font-style: italic; color: #34d399; }
+        
+        p.subtitle { color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.2rem; }
+        
+        .header-actions { display: flex; gap: 1rem; align-items: center; margin-left: auto; }
+        .btn-auth { background: rgba(31, 41, 55, 0.8); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s; }
+        .btn-auth:hover { background: rgba(55, 65, 81, 1); border-color: var(--accent-blue); }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .card { background: var(--card-bg); backdrop-filter: blur(16px); border: 1px solid var(--border-color); border-radius: 16px; padding: 1.5rem; box-shadow: 0 20px 40px -15px rgba(0,0,0,0.5); transition: all 0.3s ease; }
+        .card:hover { border-color: rgba(168, 85, 247, 0.6); box-shadow: 0 0 30px rgba(168, 85, 247, 0.25); transform: translateY(-2px); }
+
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .card-title { font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
+        
+        .badge { font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 999px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+        .badge.active { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+        .badge.ready { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+        .badge.warning { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+
+        .status-light { width: 10px; height: 10px; border-radius: 50%; display: inline-block; box-shadow: 0 0 12px currentColor; margin-left: 0.5rem; }
+        .status-light.online { background-color: var(--accent-green); color: var(--accent-green); }
+        .status-light.offline { background-color: var(--accent-red); color: var(--accent-red); }
+        .status-light.standby { background-color: var(--accent-yellow); color: var(--accent-yellow); }
+
+        .stats { margin-top: 1rem; display: flex; gap: 0.75rem; font-size: 0.8rem; color: var(--text-secondary); }
+        .stat-item { background: rgba(11, 15, 25, 0.6); padding: 0.4rem 0.6rem; border-radius: 6px; border: 1px solid var(--border-color); }
+        .full-width { grid-column: 1 / -1; }
+        pre { background: #07090f; padding: 1rem; border-radius: 10px; border: 1px solid var(--border-color); overflow-x: auto; font-family: 'Fira Code', monospace; font-size: 0.8rem; color: #38bdf8; margin-top: 0.75rem; max-height: 180px; }
+
+        /* n8n Style Node Graph Canvas */
+        .node-graph-container { background: #07090f; border: 2px solid var(--border-color); border-radius: 14px; height: 560px; position: relative; overflow: hidden; margin-top: 1rem; box-shadow: inset 0 0 35px rgba(0,0,0,0.85); background-image: radial-gradient(rgba(55, 65, 81, 0.25) 1px, transparent 1px); background-size: 28px 28px; }
+        
+        .graph-toolbar { position: absolute; top: 12px; left: 12px; z-index: 10; display: flex; gap: 0.75rem; align-items: center; background: rgba(17, 24, 39, 0.95); padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid var(--border-color); flex-wrap: wrap; backdrop-filter: blur(10px); }
+        .graph-btn { background: var(--accent-blue); color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 6px; font-weight: 600; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; gap: 0.4rem; transition: opacity 0.2s; }
+        .graph-btn:hover { opacity: 0.9; }
+
+        /* Docking Station at the bottom */
+        .docking-station { position: absolute; bottom: 12px; left: 12px; right: 12px; height: 90px; background: rgba(15, 23, 42, 0.8); border: 2px dashed rgba(59, 130, 246, 0.5); border-radius: 12px; display: flex; align-items: center; padding: 0 1rem; gap: 1rem; z-index: 5; }
+        .docking-slot { width: 160px; height: 65px; background: rgba(30, 41, 59, 0.6); border: 1px solid var(--border-color); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: var(--text-secondary); position: relative; cursor: grab; }
+
+        .graph-node { position: absolute; background: var(--node-bg); border: 2px solid var(--border-color); border-radius: 10px; width: 200px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); user-select: none; z-index: 5; transition: border-color 0.2s, box-shadow 0.2s; }
+        .graph-node:hover { border-color: rgba(168, 85, 247, 0.7); box-shadow: 0 0 25px rgba(168, 85, 247, 0.3); }
+        .graph-node.selected { border-color: var(--accent-green); box-shadow: 0 0 20px rgba(16, 185, 129, 0.4); }
+        
+        .node-header { background: rgba(15, 23, 42, 0.95); padding: 0.4rem 0.6rem; border-top-left-radius: 8px; border-top-right-radius: 8px; font-size: 0.8rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); cursor: move; }
+        .node-body { padding: 0.5rem 0.6rem; font-size: 0.7rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 0.3rem; }
+        
+        .pin-container { display: flex; flex-direction: column; gap: 0.2rem; }
+        .pin-row { display: flex; justify-content: space-between; align-items: center; position: relative; font-size: 0.65rem; color: var(--text-secondary); }
+        .pin { width: 9px; height: 9px; background: #475569; border: 2px solid #cbd5e1; border-radius: 50%; cursor: pointer; transition: background 0.2s, transform 0.2s, box-shadow 0.2s; }
+        .pin:hover, .pin.connected { background: var(--accent-green); border-color: #fff; transform: scale(1.3); box-shadow: 0 0 10px var(--accent-green); }
+        .pin.input { margin-left: -11px; }
+        .pin.output { margin-right: -11px; }
+
+        #graphSvg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; }
+
+        /* Chat Widget Styles */
+        .chat-container { display: flex; flex-direction: column; height: 440px; background: rgba(7, 9, 15, 0.7); border-radius: 12px; border: 1px solid var(--border-color); overflow: hidden; margin-top: 1rem; }
+        .chat-messages { flex: 1; padding: 1rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.75rem; }
+        .message { max-width: 80%; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.9rem; line-height: 1.4; word-break: break-word; }
+        .message.user { align-self: flex-end; background: var(--accent-blue); color: white; border-bottom-right-radius: 4px; }
+        .message.assistant { align-self: flex-start; background: #1e293b; color: var(--text-primary); border-bottom-left-radius: 4px; border: 1px solid var(--border-color); }
+        
+        .chat-input-area { display: flex; padding: 0.75rem 1rem; background: rgba(17, 24, 39, 0.95); border-top: 1px solid var(--border-color); gap: 0.75rem; align-items: center; }
+        select, input[type="text"] { background: #0b0f19; border: 1px solid var(--border-color); color: white; padding: 0.6rem 1rem; border-radius: 8px; font-size: 0.9rem; outline: none; }
+        input[type="text"] { flex: 1; }
+        
+        .btn-icon { background: rgba(31, 41, 55, 0.9); border: 1px solid var(--border-color); color: var(--text-primary); width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.3rem; transition: background 0.2s, border-color 0.2s; flex-shrink: 0; }
+        .btn-icon:hover { background: var(--accent-blue); border-color: var(--accent-blue); }
+
+        button.btn-primary { background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%); color: white; border: none; padding: 0.6rem 1.4rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; flex-shrink: 0; }
+        button.btn-primary:hover { opacity: 0.9; }
+
+        .upload-tray { background: rgba(11, 15, 25, 0.95); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.75rem 1rem; margin-top: 0.5rem; display: none; gap: 0.75rem; align-items: center; font-size: 0.85rem; }
+        .upload-tray.active { display: flex; }
+        .upload-tray input[type="file"] { display: none; }
+        .upload-label { cursor: pointer; color: var(--accent-blue); text-decoration: underline; font-weight: 600; }
+
+        footer { text-align: center; color: var(--text-secondary); font-size: 0.8rem; margin-top: 3rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-area">
+            <img src="logo.ico" alt="Logo" onerror="this.style.display='none'">
+            <div>
+                <h1><span class="nova-title">NOVA</span> <span style="color: var(--text-secondary); font-weight: 400; font-style: normal; margin: 0 0.25rem;">//</span> <span class="ygg-title">Ygddrasil</span></h1>
+                <p class="subtitle">Multi Agent-Bus Ecosystem & Workflow Manager</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <div id="authStatus" class="badge ready">Offline Mode</div>
+            <div class="badge active">System Online</div>
+            <button class="btn-auth" onclick="toggleGoogleLogin()">
+                <svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+                <span id="authBtnText">Google Login</span>
+            </button>
+        </div>
+    </header>
+
+    <div class="grid">
+        <!-- Muse Spark Connector Card (First Top Left) -->
+        <div class="card" style="border-color: rgba(168, 85, 247, 0.6); box-shadow: 0 0 25px rgba(168, 85, 247, 0.2);">
+            <div class="card-header">
+                <div class="card-title">🟣 Muse Spark Connector <span class="status-light online" title="Privileged Orchestrator Active"></span></div>
+                <span class="badge active" style="background: rgba(168, 85, 247, 0.2); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.4);">Meta AI // $150</span>
+            </div>
+            <p>Privileged orchestrator with write & delegation rights connected via Meta AI / Muse Spark API.</p>
+            <div class="stats"><div class="stat-item">Mode: Write / Orchestrator</div></div>
+        </div>
+
+        <!-- Grok Connector Card -->
+        <div class="card">
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">🤖 ChatGPT & Claude <span class="status-light online"></span></div>
+                <span class="badge active">Active</span>
+            </div>
+            <p>Dual-model reasoning and code review bridge connected via OpenAI & Anthropic APIs.</p>
+            <div class="stats"><div class="stat-item">GPT-4o: Ready</div></div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">✨ Gemini 3000 <span class="status-light online"></span></div>
+                <span class="badge active">Active</span>
+            </div>
+            <p>High-context multimodal bridge connected via Google AI Studio (Gemini Flash).</p>
+            <div class="stats"><div class="stat-item">Context: 1M+ Tokens</div></div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">💻 Codex V3 Worker <span class="status-light online"></span></div>
+                <span class="badge ready">Verified</span>
+            </div>
+            <p>Stateless Streamable HTTP gateway & WebSocket worker with PostgreSQL queue & sandbox.</p>
+            <div class="stats"><div class="stat-item">Tests: 32/32 Passing</div></div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">🛡️ Phobos CI <span class="status-light online"></span></div>
+                <span class="badge active">Active</span>
+            </div>
+            <p>Automated branch merge orchestrator & test gatekeeper (Luis' Law compliance).</p>
+            <div class="stats"><div class="stat-item">Mode: Hourly Merge</div></div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">👤 Tommy PC <span class="status-light standby"></span></div>
+                <span class="badge warning">Standby</span>
+            </div>
+            <p>External Human Authority browser node for collaborative workflow management.</p>
+            <div class="stats"><div class="stat-item">Role: Co-Developer</div></div>
+        </div>
+
+        <!-- 1. Section: NOVA // Multi Agent-Bus / Chat Bridge -->
+        <div class="card full-width">
+            <div class="card-header">
+                <div class="card-title">
+                    <img src="logo.ico" alt="Logo" style="width:24px; height:24px; border-radius:6px; object-fit:contain;">
+                    NOVA // Multi Agent-Bus / Chat Bridge
+                    <span class="status-light online"></span>
+                </div>
+                <span class="badge active">Fully Functional</span>
+            </div>
+            <p>Chat live directly with fully functional agents, backed by real LLM API bridges and shared project memory.</p>
+            
+            <div class="chat-container">
+                <div id="chatMessages" class="chat-messages">
+                    <div class="message assistant">Willkommen im NOVA // Yggdrasil Chat Bridge! Alle Agenten sind online und antworten über echte API-Brücken. 🚀</div>
+                </div>
+                
+                <div id="uploadTray" class="upload-tray">
+                    <span>📎 Attach:</span>
+                    <label class="upload-label">
+                        Upload File/Image <input type="file" id="fileInput" onchange="handleFileSelect(event)">
+                    </label>
+                    <span>|</span>
+                    <input type="text" id="urlInput" placeholder="https://example.com/api/doc" style="padding: 0.3rem 0.5rem; font-size: 0.8rem; background: #0b0f19; border: 1px solid var(--border-color); color: white; border-radius: 6px;">
+                    <button class="btn-primary" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;" onclick="attachUrl()">Add URL</button>
+                    <span id="attachmentIndicator" style="color: var(--accent-green); margin-left: auto;"></span>
+                </div>
+
+                <div class="chat-input-area">
+                    <button class="btn-icon" title="Add File or URL" onclick="toggleUploadTray()">📎</button>
+                    <select id="modelSelect">
+                        <option value="gemini-cli">Gemini CLI (Orchestrator)</option>
+                        <option value="grok">Grok (xAI Reviewer)</option>
+                        <option value="chatgpt">ChatGPT (OpenAI Peer)</option>
+                        <option value="gemini">Gemini Flash (Google)</option>
+                        <option value="codex">Codex V3 (Worker)</option>
+                        <option value="phobos">Phobos (CI Guardian)</option>
+                        <option value="precoder">Precoder (Design Spec)</option>
+                    </select>
+                    <input type="text" id="chatInput" placeholder="Frage an den Agent-Bus stellen..." onkeydown="if(event.key==='Enter') sendMessage()">
+                    <button class="btn-primary" onclick="sendMessage()">Senden</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Section: NOVA // Multi Agent-Bus / Workflow Manager -->
+        <div class="card full-width">
+            <div class="card-header">
+                <div class="card-title">
+                    <img src="logo.ico" alt="Logo" style="width:24px; height:24px; border-radius:6px; object-fit:contain;">
+                    NOVA // Multi Agent-Bus / Workflow Manager
+                    <span class="status-light online"></span>
+                </div>
+                <span class="badge ready">n8n Style Node Graph</span>
+            </div>
+            <p>Visual Workflow Manager to chain AI Agents and Task Sources seamlessly.</p>
+            
+            <div class="node-graph-container" id="graphContainer">
+                <div class="graph-toolbar">
+                    <label class="graph-btn" style="cursor: pointer;">
+                        + Task Source <input type="file" id="graphTaskFile" accept=".md,.txt,.png,.jpg,.jpeg" onchange="spawnTaskNode(event)" style="display:none;">
+                    </label>
+                    <button class="graph-btn" style="background: var(--accent-purple);" onclick="spawnAgentNodePrompt()">+ Agent / Sub Agent</button>
+                    <button class="graph-btn" style="background: var(--accent-green); color: #ffffff; font-weight: 700;" onclick="executeWorkflowPipeline()">▶ Execute Workflow</button>
+                    <button class="graph-btn" style="background: #ef4444; color: #ffffff;" onclick="clearGraph()" title="Reset Graph">🔄 Reset</button>
+                </div>
+
+                <svg id="graphSvg">
+                    <path id="activeWire" d="" stroke="#10b981" stroke-width="3" fill="none" style="display:none;" />
+                </svg>
+
+                <!-- End / Result Node as a real Canvas Node Object -->
+                <div class="graph-node selected" id="node-end-result" style="top: 100px; left: 860px;" onmousedown="startDrag(event, 'node-end-result')">
+                    <div class="node-header">
+                        <span>End / Result Node</span>
+                        <span id="endNodeLight" class="status-light offline"></span>
+                    </div>
+                    <div class="node-body">
+                        <div class="pin-container">
+                            <div class="pin-row"><div class="pin input" title="Input Pipeline" onclick="clickPin('node-end-result', 'in', 1)"></div><span>Pipeline In</span></div>
+                        </div>
+                        <div id="workflowResultDisplay" style="background: #0b0f19; padding: 0.4rem; border-radius: 6px; font-size: 0.65rem; color: #34d399; max-height: 80px; overflow-y: auto; margin-top: 0.3rem; font-family: 'Fira Code', monospace;">Awaiting result...</div>
+                        <button class="graph-btn" style="width: 100%; justify-content: center; background: var(--accent-purple); font-size: 0.7rem; padding: 0.2rem; margin-top: 0.3rem;" onclick="saveWorkflowResult()">💾 Save (.md)</button>
+                    </div>
+                </div>
+
+                <!-- n8n Style Node 1: Gemini Agent -->
+                <div class="graph-node" id="node-gemini" style="top: 80px; left: 320px;" onmousedown="startDrag(event, 'node-gemini')">
+                    <div class="node-header"><span>✨ Gemini CLI</span></div>
+                    <div class="node-body">
+                        <div class="pin-container">
+                            <div class="pin-row"><div class="pin input" title="Input 1" onclick="clickPin('node-gemini', 'in', 1)"></div><span>In 1</span></div>
+                            <div class="pin-row"><div class="pin input" title="Input 2" onclick="clickPin('node-gemini', 'in', 2)"></div><span>In 2</span></div>
+                            <div class="pin-row"><div class="pin input" title="Input 3" onclick="clickPin('node-gemini', 'in', 3)"></div><span>In 3</span></div>
+                        </div>
+                        <hr style="border-color: var(--border-color); margin: 0.15rem 0;">
+                        <div class="pin-container">
+                            <div class="pin-row"><span>Out 1</span><div class="pin output" title="Output 1" onclick="clickPin('node-gemini', 'out', 1)"></div></div>
+                            <div class="pin-row"><span>Out 2</span><div class="pin output" title="Output 2" onclick="clickPin('node-gemini', 'out', 2)"></div></div>
+                            <div class="pin-row"><span>Out 3</span><div class="pin output" title="Output 3" onclick="clickPin('node-gemini', 'out', 3)"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- n8n Style Node 2: Grok Reviewer -->
+                <div class="graph-node" id="node-grok" style="top: 220px; left: 580px;" onmousedown="startDrag(event, 'node-grok')">
+                    <div class="node-header"><span>⚡ Grok Reviewer</span></div>
+                    <div class="node-body">
+                        <div class="pin-container">
+                            <div class="pin-row"><div class="pin input" title="Input 1" onclick="clickPin('node-grok', 'in', 1)"></div><span>In 1</span></div>
+                            <div class="pin-row"><div class="pin input" title="Input 2" onclick="clickPin('node-grok', 'in', 2)"></div><span>In 2</span></div>
+                            <div class="pin-row"><div class="pin input" title="Input 3" onclick="clickPin('node-grok', 'in', 3)"></div><span>In 3</span></div>
+                        </div>
+                        <hr style="border-color: var(--border-color); margin: 0.15rem 0;">
+                        <div class="pin-container">
+                            <div class="pin-row"><span>Out 1</span><div class="pin output" title="Output 1" onclick="clickPin('node-grok', 'out', 1)"></div></div>
+                            <div class="pin-row"><span>Out 2</span><div class="pin output" title="Output 2" onclick="clickPin('node-grok', 'out', 2)"></div></div>
+                            <div class="pin-row"><span>Out 3</span><div class="pin output" title="Output 3" onclick="clickPin('node-grok', 'out', 3)"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Docking Station with draggable agents -->
+                <div class="docking-station" id="dockingStation">
+                    <span class="docking-label">Docking Station</span>
+                    <div class="docking-slot" ondragover="event.preventDefault()" ondrop="dropToDocking(event, 'node-codex')">
+                        <div class="graph-node" id="node-codex" style="position: relative; width: 100%; top:0; left:0;" onmousedown="startDrag(event, 'node-codex')">
+                            <div class="node-header" style="font-size:0.7rem;"><span>💻 Codex</span></div>
+                            <div class="node-body" style="padding:0.2rem;"><span style="font-size:0.6rem;">Drag to Canvas</span></div>
+                        </div>
+                    </div>
+                    <div class="docking-slot" ondragover="event.preventDefault()" ondrop="dropToDocking(event, 'node-phobos')">
+                        <div class="graph-node" id="node-phobos" style="position: relative; width: 100%; top:0; left:0;" onmousedown="startDrag(event, 'node-phobos')">
+                            <div class="node-header" style="font-size:0.7rem;"><span>🛡️ Phobos</span></div>
+                            <div class="node-body" style="padding:0.2rem;"><span style="font-size:0.6rem;">Drag to Canvas</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Project Context / Memory Card -->
+        <div class="card full-width">
+            <div class="card-header">
+                <div class="card-title">🧠 Extended Project Memory // Project Context</div>
+                <span class="badge ready">Synchronized</span>
+            </div>
+            <p>Persistent ecosystem state shared across all models and sessions automatically.</p>
+            <pre id="projectMemory">Lade Projekt-Memory...</pre>
+        </div>
+    </div>
+
+    <script>
+        let currentAttachment = null;
+        let activeTaskFileName = null;
+        let connections = [];
+        let activePin = null;
+        let lastWorkflowOutput = "No workflow executed yet.";
+
+        async function loadMemory() {
+            try {
+                const res = await fetch('/api/memory');
+                const data = await res.json();
+                document.getElementById('projectMemory').textContent = data.content;
+            } catch (e) {
+                document.getElementById('projectMemory').textContent = 'Fehler beim Laden der Memory.';
+            }
+        }
+        window.onload = loadMemory;
+
+        function toggleUploadTray() {
+            document.getElementById('uploadTray').classList.toggle('active');
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                currentAttachment = { type: 'file', name: file.name, size: file.size, isImage: file.type.startsWith('image/') };
+                document.getElementById('attachmentIndicator').textContent = `Attached: ${file.name}`;
+            }
+        }
+
+        function attachUrl() {
+            const urlInputEl = document.getElementById('urlInput');
+            if (!urlInputEl) return;
+            const url = urlInputEl.value.trim();
+            if (url) {
+                currentAttachment = { type: 'url', value: url };
+                document.getElementById('attachmentIndicator').textContent = `Attached URL: ${url}`;
+                urlInputEl.value = '';
+            }
+        }
+
+        function toggleGoogleLogin() {
+            const badge = document.getElementById('authStatus');
+            const btnText = document.getElementById('authBtnText');
+            if (badge.textContent.includes('Offline')) {
+                badge.textContent = 'Google Connected (Gürkan)';
+                badge.className = 'badge active';
+                btnText.textContent = 'Sign Out';
+            } else {
+                badge.textContent = 'Offline Mode';
+                badge.className = 'badge ready';
+                btnText.textContent = 'Google Login';
+                currentAttachment = null;
+            }
+        }
+
+        let draggedNode = null;
+        let offsetX = 0, offsetY = 0;
+
+        function startDrag(e, nodeId) {
+            if (e.target.classList.contains('pin')) return;
+            draggedNode = document.getElementById(nodeId);
+            const rect = draggedNode.getBoundingClientRect();
+            
+            offsetX = e.clientX - rect.left;
+            offsetY = e.clientY - rect.top;
+
+            document.onmousemove = (moveEvent) => {
+                if (!draggedNode) return;
+                const cRect = document.getElementById('graphContainer').getBoundingClientRect();
+                let x = moveEvent.clientX - cRect.left - offsetX;
+                let y = moveEvent.clientY - cRect.top - offsetY;
+                
+                draggedNode.style.position = 'absolute';
+                draggedNode.style.left = `${Math.max(10, Math.min(x, cRect.width - 220))}px`;
+                draggedNode.style.top = `${Math.max(10, Math.min(y, cRect.height - 160))}px`;
+                redrawWires();
+            };
+
+            document.onmouseup = () => {
+                document.onmousemove = null;
+                document.onmouseup = null;
+                draggedNode = null;
+            };
+        }
+
+        function dropToDocking(e, nodeId) {
+            e.preventDefault();
+            const node = document.getElementById(nodeId);
+            const slot = e.target.closest('.docking-slot');
+            if (node && slot) {
+                node.style.position = 'relative';
+                node.style.top = '0';
+                node.style.left = '0';
+                slot.appendChild(node);
+                redrawWires();
+            }
+        }
+
+        function spawnTaskNode(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            activeTaskFileName = file.name;
+            const isImg = file.type.startsWith('image/');
+
+            const container = document.getElementById('graphContainer');
+            const existing = document.getElementById('node-task-source');
+            if (existing) existing.remove();
+
+            const taskNode = document.createElement('div');
+            taskNode.className = 'graph-node selected';
+            taskNode.id = 'node-task-source';
+            taskNode.style.position = 'absolute';
+            taskNode.style.top = '120px';
+            taskNode.style.left = '60px';
+            taskNode.innerHTML = `
+                <div class="node-header"><span>${isImg ? '🖼️ Image Source' : '📄 Task (.md)'}</span></div>
+                <div class="node-body">
+                    <span style="color: #34d399; font-weight:600; font-size:0.7rem;">${file.name}</span>
+                    <div class="pin-container">
+                        <div class="pin-row"><span>Out 1</span><div class="pin output" title="Output 1" onclick="clickPin('node-task-source', 'out', 1)"></div></div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(taskNode);
+        }
+
+        function spawnAgentNodePrompt() {
+            const name = prompt("Name für neuen Agenten / Subagenten (z.B. 'Tommy PC'):", "Tommy PC");
+            if (!name) return;
+            const id = 'node-custom-' + Date.now();
+            const container = document.getElementById('graphContainer');
+
+            const node = document.createElement('div');
+            node.className = 'graph-node';
+            node.id = id;
+            node.style.position = 'absolute';
+            node.style.top = '150px';
+            node.style.left = '400px';
+            node.innerHTML = `
+                <div class="node-header"><span>👤 ${name}</span></div>
+                <div class="node-body">
+                    <div class="pin-container">
+                        <div class="pin-row"><div class="pin input" title="Input 1" onclick="clickPin('${id}', 'in', 1)"></div><span>In 1</span></div>
+                    </div>
+                    <hr style="border-color: var(--border-color); margin: 0.15rem 0;">
+                    <div class="pin-container">
+                        <div class="pin-row"><span>Out 1</span><div class="pin output" title="Output 1" onclick="clickPin('${id}', 'out', 1)"></div></div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(node);
+        }
+
+        function clickPin(nodeId, type, pinIdx) {
+            const nodeEl = document.getElementById(nodeId);
+            nodeEl.classList.add('selected');
+
+            if (!activePin) {
+                if (type === 'out') {
+                    activePin = { nodeId, type, pinIdx };
+                    nodeEl.style.borderColor = '#10b981';
+                } else {
+                    alert('Bitte klicke zuerst auf ein Output-Pin (rechts) einer Task oder eines Agenten!');
+                }
+            } else {
+                if (type === 'in' && activePin.nodeId !== nodeId) {
+                    const color = '#10b981';
+                    connections.push({ from: activePin.nodeId, to: nodeId, color, pinIdx: activePin.pinIdx });
+                    redrawWires();
+                    activePin = null;
+                } else {
+                    alert('Ungültige Verbindung! Verbinde Output (rechts) mit Input (links).');
+                    activePin = null;
+                }
+            }
+        }
+
+        function redrawWires() {
+            const svg = document.getElementById('graphSvg');
+            svg.querySelectorAll('.dynamic-wire').forEach(el => el.remove());
+
+            connections.forEach(conn => {
+                const fromNode = document.getElementById(conn.from);
+                const toNode = document.getElementById(conn.to);
+                if (fromNode && toNode) {
+                    const cRect = svg.getBoundingClientRect();
+                    const fRect = fromNode.getBoundingClientRect();
+                    const tRect = toNode.getBoundingClientRect();
+
+                    const x1 = fRect.right - cRect.left - 6;
+                    const y1 = fRect.top + (fRect.height / 2) - cRect.top;
+                    const x2 = tRect.left - cRect.left + 6;
+                    const y2 = tRect.top + (tRect.height / 2) - cRect.top;
+
+                    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                    const dx = Math.abs(x2 - x1) * 0.5;
+                    path.setAttribute("d", `M ${x1} ${y1} C ${x1 + dx} ${y1}, ${x2 - dx} ${y2}, ${x2} ${y2}`);
+                    path.setAttribute("stroke", conn.color || '#10b981');
+                    path.setAttribute("stroke-width", "3");
+                    path.setAttribute("fill", "none");
+                    path.setAttribute("class", "dynamic-wire");
+                    svg.appendChild(path);
+                    toNode.classList.add('selected');
+                }
+            });
+        }
+
+        function clearGraph() {
+            connections = [];
+            activePin = null;
+            document.querySelectorAll('.graph-node').forEach(n => n.classList.remove('selected'));
+            const taskNode = document.getElementById('node-task-source');
+            if (taskNode) taskNode.remove();
+            redrawWires();
+            document.getElementById('workflowResultDisplay').textContent = 'Awaiting result...';
+            document.getElementById('endNodeLight').className = 'status-light offline';
+        }
+
+        async function executeWorkflowPipeline() {
+            if (connections.length === 0) {
+                alert('Bitte verbinde zuerst mindestens eine Task mit einem Agenten und dem End Node!');
+                return;
+            }
+            const display = document.getElementById('workflowResultDisplay');
+            const endLight = document.getElementById('endNodeLight');
+            display.textContent = 'Executing pipeline...';
+
+            const pipelineSummary = connections.map(c => `${c.from} -> ${c.to}`).join(' | ');
+
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        model: 'gemini-cli', 
+                        message: `[Workflow Execution]: Running pipeline [${pipelineSummary}] with task file "${activeTaskFileName || 'default.md'}". Process task and return final structured result.` 
+                    })
+                });
+                const data = await response.json();
+                lastWorkflowOutput = data.reply || 'Pipeline executed successfully.';
+                display.textContent = lastWorkflowOutput;
+                endLight.className = 'status-light online';
+            } catch (e) {
+                display.textContent = 'Pipeline Error: ' + e.message;
+                endLight.className = 'status-light offline';
+            }
+        }
+
+        function saveWorkflowResult() {
+            const blob = new Blob([lastWorkflowOutput], { type: 'text/markdown;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'nova-workflow-result.md';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const select = document.getElementById('modelSelect');
+            const messagesContainer = document.getElementById('chatMessages');
+            
+            let message = input.value.trim();
+            const model = select.value;
+            if (!message && !currentAttachment) return;
+
+            if (currentAttachment) {
+                if (currentAttachment.type === 'file') {
+                    message = `[Uploaded File: ${currentAttachment.name}]\n` + message;
+                } else if (currentAttachment.type === 'url') {
+                    message = `[Linked URL: ${currentAttachment.value}]\n` + message;
+                }
+            }
+
+            const userMsgDiv = document.createElement('div');
+            userMsgDiv.className = 'message user';
+            userMsgDiv.textContent = message;
+            messagesContainer.appendChild(userMsgDiv);
+            input.value = '';
+            currentAttachment = null;
+            document.getElementById('attachmentIndicator').textContent = '';
+            document.getElementById('uploadTray').classList.remove('active');
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            const assistantMsgDiv = document.createElement('div');
+            assistantMsgDiv.className = 'message assistant';
+            assistantMsgDiv.textContent = 'Agent-Bus verarbeitet...';
+            messagesContainer.appendChild(assistantMsgDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            try {
+                const res = wasFetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ model, message })
+                });
+                const data = await (await res).json();
+                assistantMsgDiv.textContent = data.reply || 'Keine Antwort erhalten.';
+            } catch (e) {
+                assistantMsgDiv.textContent = 'Fehler bei der Verbindung zum Agent-Bus: ' + e.message;
+            }
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+    </script>
+
+    <footer>
+        NOVA // Yggdrasil • Multi Agent-Bus Ecosystem & Workflow Manager • Built for Meta Global AI Hackathon 2026
+    </footer>
+</body>
+</html>

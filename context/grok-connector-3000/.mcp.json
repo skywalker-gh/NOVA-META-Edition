@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "grok_connector_3000": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["mcp/server.mjs"],
+      "cwd": ".",
+      "env_vars": ["XAI_API_KEY", "GROK_MODEL", "NOVA_PROJECT_ROOT", "NOVA_MCP_URL", "NOVA_MCP_TOKEN"]
+    }
+  }
+}

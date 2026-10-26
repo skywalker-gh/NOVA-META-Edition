@@ -1,0 +1,28 @@
+{
+  "name": "chatgpt-claude-connector-3000",
+  "version": "1.0.0",
+  "interface": {
+    "displayName": "ChatGPT & Claude // Connector 3000",
+    "category": "Developer Tools",
+    "logo": "./assets/logo.png",
+    "shortDescription": "Dual Claude & ChatGPT peer bridge for Nova",
+    "longDescription": "Connect Anthropic Claude and OpenAI ChatGPT to Nova-Ygdrassil through a unified Stdio MCP server.",
+    "developerName": "Gürkan",
+    "capabilities": [],
+    "defaultPrompt": null
+  },
+  "description": "Dual-model MCP bridge for Claude and ChatGPT connecting to Nova-Ygdrassil project state and Anthropic/OpenAI APIs.",
+  "author": {
+    "name": "Gürkan"
+  },
+  "keywords": [
+    "claude",
+    "chatgpt",
+    "openai",
+    "anthropic",
+    "mcp",
+    "nova",
+    "ygdrassil"
+  ],
+  "skills": "./skills"
+}
