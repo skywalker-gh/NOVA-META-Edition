@@ -3,26 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NOVA // Ygdrassil - META Edition - Final Dashboard</title>
+<title>NOVA // Ygdrassil - V6 Clean All Fixes</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family: Verdana, Geneva, sans-serif;background:#0a0a0a;color:#fff;line-height:1.6;padding:20px}
-h1,h2,h3{font-family: Verdana, Geneva, sans-serif}
+body{font-family:Verdana, Geneva, sans-serif;background:#0a0a0a;color:#fff;line-height:1.6;padding:20px}
 .banner-wrap{position:relative;border-radius:16px;overflow:hidden;margin-bottom:24px;background:#000}
 .banner-wrap img{width:100%;height:auto;max-height:420px;object-fit:contain;display:block;background:#000}
 .banner-wrap:hover{box-shadow:0 0 30px #a3e635, 0 0 60px rgba(163,230,53,0.4);transition:box-shadow 0.3s}
-.card{background:#111;border:1px solid #222;border-radius:16px;padding:20px;margin-bottom:20px}
+.card{background:#111;border:1px solid #222;border-radius:16px;padding:20px;margin-bottom:20px;transition:box-shadow 0.3s ease, border-color 0.3s ease}
+.card:hover{box-shadow:0 0 30px #a3e635, 0 0 60px rgba(163,230,53,0.4);border-color:#a3e635}
 .badge{display:inline-block;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;margin-right:6px}
 .badge-green{background:#a3e635;color:#000}
 .badge-purple{background:#a855f7;color:#fff}
 .badge-blue{background:#0064e0;color:#fff}
-.btn{display:inline-block;padding:12px 24px;border-radius:12px;font-weight:700;text-decoration:none;cursor:pointer;border:none;transition:all 0.2s}
-.btn-green{background:#a3e635;color:#000}
-.btn-green:hover{box-shadow:0 0 20px #a3e635;transform:translateY(-1px)}
-.btn-dark{background:#222;color:#fff;border:1px solid #333}
-.btn-dark:hover{background:#333}
-.tech-chip{display:inline-block;padding:8px 14px;border-radius:999px;border:1px solid #333;background:#151515;margin:4px;cursor:pointer;font-size:13px}
-.tech-chip.active{border-color:#a3e635;background:#1a2a0a;box-shadow:0 0 10px rgba(163,230,53,0.3)}
+.btn{padding:10px 16px;border-radius:12px;font-weight:700;font-size:13px;line-height:18px;height:38px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;border:none;transition:all 0.2s}
+.btn-plus{background:linear-gradient(135deg,#0064e0,#a855f7);color:#fff;border:none;padding:10px 16px;border-radius:12px;font-weight:900;font-size:18px;line-height:18px;height:38px;min-width:42px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.btn-plus-white{color:#fff;font-weight:900;font-size:20px;line-height:18px}
+.btn-send{background:linear-gradient(135deg,#0064e0,#a855f7);color:#fff;border:none;padding:10px 20px;border-radius:12px;font-weight:800;font-size:13px;line-height:18px;height:38px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;margin-left:auto}
+.btn-dark{background:#222;color:#fff;border:1px solid #333;padding:10px 16px;border-radius:12px;font-weight:600;font-size:13px;line-height:18px;height:38px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.btn-orange{background:linear-gradient(135deg,#f59e0b,#facc15);color:#000;border:none;padding:10px 16px;border-radius:12px;font-weight:800;font-size:13px;line-height:18px;height:38px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
 .input{width:100%;background:#151515;border:1px solid #333;color:#fff;border-radius:12px;padding:12px;font-family:Verdana, sans-serif}
 .textarea{width:100%;background:#151515;border:1px solid #333;color:#fff;border-radius:12px;padding:12px;min-height:90px;resize:vertical;font-family:Verdana, sans-serif}
 .messages{height:520px;overflow-y:auto;background:#0e0e0e;border:1px solid #222;border-radius:12px;padding:12px}
@@ -30,9 +29,41 @@ h1,h2,h3{font-family: Verdana, Geneva, sans-serif}
 .msg-user{background:#1f2a0f;margin-left:auto;border:1px solid #2a3f15}
 .msg-assist{background:#151515;border:1px solid #222}
 .small{font-size:12px;color:#888}
-.kv{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
 .link{color:#a3e635;text-decoration:none}
-.link:hover{text-decoration:underline}
+.header-lila{color:#a855f7;font-weight:800;letter-spacing:0.5px}
+.tech-row{display:flex;justify-content:space-between;align-items:center;background:#151515;border:1px solid #222;border-radius:12px;padding:12px 16px;margin:6px 0;cursor:pointer;transition:all 0.2s}
+.tech-row:hover{border-color:#333;transform:translateX(2px)}
+.tech-row.active{border-color:#a855f7;background:#1e102e}
+.tech-name{font-weight:700;font-size:14px}
+.tech-light{width:14px;height:14px;border-radius:50%}
+.light-gray{background:#555;box-shadow:none}
+.light-green{background:#22c55e;box-shadow:0 0 12px #22c55e}
+.light-red{background:#ef4444;box-shadow:0 0 12px #ef4444}
+.tech-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:700px){.tech-grid{grid-template-columns:1fr}}
+
+.btn-orange,.btn-send{height:38px !important;min-height:38px !important;max-height:38px !important;padding:10px 20px !important;font-size:13px !important;line-height:18px !important;border-radius:12px !important;display:inline-flex !important;align-items:center !important;justify-content:center !important;box-sizing:border-box}
+
+
+.btn-orange,.btn-send{height:38px !important;min-height:38px !important;max-height:38px !important;padding:0 20px !important;font-size:13px !important;line-height:38px !important;border-radius:12px !important;display:inline-flex !important;align-items:center !important;justify-content:center !important;box-sizing:border-box !important;min-width:120px}
+
+
+.btn-lila{background:linear-gradient(135deg,#a855f7,#ec4899);color:#fff;border:none;padding:0 20px;border-radius:12px;font-weight:800;font-size:13px;height:38px;min-height:38px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.btn-lila:hover{box-shadow:0 0 15px rgba(168,85,247,0.6);transform:translateY(-1px)}
+
+
+/* DELUXE HOVER FOR ALL BUTTONS - like Discord lila/pink */
+.btn:hover,.btn-plus:hover,.btn-send:hover,.btn-dark:hover,.btn-orange:hover,.btn-lila:hover,.btn-blue:hover{
+  box-shadow:0 0 15px rgba(168,85,247,0.6), 0 0 30px rgba(236,72,153,0.4) !important;
+  transform:translateY(-2px) !important;
+  transition:all 0.25s ease !important;
+  filter:brightness(1.1);
+}
+.btn-plus:hover{box-shadow:0 0 15px rgba(0,100,224,0.6), 0 0 30px rgba(168,85,247,0.5) !important;}
+.btn-orange:hover{box-shadow:0 0 15px rgba(245,158,11,0.6), 0 0 30px rgba(250,204,21,0.4) !important;}
+.btn-send:hover{box-shadow:0 0 15px rgba(0,100,224,0.6), 0 0 30px rgba(168,85,247,0.5) !important;}
+.btn-lila:hover{box-shadow:0 0 15px rgba(168,85,247,0.7), 0 0 30px rgba(236,72,153,0.5) !important;}
+
 </style>
 </head>
 <body>
@@ -42,294 +73,138 @@ h1,h2,h3{font-family: Verdana, Geneva, sans-serif}
 </div>
 
 <div class="card">
-<h2 style="font-size:20px"><span style="font-weight:800">NOVA</span> <span style="font-weight:400">// Ygdrassil</span> <span style="font-weight:400;font-size:18px"> - Chat Bridge</span></h2>
-<p class="small">Direkte Verbindung zu deinem Repo - echte Calls - Write Allowed</p>
+<h2 style="font-size:38px"><span style="font-weight:800">NOVA</span> <span style="font-weight:400">// Ygdrassil</span></h2>
+<p style="font-size:13px;margin-top:6px;color:#9ca3af"><span style="font-weight:800">Multi Agent Ecosystem // Muse Spark Version 1.0 - </span><span style="font-weight:400">Build for the Meta Global AI Developer Hackathon - 2026</span></p>
 <div style="margin-top:12px">
 <span class="badge badge-green">Public ✅ Jury</span>
 <span class="badge badge-blue">.env in .gitignore safe</span>
 <span class="badge badge-purple">Privileged Orchestrator</span>
 </div>
-<p style="margin-top:12px"><a class="link" href="https://github.com/skywalker-gh/NOVA-META-Edition" target="_blank">https://github.com/skywalker-gh/NOVA-META-Edition</a> - <a class="btn btn-dark" href="https://github.com/skywalker-gh/NOVA-META-Edition" target="_blank" style="padding:6px 12px;font-size:12px">Auf GitHub öffnen</a></p>
+<p style="margin-top:12px">▶ <a class="link" href="https://github.com/skywalker-gh/NOVA-META-Edition" target="_blank">https://github.com/skywalker-gh/NOVA-META-Edition</a> - <a class="btn-send" href="https://github.com/skywalker-gh/NOVA-META-Edition" target="_blank" style="text-decoration:none">▶ GitHub</a> <a class="btn-lila" href="https://discord.com/users/1564189792839663729" target="_blank" style="text-decoration:none;margin-left:8px">▶ Discord</a></p>
 </div>
 
 <div class="card">
-<h3>API Keys für echte Calls</h3>
-<p class="small">Keys bleiben nur im Browser (localStorage), werden direkt an die Anbieter gesendet. Für echte Calls mit Schreibrechten.</p>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px">
-<input id="metaKey" class="input" placeholder="Meta API Key (Spark/Wonder) - dev.meta.ai">
-<input id="openaiKey" class="input" placeholder="OpenAI API Key (ChatGPT) - sk-proj-...">
-<input id="grokKey" class="input" placeholder="xAI Grok Key">
-<input id="geminiKey" class="input" placeholder="Gemini API Key">
+<h2 style="font-size:28px" class="header-lila">NOVA <span style='font-weight:400;font-size:20px'>//</span> Chat 💻</h2>
+<p style="font-size:13px;margin-top:6px;color:#9ca3af">Multi Agent Bus - Chat Bridge & MCP Tunnel</p>
+<div id="messages" class="messages" style="margin-top:12px"></div>
+<div style="margin-top:12px">
+<textarea id="input" class="textarea" placeholder="Schreib hier..."></textarea>
 </div>
-<div style="margin-top:10px;display:flex;gap:10px">
-<button class="btn btn-green" onclick="saveKeys()">Speichern</button>
-<button class="btn btn-dark" onclick="testAll()">Teste alle Models</button>
-<span id="keyStatus" class="small"></span>
+<div style="margin-top:10px;display:flex;gap:10px;align-items:center;width:100%;flex-wrap:nowrap">
+<button class="btn-plus" onclick="document.getElementById('fileInput').click()" title="Files, Bilder, Videos, Links, Projektordner"><span class="btn-plus-white">+</span></button>
+<input type="file" id="fileInput" style="display:none" multiple onchange="handleFiles(this.files)">
+<button class="btn-dark" onclick="quickInsert('Test Email an guerkanguergm@gmail.com')">📧 Test Email</button>
+<button class="btn-dark" onclick="quickInsert('Was geht aaaaab!? 👻')">Was geht aaaaab!? 👻</button>
+<button class="btn-dark" onclick="quickInsert('Let´s start a context building process for better understanding and reasoning 💻')">Let´s start a context building process 💻</button>
+<div style="display:flex;gap:10px;margin-left:auto">
+<button class="btn-orange" onclick="clearChat()">↺ Reset</button>
+<button class="btn-send" onclick="sendMessage()">▶ Senden</button>
 </div>
-</div>
-
-<div class="card">
-<h3>Tech Auswahl - WRITE ALLOWED</h3>
-<div id="techs" style="margin-top:8px"></div>
-<p class="small" style="margin-top:8px">Regel #5: Muse + Meta AI = Privileged Orchestrator mit WRITE. Grok/ChatGPT jetzt auch mit WRITE per deinem Wunsch.</p>
-</div>
-
-<div class="card">
-<h3>ChatBridge - Planen & Schreiben mit allen Models</h3>
-<div id="messages" class="messages"></div>
-<div style="margin-top:12px;display:flex;gap:10px">
-<textarea id="input" class="textarea" placeholder="Schreib hier... z.B. 'Test Email an guerkanguergm@gmail.com' oder 'Was bauen wir als nächstes?'"></textarea>
-</div>
-<div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap">
-<button id="sendBtn" class="btn btn-green" onclick="sendMessage()">Senden</button>
-<button class="btn btn-dark" onclick="quickInsert('Test Email an guerkanguergm@gmail.com als Test von ChatGPT')">Test Email</button>
-<button class="btn btn-dark" onclick="quickInsert('Was bauen wir als nächstes im NOVA Ecosystem?')">Was als nächstes?</button>
-<button class="btn btn-dark" onclick="quickInsert('Ecosystem Status checken')">Status</button>
-<button class="btn btn-dark" onclick="clearChat()">Reset</button>
 </div>
 </div>
 
 <div class="card">
-<h3>Planner Todos & Build Log</h3>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+<div style="display:flex;justify-content:space-between;align-items:center">
+<h3 class="header-lila" style="font-size:28px">NOVA <span style='font-weight:400;font-size:20px'>//</span> AI Agents & Models 🤖</h3>
+<button class="btn-plus" onclick="addNewTech()"><span class="btn-plus-white">+</span></button>
+</div>
+<p style="font-size:13px;margin-top:6px;color:#9ca3af">Choose your Destiny xD <b>Immortal Codepad!</b> Advanced shared context memory.</p>
+<div id="techs" class="tech-grid" style="margin-top:12px"></div>
+</div>
+
+<div class="card">
+<h3 class="header-lila" style="font-size:28px">NOVA <span style='font-weight:400;font-size:20px'>//</span> API Keys 🔑</h3>
+<p style="font-size:13px;margin-top:6px;color:#9ca3af">Enter your API key in the boxes below to enable it for the Multi Agent Bus and the <span style="font-weight:800">NOVA // Ygdrassil Ecosystem.</span></p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;margin-bottom:4px">
+<div style="display:flex;align-items:center;gap:10px;background:#151515;border:1px solid #222;border-radius:12px;padding:4px 12px"><input id="metaKey" class="input" style="border:none;background:transparent;padding:8px 0" placeholder="Meta API Key (Spark/Wonder)" oninput="updateKeyLights()"><span id="light-metaKey" class="tech-light light-gray" style="flex-shrink:0"></span></div>
+<div style="display:flex;align-items:center;gap:10px;background:#151515;border:1px solid #222;border-radius:12px;padding:4px 12px"><input id="openaiKey" class="input" style="border:none;background:transparent;padding:8px 0" placeholder="OpenAI (ChatGPT/Codex) sk-proj-..." oninput="updateKeyLights()"><span id="light-openaiKey" class="tech-light light-gray" style="flex-shrink:0"></span></div>
+<div style="display:flex;align-items:center;gap:10px;background:#151515;border:1px solid #222;border-radius:12px;padding:4px 12px"><input id="grokKey" class="input" style="border:none;background:transparent;padding:8px 0" placeholder="xAI Grok" oninput="updateKeyLights()"><span id="light-grokKey" class="tech-light light-gray" style="flex-shrink:0"></span></div>
+<div style="display:flex;align-items:center;gap:10px;background:#151515;border:1px solid #222;border-radius:12px;padding:4px 12px"><input id="claudeKey" class="input" style="border:none;background:transparent;padding:8px 0" placeholder="Claude API Key" oninput="updateKeyLights()"><span id="light-claudeKey" class="tech-light light-gray" style="flex-shrink:0"></span></div>
+<div style="display:flex;align-items:center;gap:10px;background:#151515;border:1px solid #222;border-radius:12px;padding:4px 12px"><input id="geminiKey" class="input" style="border:none;background:transparent;padding:8px 0" placeholder="Gemini API Key" oninput="updateKeyLights()"><span id="light-geminiKey" class="tech-light light-gray" style="flex-shrink:0"></span></div>
+<div style="display:flex;align-items:center;gap:10px;background:#151515;border:1px solid #222;border-radius:12px;padding:4px 12px"><input id="codexKey" class="input" style="border:none;background:transparent;padding:8px 0" placeholder="Codex Extra (optional)" oninput="updateKeyLights()"><span id="light-codexKey" class="tech-light light-gray" style="flex-shrink:0"></span></div>
+</div>
+<div style="margin-top:12px;display:flex;gap:10px;align-items:center;width:100%;flex-wrap:wrap">
+<span id="keyStatus" class="small" style="flex:1"></span>
+<div style="display:flex;gap:10px;margin-left:auto">
+<button class="btn-orange" onclick="testAll()">⊸ 🔑 Alle Keys testen</button>
+<button class="btn-send" onclick="saveKeys()">💾 Speichern</button>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3 class="header-lila" style="font-size:28px">NOVA <span style='font-weight:400;font-size:20px'>//</span> Build Log 📝</h3>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px">
 <div>
 <input id="todoInput" class="input" placeholder="Neues Todo..." onkeydown="if(event.key==='Enter')addTodo()">
 <div id="todoList" style="margin-top:10px"></div>
 </div>
 <div>
-<textarea id="buildLog" class="textarea" style="min-height:200px" placeholder="Build Log für Jury..."></textarea>
-<div style="margin-top:8px"><button class="btn btn-dark" onclick="saveLog()">Log speichern</button></div>
+<textarea id="buildLog" class="textarea" style="min-height:200px" placeholder="Build Log - V6 Clean"></textarea>
+<div style="margin-top:20px;display:flex"><button class="btn-send" onclick="saveLog()" style="margin-left:auto">💾 Speichern</button></div>
 </div>
 </div>
 </div>
 
 <div class="card">
-<h3>Human Module - Später klären</h3>
-<p class="small">Tommy - External Human Authority Node. Ob Teammitglied oder Human-in-the-loop wird im Regelwerk geklärt. Für Jury: Wenn nur JA/NEIN als Human Authority Node, dann Human Module.</p>
-<p class="small" style="margin-top:8px">Gemini: Ausgeschaltet von Gürkan (Hänger) - kein Fehler.</p>
+<h3 class="header-lila" style="font-size:28px">NOVA <span style='font-weight:400;font-size:20px'>//</span> Human Authority Module 🕵</h3>
+<p style="font-size:13px;margin-top:6px;color:#9ca3af">Tommy - External Human Authority Node</p>
 </div>
 
 <script>
-const TECHS = [
- {id:'spark', name:'Muse Spark', desc:'Fast'},
- {id:'wonder', name:'Muse Wonder', desc:'Deep'},
- {id:'image', name:'Muse Image', desc:'Bild'},
- {id:'sam', name:'SAM 3.1', desc:'Seg'},
- {id:'code', name:'Muse Code', desc:'Bauen'},
- {id:'llama', name:'Llama', desc:'Open'},
- {id:'chatgpt', name:'ChatGPT', desc:'WRITE'},
- {id:'grok', name:'Grok', desc:'WRITE'},
- {id:'gemini', name:'Gemini CLI', desc:'WRITE'}
+let DEFAULT_TECHS=[
+ {id:'spark', name:'Muse Spark'},
+ {id:'wonder', name:'Muse Wonder'},
+ {id:'image', name:'Muse Image'},
+ {id:'sam', name:'SAM 3.1'},
+ {id:'code', name:'Muse Code'},
+ {id:'llama', name:'Llama'},
+ {id:'chatgpt', name:'ChatGPT'},
+ {id:'grok', name:'Grok'},
+ {id:'gemini', name:'Gemini'},
+ {id:'codex', name:'Codex'},
+ {id:'claude', name:'Claude'},
+ {id:'gemini-cli', name:'Gemini CLI'}
 ];
-let selected = new Set(['spark']);
-let messages = [];
-
-function renderTechs(){
- const c=document.getElementById('techs');
- c.innerHTML='';
- TECHS.forEach(t=>{
-   const b=document.createElement('div');
-   b.className='tech-chip'+(selected.has(t.id)?' active':'');
-   b.innerHTML=`${t.name} <span class="small">${t.desc}</span>`;
-   b.onclick=()=>{ if(selected.has(t.id)) selected.delete(t.id); else selected.add(t.id); if(selected.size===0) selected.add(t.id); renderTechs(); };
-   c.appendChild(b);
- });
-}
+function loadTechs(){const raw=localStorage.getItem('nova_techs_v6');if(raw){try{return JSON.parse(raw);}catch(e){}}return DEFAULT_TECHS;}
+function saveTechsList(list){localStorage.setItem('nova_techs_v6',JSON.stringify(list));}
+let TECHS=loadTechs();
+let selected=new Set(JSON.parse(localStorage.getItem('nova_selected_v6')||'["spark"]'));
+let techStatus={};
+function renderTechs(){const c=document.getElementById('techs');c.innerHTML='';TECHS.forEach(t=>{const isActive=selected.has(t.id);let lightClass='light-gray';if(isActive){const s=techStatus[t.id]||'gray';if(s==='green')lightClass='light-green';else if(s==='red')lightClass='light-red';}const div=document.createElement('div');div.className='tech-row'+(isActive?' active':'');div.innerHTML=`<span class="tech-name">${t.name}</span><span class="tech-light ${lightClass}"></span>`;div.onclick=()=>{if(selected.has(t.id))selected.delete(t.id);else selected.add(t.id);saveSelected();renderTechs();};div.oncontextmenu=(e)=>{e.preventDefault();if(confirm('Tech '+t.name+' löschen?')){TECHS=TECHS.filter(x=>x.id!==t.id);selected.delete(t.id);saveTechsList(TECHS);saveSelected();renderTechs();}};c.appendChild(div);});}
+function saveSelected(){localStorage.setItem('nova_selected_v6',JSON.stringify([...selected]));}
 renderTechs();
-
-function saveKeys(){
- const keys={
-  meta: document.getElementById('metaKey').value.trim(),
-  openai: document.getElementById('openaiKey').value.trim(),
-  grok: document.getElementById('grokKey').value.trim(),
-  gemini: document.getElementById('geminiKey').value.trim()
- };
- localStorage.setItem('nova_meta_keys_final_v1', JSON.stringify(keys));
- document.getElementById('keyStatus').textContent='Gespeichert ✅';
- setTimeout(()=>document.getElementById('keyStatus').textContent='',2000);
- updateKeyDots();
+function addNewTech(){const name=prompt('Name der neuen Tech?');if(!name)return;const id=name.toLowerCase().replace(/[^a-z0-9]/g,'-')+'-'+Date.now();TECHS.push({id,name});saveTechsList(TECHS);renderTechs();}
+function updateKeyLights(){
+ const ids=['metaKey','openaiKey','grokKey','claudeKey','geminiKey','codexKey'];
+ ids.forEach(id=>{
+  const el=document.getElementById(id);
+  const light=document.getElementById('light-'+id);
+  if(!el||!light)return;
+  if(el.value.trim().length>10){light.className='tech-light light-green';} else {light.className='tech-light light-gray';}
+ });
+ updateTechLightsFromKeys();
 }
-function loadKeys(){
- const raw=localStorage.getItem('nova_meta_keys_final_v1');
- if(!raw) return;
- try{
-  const k=JSON.parse(raw);
-  document.getElementById('metaKey').value=k.meta||'';
-  document.getElementById('openaiKey').value=k.openai||'';
-  document.getElementById('grokKey').value=k.grok||'';
-  document.getElementById('geminiKey').value=k.gemini||'';
- }catch(e){}
- updateKeyDots();
-}
-function updateKeyDots(){
- const raw=localStorage.getItem('nova_meta_keys_final_v1');
- if(!raw) return;
- const k=JSON.parse(raw);
- const status=[];
- if(k.meta) status.push('Meta ✅');
- if(k.openai) status.push('ChatGPT ✅ '+k.openai.substring(0,10)+'... L:'+k.openai.length);
- if(k.grok) status.push('Grok ✅');
- if(k.gemini) status.push('Gemini ✅');
- document.getElementById('keyStatus').textContent=status.join(' | ');
-}
+function saveKeys(){const keys={meta:document.getElementById('metaKey').value.trim(),openai:document.getElementById('openaiKey').value.trim(),grok:document.getElementById('grokKey').value.trim(),claude:document.getElementById('claudeKey').value.trim(),gemini:document.getElementById('geminiKey').value.trim(),codex:document.getElementById('codexKey').value.trim()};localStorage.setItem('nova_keys_v6',JSON.stringify(keys));document.getElementById('keyStatus').textContent='Gespeichert ✅';setTimeout(()=>updateKeyDots(),500);updateTechLightsFromKeys();}
+function loadKeys(){const raw=localStorage.getItem('nova_keys_v6')||localStorage.getItem('nova_keys_v5');if(!raw)return;try{const k=JSON.parse(raw);document.getElementById('metaKey').value=k.meta||'';document.getElementById('openaiKey').value=k.openai||'';document.getElementById('grokKey').value=k.grok||'';document.getElementById('claudeKey').value=k.claude||'';document.getElementById('geminiKey').value=k.gemini||'';document.getElementById('codexKey').value=k.codex||'';}catch(e){}updateKeyDots();updateTechLightsFromKeys();updateKeyLights();}
+function updateKeyDots(){const raw=localStorage.getItem('nova_keys_v6');if(!raw)return;const k=JSON.parse(raw);const dots=[];if(k.meta)dots.push('Meta ✅');if(k.openai)dots.push('OpenAI ✅');if(k.grok)dots.push('Grok ✅');if(k.claude)dots.push('Claude ✅');if(k.gemini)dots.push('Gemini ✅');document.getElementById('keyStatus').textContent=dots.join(' | ');}
+function updateTechLightsFromKeys(){const raw=localStorage.getItem('nova_keys_v6');if(!raw)return;const k=JSON.parse(raw);TECHS.forEach(t=>{const id=t.id;if(['spark','wonder','image','sam','code','llama'].includes(id)){techStatus[id]=k.meta?'green':'gray';}else if(['chatgpt','codex'].includes(id)){techStatus[id]=k.openai?'green':'gray';}else if(id==='grok'){techStatus[id]=k.grok?'green':'gray';}else if(id==='claude'){techStatus[id]=k.claude?'green':'gray';}else if(id.includes('gemini')){techStatus[id]=k.gemini?'green':'gray';}});renderTechs();}
 loadKeys();
-
-function addMessage(role, text, tech){
- const m=document.getElementById('messages');
- const div=document.createElement('div');
- div.className='msg '+(role==='user'?'msg-user':'msg-assist');
- const techLabel=tech?`<div class="small">${tech.toUpperCase()} • ${new Date().toLocaleTimeString()}</div>`:'';
- div.innerHTML=techLabel+`<div style="margin-top:4px;white-space:pre-wrap;word-break:break-word">${text}</div>`;
- m.appendChild(div);
- m.scrollTop=m.scrollHeight;
-}
-
-function quickInsert(t){ document.getElementById('input').value=t; document.getElementById('input').focus(); }
-
-async function sendMessage(){
- const input=document.getElementById('input');
- const text=input.value.trim();
- if(!text) return;
- input.value='';
- addMessage('user', text, Array.from(selected).join(','));
- messages.push({role:'user', content:text});
-
- // Handle email detection
- const emailMatch=text.match(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i);
- if(emailMatch){
-  const email=emailMatch[0];
-  const subject=encodeURIComponent('Test von NOVA Ygdrassil - NOVA-META-Edition');
-  const body=encodeURIComponent(`Hi,
-
-Das ist ein Test aus der NOVA Ygdrassil ChatBridge.
-Repo: https://github.com/skywalker-gh/NOVA-META-Edition
-Tech: ${Array.from(selected).join(', ')}
-Zeit: ${new Date().toLocaleString()}
-
-Viele Grüße,
-Gürkan
-
---- 
-Diese Mail wurde über das Dashboard generiert.`);
-  const mailto=`mailto:${email}?subject=${subject}&body=${body}`;
-  addMessage('assist', `📧 Entwurf für <b>${email}</b> erstellt:<br><a href="${mailto}" class="btn btn-green" style="margin-top:10px;display:inline-block">Mail-Programm öffnen</a><br><span class="small">Klick öffnet Outlook/Gmail mit Betreff + Text</span>`, 'system');
- }
-
- // Real calls
- const raw=localStorage.getItem('nova_meta_keys_final_v1');
- const keys=raw?JSON.parse(raw):{};
- 
- for(const techId of selected){
-  let responseText='';
-  let error=null;
-  try{
-   if(techId==='chatgpt' && keys.openai){
-     const res=await fetch('https://api.openai.com/v1/chat/completions',{
-       method:'POST',
-       headers:{'Content-Type':'application/json','Authorization':'Bearer '+keys.openai},
-       body:JSON.stringify({model:'gpt-4o-mini', messages:[{role:'user', content:text}], temperature:0.7})
-     });
-     if(!res.ok){ throw new Error('HTTP '+res.status+' - '+(await res.text()).substring(0,300)); }
-     const data=await res.json();
-     responseText=data.choices?.[0]?.message?.content || 'Keine Antwort';
-   } else if((techId==='spark' || techId==='wonder') && keys.meta){
-     const model=techId==='wonder'?'muse-wonder-1.0':'muse-spark';
-     const res=await fetch('https://api.meta.ai/v1/chat/completions',{
-       method:'POST',
-       headers:{'Content-Type':'application/json','Authorization':'Bearer '+keys.meta},
-       body:JSON.stringify({model, messages:[{role:'user', content:text}], temperature:0.7})
-     });
-     if(!res.ok){ throw new Error('HTTP '+res.status+' - '+(await res.text()).substring(0,300)); }
-     const data=await res.json();
-     responseText=data.choices?.[0]?.message?.content || data.message || 'Keine Antwort';
-   } else if(techId==='grok' && keys.grok){
-     const res=await fetch('https://api.x.ai/v1/chat/completions',{
-       method:'POST',
-       headers:{'Content-Type':'application/json','Authorization':'Bearer '+keys.grok},
-       body:JSON.stringify({model:'grok-beta', messages:[{role:'user', content:text}]})
-     });
-     if(!res.ok){ throw new Error('HTTP '+res.status+' - '+(await res.text()).substring(0,300)); }
-     const data=await res.json();
-     responseText=data.choices?.[0]?.message?.content || 'Keine Antwort';
-   } else if(techId==='gemini' && keys.gemini){
-     const res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+keys.gemini,{
-       method:'POST',
-       headers:{'Content-Type':'application/json'},
-       body:JSON.stringify({contents:[{parts:[{text:text}]}]})
-     });
-     if(!res.ok){ throw new Error('HTTP '+res.status+' - '+(await res.text()).substring(0,300)); }
-     const data=await res.json();
-     responseText=data.candidates?.[0]?.content?.parts?.[0]?.text || 'Keine Antwort';
-   } else {
-     responseText=`⚠️ Kein Key für ${techId} eingetragen - bitte oben eintragen für echten Call mit Schreibrechten. Echo (damit Planen weiter geht): "${text}" - Verstanden als ${techId} im NOVA Ecosystem.`;
-   }
-  }catch(e){
-   error=e.message;
-   responseText=`⚠️ ${techId.toUpperCase()} – echter Call fehlgeschlagen.
-Fehler: ${error}
-Tipp: Key prüfen, keine Leerzeichen, Guthaben/Projekt aktiv.
-
-Echo (damit du weiter planen kannst): "${text}"`;
-  }
-  addMessage('assist', responseText, techId+(error?' • FEHLER':' • WRITE'));
- }
-}
-
-async function testAll(){
- const raw=localStorage.getItem('nova_meta_keys_final_v1');
- const keys=raw?JSON.parse(raw):{};
- if(!keys.meta && !keys.openai && !keys.grok && !keys.gemini){ addMessage('assist','Kein Key eingetragen','system'); return; }
- addMessage('user','Teste alle Models: Hallo','system');
- await sendMessage.call({},{});
- // Actually trigger send with Hallo for each selected
- document.getElementById('input').value='Hallo - Teste echten Call';
- sendMessage();
-}
-
-function addTodo(){
- const inp=document.getElementById('todoInput');
- const txt=inp.value.trim();
- if(!txt) return;
- const list=document.getElementById('todoList');
- const div=document.createElement('div');
- div.style.cssText='background:#151515;border:1px solid #222;border-radius:8px;padding:8px;margin-top:6px;display:flex;justify-content:space-between';
- div.innerHTML=`<span>${txt}</span><span style="cursor:pointer" onclick="this.parentElement.remove();saveTodos()">✕</span>`;
- list.appendChild(div);
- inp.value='';
- saveTodos();
-}
-function saveTodos(){
- const items=[...document.querySelectorAll('#todoList div span:first-child')].map(s=>s.textContent);
- localStorage.setItem('nova_todos', JSON.stringify(items));
-}
-function loadTodos(){
- const raw=localStorage.getItem('nova_todos');
- if(!raw) return;
- try{
-  const items=JSON.parse(raw);
-  items.forEach(t=>{
-   const list=document.getElementById('todoList');
-   const div=document.createElement('div');
-   div.style.cssText='background:#151515;border:1px solid #222;border-radius:8px;padding:8px;margin-top:6px;display:flex;justify-content:space-between';
-   div.innerHTML=`<span>${t}</span><span style="cursor:pointer" onclick="this.parentElement.remove();saveTodos()">✕</span>`;
-   list.appendChild(div);
-  });
- }catch(e){}
-}
+function addMessage(role,text,tech){const m=document.getElementById('messages');const div=document.createElement('div');div.className='msg '+(role==='user'?'msg-user':'msg-assist');const label=tech?`<div class="small">${tech.toUpperCase()} • ${new Date().toLocaleTimeString()}</div>`:'';
+ div.innerHTML=label+`<div style="margin-top:4px;white-space:pre-wrap">${text}</div>`;m.appendChild(div);m.scrollTop=m.scrollHeight;}
+function quickInsert(t){document.getElementById('input').value=t;document.getElementById('input').focus();}
+function handleFiles(files){if(!files||files.length===0)return;let names=[...files].map(f=>f.name).join(', ');addMessage('user','📎 Hochgeladen: '+names,'upload');document.getElementById('input').value+='\n[Files: '+names+']';}
+async function sendMessage(){const input=document.getElementById('input');const text=input.value.trim();if(!text)return;input.value='';addMessage('user',text,Array.from(selected).join(','));const emailMatch=text.match(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i);if(emailMatch){const email=emailMatch[0];const subject=encodeURIComponent('Test von NOVA Ygdrassil - V6 Clean');const body=encodeURIComponent(`Hi,\n\nTest aus V6 Clean\nTech: ${Array.from(selected).join(', ')}\nZeit: ${new Date().toLocaleString()}\n\nGruß Gürkan`);const mailto=`mailto:${email}?subject=${subject}&body=${body}`;addMessage('assist',`📧 Entwurf für <b>${email}</b><br><a href="${mailto}" class="btn-send" style="margin-top:8px;display:inline-block;text-decoration:none">Mail öffnen</a>`,'system');}
+ const raw=localStorage.getItem('nova_keys_v6');const keys=raw?JSON.parse(raw):{};for(const techId of selected){let txt='';let failed=false;try{if((techId==='chatgpt'||techId==='codex')&&keys.openai){const model=techId==='codex'?'gpt-4o':'gpt-4o-mini';const res=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+keys.openai},body:JSON.stringify({model,messages:[{role:'user',content:text}]})});if(!res.ok)throw new Error('HTTP '+res.status);const d=await res.json();txt=d.choices?.[0]?.message?.content||'Keine Antwort';}else if(['spark','wonder','image','sam','code','llama'].includes(techId)&&keys.meta){const model=techId==='wonder'?'muse-wonder-1.0':'muse-spark';const res=await fetch('https://api.meta.ai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+keys.meta},body:JSON.stringify({model,messages:[{role:'user',content:text}]})});if(!res.ok)throw new Error('HTTP '+res.status);const d=await res.json();txt=d.choices?.[0]?.message?.content||d.message||'Keine Antwort';}else if(techId==='grok'&&keys.grok){const res=await fetch('https://api.x.ai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+keys.grok},body:JSON.stringify({model:'grok-beta',messages:[{role:'user',content:text}]})});if(!res.ok)throw new Error('HTTP '+res.status);const d=await res.json();txt=d.choices?.[0]?.message?.content||'Keine Antwort';}else if(techId==='claude'&&keys.claude){const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':keys.claude,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-3-5-sonnet-20241022',max_tokens:1024,messages:[{role:'user',content:text}]})});if(!res.ok)throw new Error('HTTP '+res.status);const d=await res.json();txt=d.content?.[0]?.text||'Keine Antwort';}else if(techId.includes('gemini')&&keys.gemini){const res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+keys.gemini,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:text}]}]})});if(!res.ok)throw new Error('HTTP '+res.status);const d=await res.json();txt=d.candidates?.[0]?.content?.parts?.[0]?.text||'Keine Antwort';}else{txt=`⚠️ Kein Key für ${techId}. Echo: "${text}"`;}}catch(e){txt=`⚠️ ${techId} fehlgeschlagen: ${e.message} | Echo: "${text}"`;failed=true;}techStatus[techId]=failed?'red':'green';addMessage('assist',txt,techId+(failed?' • ROT':' • GRÜN'));renderTechs();}}
+async function testAll(){document.getElementById('input').value='Hallo - Teste alle Techs V6 Clean';sendMessage();}
+function addTodo(){const inp=document.getElementById('todoInput');const txt=inp.value.trim();if(!txt)return;const list=document.getElementById('todoList');const div=document.createElement('div');div.style.cssText='background:#151515;border:1px solid #222;border-radius:8px;padding:8px;margin-top:6px;display:flex;justify-content:space-between';div.innerHTML=`<span>${txt}</span><span style="cursor:pointer" onclick="this.parentElement.remove();saveTodos()">✕</span>`;list.appendChild(div);inp.value='';saveTodos();}
+function saveTodos(){const items=[...document.querySelectorAll('#todoList div span:first-child')].map(s=>s.textContent);localStorage.setItem('nova_todos_v6',JSON.stringify(items));}
+function loadTodos(){const raw=localStorage.getItem('nova_todos_v6');if(!raw)return;try{const items=JSON.parse(raw);items.forEach(t=>{const list=document.getElementById('todoList');const div=document.createElement('div');div.style.cssText='background:#151515;border:1px solid #222;border-radius:8px;padding:8px;margin-top:6px;display:flex;justify-content:space-between';div.innerHTML=`<span>${t}</span><span style="cursor:pointer" onclick="this.parentElement.remove();saveTodos()">✕</span>`;list.appendChild(div);});}catch(e){}}
 loadTodos();
-
-function saveLog(){
- localStorage.setItem('nova_log', document.getElementById('buildLog').value);
- document.getElementById('buildLog').placeholder='Gespeichert ✅';
-}
-function loadLog(){
- const raw=localStorage.getItem('nova_log');
- if(raw) document.getElementById('buildLog').value=raw;
-}
-loadLog();
-function clearChat(){ document.getElementById('messages').innerHTML=''; }
-
-document.getElementById('input').addEventListener('keydown', (e)=>{ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendMessage(); } });
+function saveLog(){localStorage.setItem('nova_log_v6',document.getElementById('buildLog').value);}
+function loadLog(){const raw=localStorage.getItem('nova_log_v6');if(raw)document.getElementById('buildLog').value=raw;}loadLog();
+function clearChat(){document.getElementById('messages').innerHTML='';}
+document.getElementById('input').addEventListener('keydown',(e)=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}});
 </script>
 </body>
 </html>
