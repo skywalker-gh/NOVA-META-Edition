@@ -1,4 +1,12 @@
 *.psd 
 *.mp3 
 Grafik Prework/ 
-.env 
+.env
+Token.json
+node_modules/
+context/Old PC Apps - Ref/
+*.log
+.muse/
+.mcp/
+**/Grafik Prework for Web and Design/
+context/Grafik Prework for Web and Design/
