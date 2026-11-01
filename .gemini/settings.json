@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "muse-spark-commander": {
+      "command": "npx",
+      "args": ["tsx", "./agents/muse-spark-orchestrator/src/index.ts"],
+      "cwd": "C:\\Users\\guerk\\OneDrive\\Desktop\\NOVA-META-Edition"
+    }
+  }
+}

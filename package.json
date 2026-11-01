@@ -1,0 +1,15 @@
+{
+  "name": "nova-meta-edition",
+  "version": "1.0.0",
+  "description": "NOVA Yggdrasil - Meta Hackathon - Tommy Portal",
+  "main": "muse-spark-bridge.js",
+  "scripts": {
+    "dev": "node muse-spark-bridge.js",
+    "start": "node muse-spark-bridge.js",
+    "bridge": "node muse-spark-bridge.js",
+    "tommy": "node muse-spark-bridge.js"
+  },
+  "dependencies": {
+    "dotenv": "^18.0.9"
+  }
+}
