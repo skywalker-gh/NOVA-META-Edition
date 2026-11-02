@@ -1,6 +1,6 @@
 // P0 security regression tests: S1 (dashboard) + S2 (bridge) containment & auth.
 // Run: npm test (cwd = repo root). Uses only node built-ins (node:test, node:assert).
-import test from 'node:test';
+import test, { before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -46,9 +46,18 @@ test('S2: path traversal outside root is forbidden', () => {
   }
 });
 
+// Hermetic sensitive-file fixture: lives in gitignored .nova-work/, works in clean
+// checkouts/worktrees without a real .env (regression: demo worktree had none).
+const PROBE = path.join('.nova-work', '.env.p0-probe');
+before(() => {
+  fs.mkdirSync(path.join(ROOT, '.nova-work'), { recursive: true });
+  fs.writeFileSync(path.join(ROOT, PROBE), 'P0-TEST-ONLY=fake-value\n');
+});
+after(() => { fs.rmSync(path.join(ROOT, PROBE), { force: true }); });
+
 test('S2: sensitive files are forbidden even when they exist', () => {
-  assert.ok(fs.existsSync(path.join(ROOT, '.env')), 'precondition: root .env exists');
-  for (const p of ['.env', 'context/grok-connector-3000/.env', 'Token.json', 'x/sub/.env.local', 'key.pem', 'k.key']) {
+  assert.ok(fs.existsSync(path.join(ROOT, PROBE)), 'precondition: probe file exists');
+  for (const p of ['.env', PROBE, 'context/grok-connector-3000/.env', 'Token.json', 'x/sub/.env.local', 'key.pem', 'k.key']) {
     assert.throws(() => bridge.resolveLocalPath(p), /Forbidden/, p);
   }
 });

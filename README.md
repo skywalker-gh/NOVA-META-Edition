@@ -54,6 +54,17 @@ Tommy gets link: `https://nova-meta.vercel.app/tommy`
 
 For Opa Bruno: His grandson is not watching, he's deciding.
 
+## Workflow Manager (Slice 1, 02.11.2026)
+
+Lineare Task-Ketten in V6 (`index.html` → Workflow Manager): Codex CLI baut in
+isoliertem Git-Worktree (`task/<id>`, ein Writer), Gemini CLI reviewed read-only,
+Muse Code arbeitet als Chat-Session mit. Ende jeder Kette: Freigabe-Queue
+(`/api/approvals`) für Human Authority (V6-Panel + Tommy-Portal synchron, JA/NEIN/INFO).
+Kein Commit/Push/Merge ohne Human-Entscheid. Start: `start.bat` (Bridge :8000),
+Token in `.env` (`NOVA_BRIDGE_TOKEN`). Externer Tommy-Zugriff braucht noch einen
+Tunnel (Phase 2). Demo-Task `tmvyq3swvj4mn` (Tommy-Live-Status) liegt als Branch
+`task/tmvyq3swvj4mn` + Approval in der Queue.
+
 ## Meta Tech Stack (Hackathon)
 
 - Muse Spark = PRECODER - Orchestration, planning

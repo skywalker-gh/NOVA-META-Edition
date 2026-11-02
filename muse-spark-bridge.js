@@ -46,6 +46,36 @@ function canonicalRoot() {
 }
 const PROJECT_ROOT = canonicalRoot();
 
+// Workflow Manager backend (slice 1). Test overrides via env (mock + tmp tasks dir).
+const workflow = require('./nova-workflow.js').createWorkflow({
+  projectRoot: PROJECT_ROOT,
+  tasksDir: process.env.NOVA_TASKS_DIR || undefined,
+  mock: process.env.NOVA_WORKER_MOCK === '1',
+});
+
+// Bounded JSON body reader for POST /api/* (1 MiB cap).
+function readJsonBody(req) {
+  return new Promise((resolve, reject) => {
+    let size = 0;
+    const chunks = [];
+    req.on('data', (c) => {
+      size += c.length;
+      if (size > 1024 * 1024) { reject(new Error('Body too large')); req.destroy(); return; }
+      chunks.push(c);
+    });
+    req.on('end', () => {
+      try { resolve(chunks.length ? JSON.parse(Buffer.concat(chunks).toString('utf8')) : {}); }
+      catch { reject(new Error('Invalid JSON body')); }
+    });
+    req.on('error', reject);
+  });
+}
+
+function sendJson(res, code, obj) {
+  res.writeHead(code, { 'Content-Type': 'application/json' });
+  res.end(JSON.stringify(obj));
+}
+
 function isSensitiveName(name) {
   const base = path.basename(String(name)).toLowerCase();
   return base === '.env' || base.startsWith('.env.') || base === 'token.json'
@@ -152,6 +182,9 @@ const server = http.createServer(async (req, res) => {
           '/api/local/read?path=context/STRATEGY_MODEL_CONTINUITY.md - Local file',
           '/api/local/old-folders - List old Nova folders',
           '/api/github/list?path=context - List GitHub dir',
+          '/api/agents - Worker handshake (GET)',
+          '/api/workflow - Tasks (GET/POST), /run, /cancel, /step-result, /cleanup (POST)',
+          '/api/approvals - Queue (GET), /decide (POST)',
           '/status - This status'
         ],
         oldFolders: listOldNovaFolders()
@@ -169,6 +202,70 @@ const server = http.createServer(async (req, res) => {
       else content = '<h1>Tommy Portal - Not found - Run git pull</h1>';
       res.writeHead(200, { 'Content-Type': 'text/html' });
       res.end(content);
+      return;
+    }
+
+    // ---- Workflow Manager (slice 1): agents, tasks, approvals ----
+    if (url.pathname === '/api/agents' && req.method === 'GET') {
+      sendJson(res, 200, await workflow.getAgents());
+      return;
+    }
+    if (url.pathname === '/api/workflow' && req.method === 'GET') {
+      const id = url.searchParams.get('id');
+      if (id) {
+        const t = workflow.loadTask(id);
+        if (!t) { sendJson(res, 404, { error: 'task not found' }); return; }
+        sendJson(res, 200, t); return;
+      }
+      sendJson(res, 200, workflow.listTasks());
+      return;
+    }
+    if (url.pathname === '/api/workflow' && req.method === 'POST') {
+      const body = await readJsonBody(req);
+      const r = workflow.createTask(body);
+      if (r.error) { sendJson(res, 400, { error: r.error }); return; }
+      sendJson(res, 201, r.task);
+      return;
+    }
+    if (url.pathname === '/api/workflow/run' && req.method === 'POST') {
+      const body = await readJsonBody(req);
+      const r = workflow.startTask(body && body.id);
+      if (r.error) { sendJson(res, r.code || 400, { error: r.error }); return; }
+      sendJson(res, 200, r.task);
+      return;
+    }
+    if (url.pathname === '/api/workflow/cancel' && req.method === 'POST') {
+      const body = await readJsonBody(req);
+      const r = workflow.cancelTask(body && body.id);
+      if (r.error) { sendJson(res, r.code || 400, { error: r.error }); return; }
+      sendJson(res, 200, r.task);
+      return;
+    }
+    if (url.pathname === '/api/workflow/step-result' && req.method === 'POST') {
+      const body = await readJsonBody(req);
+      const r = workflow.submitStepResult(body);
+      if (r.error) { sendJson(res, r.code || 400, { error: r.error }); return; }
+      sendJson(res, 200, r.task);
+      return;
+    }
+    if (url.pathname === '/api/workflow/cleanup' && req.method === 'POST') {
+      const body = await readJsonBody(req);
+      const r = await workflow.cleanupTask(body && body.id);
+      if (r.error) { sendJson(res, r.code || 400, { error: r.error }); return; }
+      sendJson(res, 200, r);
+      return;
+    }
+    if (url.pathname === '/api/approvals' && req.method === 'GET') {
+      const all = workflow.loadApprovals();
+      const status = url.searchParams.get('status');
+      sendJson(res, 200, status ? all.filter((a) => a.status === status) : all);
+      return;
+    }
+    if (url.pathname === '/api/approvals/decide' && req.method === 'POST') {
+      const body = await readJsonBody(req);
+      const r = workflow.decideApproval(body);
+      if (r.error) { sendJson(res, r.code || 400, { error: r.error }); return; }
+      sendJson(res, 200, r.approval);
       return;
     }
 
@@ -276,7 +373,7 @@ function start() {
   console.log(`[HTTP Server] GitHub Content: http://127.0.0.1:${PORT}/api/github/content?path=context/STRATEGY_MODEL_CONTINUITY.md`);
   console.log(`[HTTP Server] Local Read: http://127.0.0.1:${PORT}/api/local/read?path=context/STRATEGY_MODEL_CONTINUITY.md`);
   console.log(`[HTTP Server] Old Folders: http://127.0.0.1:${PORT}/api/local/old-folders`);
-  await testConnections();
+  if (process.env.NOVA_SKIP_PROBE !== '1') await testConnections();
   console.log('\\n[NOVA Worker V2] 🟢 ACTIVE - REAL Internet-Brücke für Meta AI - Mit HTTP Server!');
   console.log('Lass Fenster offen!');
   });

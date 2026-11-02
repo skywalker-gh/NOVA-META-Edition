@@ -147,8 +147,41 @@ body{font-family:Verdana, Geneva, sans-serif;background:#0a0a0a;color:#fff;line-
 </div>
 
 <div class="card">
+<h3 class="header-lila" style="font-size:28px">NOVA <span style='font-weight:400;font-size:20px'>//</span> Workflow Manager ⛓️</h3>
+<p style="font-size:13px;margin-top:6px;color:#9ca3af">Lineare Task-Kette: Orchestratoren arbeiten Schritt für Schritt, das Ende landet bei Human Authority.</p>
+<div style="display:grid;grid-template-columns:1fr 1fr auto;gap:10px;margin-top:12px;align-items:end">
+<div><div class="small">Bridge</div><input id="wfBridge" class="input" value="http://127.0.0.1:8000"></div>
+<div><div class="small">Bridge-Token (nur Session, wird NICHT gespeichert)</div><input id="wfToken" class="input" type="password" placeholder="NOVA_BRIDGE_TOKEN"></div>
+<div><button class="btn-dark" onclick="wfRefresh()">↻ Verbinden</button></div>
+</div>
+<div id="wfConn" class="small" style="margin-top:8px">Nicht verbunden.</div>
+<h4 class="header-lila" style="margin-top:16px;font-size:18px">Orchestratoren</h4>
+<div id="wfAgents" class="tech-grid" style="margin-top:8px"></div>
+<h4 class="header-lila" style="margin-top:16px;font-size:18px">Neue Kette</h4>
+<textarea id="wfGoal" class="textarea" style="margin-top:8px;min-height:60px" placeholder="Ziel der Kette, z.B. Tommy-Portal zeigt Live-Status aus /status"></textarea>
+<div id="wfSteps" style="margin-top:8px"></div>
+<div style="margin-top:8px;display:flex;gap:10px;flex-wrap:wrap">
+<button class="btn-dark" onclick="wfAddStep()">+ Schritt (max 5)</button>
+<button class="btn-dark" onclick="wfDemo()">✨ Demo laden</button>
+<input id="wfCheck" class="input" style="max-width:260px" placeholder="optional Check: npm test">
+<button class="btn-send" onclick="wfStart()">▶ Kette starten</button>
+<button class="btn-orange" onclick="wfCancel()">⏹ Abbrechen</button>
+</div>
+<h4 class="header-lila" style="margin-top:16px;font-size:18px">Lauf</h4>
+<div id="wfRun" class="small" style="margin-top:8px">Noch kein Task gestartet.</div>
+<div id="wfTaskList" style="margin-top:8px"></div>
+</div>
+
+<div class="card">
 <h3 class="header-lila" style="font-size:28px">NOVA <span style='font-weight:400;font-size:20px'>//</span> Human Authority Module 🕵</h3>
 <p style="font-size:13px;margin-top:6px;color:#9ca3af">Tommy - External Human Authority Node</p>
+<div style="margin-top:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+<input id="apBy" class="input" style="max-width:200px" value="Gürkan">
+<button class="btn-dark" onclick="apRefresh()">↻ Queue laden</button>
+<span class="small">Entscheidungen wirken sofort (JA = fertig, NEIN = abgelehnt, INFO = Rückfrage).</span>
+</div>
+<div id="apList" style="margin-top:10px"></div>
+
 </div>
 
 <script>
@@ -195,7 +228,7 @@ function addMessage(role,text,tech){const m=document.getElementById('messages');
 function quickInsert(t){document.getElementById('input').value=t;document.getElementById('input').focus();}
 function handleFiles(files){if(!files||files.length===0)return;let names=[...files].map(f=>f.name).join(', ');addMessage('user','📎 Hochgeladen: '+names,'upload');document.getElementById('input').value+='\n[Files: '+names+']';}
 async function sendMessage(){const input=document.getElementById('input');const text=input.value.trim();if(!text)return;input.value='';addMessage('user',text,Array.from(selected).join(','));const emailMatch=text.match(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i);if(emailMatch){const email=emailMatch[0];const subject=encodeURIComponent('Test von NOVA Ygdrassil - V6 Clean');const body=encodeURIComponent(`Hi,\n\nTest aus V6 Clean\nTech: ${Array.from(selected).join(', ')}\nZeit: ${new Date().toLocaleString()}\n\nGruß Gürkan`);const mailto=`mailto:${email}?subject=${subject}&body=${body}`;addMessage('assist',`📧 Entwurf für <b>${email}</b><br><a href="${mailto}" class="btn-send" style="margin-top:8px;display:inline-block;text-decoration:none">Mail öffnen</a>`,'system');}
- const raw=localStorage.getItem('nova_keys_v6');const keys=raw?JSON.parse(raw):{};for(const techId of selected){let txt='';let failed=false;try{if((techId==='chatgpt'||techId==='codex')&&keys.openai){const model=techId==='codex'?'gpt-4o':'gpt-4o-mini';const res=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+keys.openai},body:JSON.stringify({model,messages:[{role:'user',content:text}]})});if(!res.ok)throw new Error('HTTP '+res.status);const d=await res.json();txt=d.choices?.[0]?.message?.content||'Keine Antwort';}else if(['spark','wonder','image','sam','code','llama'].includes(techId)&&keys.meta){const model=techId==='wonder'?'muse-wonder-1.0':'muse-spark';const res=await fetch('https://api.meta.ai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+keys.meta},body:JSON.stringify({model,messages:[{role:'user',content:text}]})});if(!res.ok)throw new Error('HTTP '+res.status);const d=await res.json();txt=d.choices?.[0]?.message?.content||d.message||'Keine Antwort';}else if(techId==='grok'&&keys.grok){const res=await fetch('https://api.x.ai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+keys.grok},body:JSON.stringify({model:'grok-beta',messages:[{role:'user',content:text}]})});if(!res.ok)throw new Error('HTTP '+res.status);const d=await res.json();txt=d.choices?.[0]?.message?.content||'Keine Antwort';}else if(techId==='claude'&&keys.claude){const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':keys.claude,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-3-5-sonnet-20241022',max_tokens:1024,messages:[{role:'user',content:text}]})});if(!res.ok)throw new Error('HTTP '+res.status);const d=await res.json();txt=d.content?.[0]?.text||'Keine Antwort';}else if(techId.includes('gemini')&&keys.gemini){const res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+keys.gemini,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:text}]}]})});if(!res.ok)throw new Error('HTTP '+res.status);const d=await res.json();txt=d.candidates?.[0]?.content?.parts?.[0]?.text||'Keine Antwort';}else{txt=`⚠️ Kein Key für ${techId}. Echo: "${text}"`;}}catch(e){txt=`⚠️ ${techId} fehlgeschlagen: ${e.message} | Echo: "${text}"`;failed=true;}techStatus[techId]=failed?'red':'green';addMessage('assist',txt,techId+(failed?' • ROT':' • GRÜN'));renderTechs();}}
+ const raw=localStorage.getItem('nova_keys_v6');const keys=raw?JSON.parse(raw):{};for(const techId of selected){let txt='';let failed=false;try{if((techId==='chatgpt'||techId==='codex')&&keys.openai){const model=techId==='codex'?'gpt-4o':'gpt-4o-mini';const res=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+keys.openai},body:JSON.stringify({model,messages:[{role:'user',content:text}]})});if(!res.ok)throw new Error('HTTP '+res.status);const d=await res.json();txt=d.choices?.[0]?.message?.content||'Keine Antwort';}else if(['spark','wonder','image','sam','code','llama'].includes(techId)&&keys.meta){const model=techId==='wonder'?'muse-wonder-1.0':'muse-spark-1.3-contributor';const res=await fetch('https://api.meta.ai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+keys.meta},body:JSON.stringify({model,messages:[{role:'user',content:text}]})});if(!res.ok)throw new Error('HTTP '+res.status);const d=await res.json();txt=d.choices?.[0]?.message?.content||d.message||'Keine Antwort';}else if(techId==='grok'&&keys.grok){const res=await fetch('https://api.x.ai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+keys.grok},body:JSON.stringify({model:'grok-beta',messages:[{role:'user',content:text}]})});if(!res.ok)throw new Error('HTTP '+res.status);const d=await res.json();txt=d.choices?.[0]?.message?.content||'Keine Antwort';}else if(techId==='claude'&&keys.claude){const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':keys.claude,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-3-5-sonnet-20241022',max_tokens:1024,messages:[{role:'user',content:text}]})});if(!res.ok)throw new Error('HTTP '+res.status);const d=await res.json();txt=d.content?.[0]?.text||'Keine Antwort';}else if(techId.includes('gemini')&&keys.gemini){const res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+keys.gemini,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:text}]}]})});if(!res.ok)throw new Error('HTTP '+res.status);const d=await res.json();txt=d.candidates?.[0]?.content?.parts?.[0]?.text||'Keine Antwort';}else{txt=`⚠️ Kein Key für ${techId}. Echo: "${text}"`;}}catch(e){txt=`⚠️ ${techId} fehlgeschlagen: ${e.message} | Echo: "${text}"`;failed=true;}techStatus[techId]=failed?'red':'green';addMessage('assist',txt,techId+(failed?' • ROT':' • GRÜN'));renderTechs();}}
 async function testAll(){document.getElementById('input').value='Hallo - Teste alle Techs V6 Clean';sendMessage();}
 function addTodo(){const inp=document.getElementById('todoInput');const txt=inp.value.trim();if(!txt)return;const list=document.getElementById('todoList');const div=document.createElement('div');div.style.cssText='background:#151515;border:1px solid #222;border-radius:8px;padding:8px;margin-top:6px;display:flex;justify-content:space-between';div.innerHTML=`<span>${txt}</span><span style="cursor:pointer" onclick="this.parentElement.remove();saveTodos()">✕</span>`;list.appendChild(div);inp.value='';saveTodos();}
 function saveTodos(){const items=[...document.querySelectorAll('#todoList div span:first-child')].map(s=>s.textContent);localStorage.setItem('nova_todos_v6',JSON.stringify(items));}
@@ -205,6 +238,195 @@ function saveLog(){localStorage.setItem('nova_log_v6',document.getElementById('b
 function loadLog(){const raw=localStorage.getItem('nova_log_v6');if(raw)document.getElementById('buildLog').value=raw;}loadLog();
 function clearChat(){document.getElementById('messages').innerHTML='';}
 document.getElementById('input').addEventListener('keydown',(e)=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}});
+</script>
+<script>
+// NOVA Workflow Manager UI (slice 1). Memory-only token, safe text rendering (no innerHTML).
+let wfTokenMem = '';
+let wfCurrentTask = null;
+let wfPollTimer = null;
+function wfBase() { return (document.getElementById('wfBridge').value || '').replace(/\/+$/, ''); }
+function wfHeaders() { const h = { 'Content-Type': 'application/json' }; if (wfTokenMem) h['Authorization'] = 'Bearer ' + wfTokenMem; return h; }
+function wfSetConn(t) { document.getElementById('wfConn').textContent = t; }
+function wfel(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined && text !== null) e.textContent = text; return e; }
+function wfLight(status) {
+  if (status === 'ready' || status === 'completed' || status === 'approved') return 'light-green';
+  if (status === 'unavailable' || status === 'failed' || status === 'rejected') return 'light-red';
+  return 'light-gray';
+}
+
+async function wfRefresh() {
+  wfTokenMem = document.getElementById('wfToken').value;
+  wfSetConn('Verbinde …');
+  try {
+    const r = await fetch(wfBase() + '/api/agents', { headers: wfHeaders() });
+    if (r.status === 401) { wfSetConn('⛔ 401: Bridge-Token fehlt/falsch.'); return; }
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const agents = await r.json();
+    const box = document.getElementById('wfAgents'); box.innerHTML = '';
+    agents.forEach((a) => {
+      const div = wfel('div', 'tech-row');
+      const left = wfel('div');
+      left.appendChild(wfel('div', 'tech-name', a.label));
+      left.appendChild(wfel('div', 'small', (a.version ? a.version + ' • ' : '') + (a.detail || '') + ' • ' + new Date(a.lastCheck).toLocaleTimeString()));
+      div.appendChild(left);
+      const st = a.status === 'ready' ? 'ready' : (a.status === 'unavailable' ? 'unavailable' : 'other');
+      div.appendChild(wfel('span', 'tech-light ' + wfLight(st)));
+      box.appendChild(div);
+    });
+    wfSetConn('Verbunden: ' + agents.length + ' Orchestratoren • ' + new Date().toLocaleTimeString());
+    wfLoadTasks(); apRefresh();
+  } catch (e) { wfSetConn('⛔ Bridge nicht erreichbar (' + e.message + '). Läuft start.bat?'); }
+}
+
+let wfSteps = [];
+function wfAddStep(agent, instruction) {
+  if (wfSteps.length >= 5) return;
+  wfSteps.push({ agent: agent || 'codex', instruction: instruction || '' });
+  wfRenderSteps();
+}
+function wfRenderSteps() {
+  const box = document.getElementById('wfSteps'); box.innerHTML = '';
+  wfSteps.forEach((s, i) => {
+    const row = wfel('div'); row.style.cssText = 'display:grid;grid-template-columns:150px 1fr auto;gap:8px;margin-top:6px;align-items:center';
+    const sel = wfel('select', 'input');
+    ['codex', 'gemini', 'muse'].forEach((a) => { const o = document.createElement('option'); o.value = a; o.textContent = a; if (s.agent === a) o.selected = true; sel.appendChild(o); });
+    sel.onchange = () => { s.agent = sel.value; };
+    const inp = wfel('input', 'input'); inp.placeholder = 'Anweisung für Schritt ' + (i + 1); inp.value = s.instruction; inp.oninput = () => { s.instruction = inp.value; };
+    const del = wfel('button', 'btn-dark', '✕'); del.onclick = () => { wfSteps.splice(i, 1); wfRenderSteps(); };
+    row.appendChild(sel); row.appendChild(inp); row.appendChild(del);
+    box.appendChild(row);
+  });
+}
+function wfDemo() {
+  document.getElementById('wfGoal').value = 'Tommy-Portal zeigt Live-Status aus /status';
+  document.getElementById('wfCheck').value = '';
+  wfSteps = [
+    { agent: 'codex', instruction: 'Erweitere tommy/index.html: Lade per fetch("/status") den Bridge-Status und zeige Repo + Meta/GitHub-Flags in der NOVA-Worker-Karte an. Minimaler Eingriff, kein Redesign.' },
+    { agent: 'gemini', instruction: 'Prüfe den Diff des vorherigen Schritts (git diff) auf Korrektheit und Sicherheit. Fasse den Befund kurz zusammen.' },
+  ];
+  wfRenderSteps();
+}
+wfAddStep();
+
+async function wfStart() {
+  const goal = document.getElementById('wfGoal').value.trim();
+  const check = document.getElementById('wfCheck').value.trim();
+  const steps = wfSteps.map((s) => ({ agent: s.agent, instruction: s.instruction.trim() })).filter((s) => s.instruction);
+  if (!goal || !steps.length) { wfSetConn('⛔ Ziel + mindestens 1 Schritt mit Anweisung nötig.'); return; }
+  try {
+    const body = { goal, steps }; if (check) body.check = check;
+    let r = await fetch(wfBase() + '/api/workflow', { method: 'POST', headers: wfHeaders(), body: JSON.stringify(body) });
+    if (!r.ok) throw new Error('Anlegen: HTTP ' + r.status + ' ' + (await r.text()).slice(0, 200));
+    const t = await r.json();
+    wfCurrentTask = t.id;
+    r = await fetch(wfBase() + '/api/workflow/run', { method: 'POST', headers: wfHeaders(), body: JSON.stringify({ id: t.id }) });
+    if (!r.ok) throw new Error('Start: HTTP ' + r.status + ' ' + (await r.text()).slice(0, 200));
+    wfSetConn('▶ Task ' + t.id + ' läuft …');
+    wfPoll();
+  } catch (e) { wfSetConn('⛔ ' + e.message); }
+}
+async function wfCancel() {
+  if (!wfCurrentTask) { wfSetConn('Kein aktiver Task.'); return; }
+  await fetch(wfBase() + '/api/workflow/cancel', { method: 'POST', headers: wfHeaders(), body: JSON.stringify({ id: wfCurrentTask }) });
+  wfPollOnce();
+}
+async function wfPollOnce() {
+  if (!wfCurrentTask) return 'idle';
+  try {
+    const r = await fetch(wfBase() + '/api/workflow?id=' + encodeURIComponent(wfCurrentTask), { headers: wfHeaders() });
+    if (!r.ok) return 'err';
+    const t = await r.json();
+    wfRenderRun(t); wfLoadTasks(); apRefresh();
+    if (['completed', 'failed', 'cancelled'].includes(t.status)) return 'done';
+    if (t.status === 'review_ready') return 'review';
+    return 'run';
+  } catch { return 'err'; }
+}
+function wfPoll() {
+  if (wfPollTimer) clearInterval(wfPollTimer);
+  wfPollTimer = setInterval(async () => {
+    const s = await wfPollOnce();
+    if (s === 'done' || s === 'review') { clearInterval(wfPollTimer); wfPollTimer = null; }
+  }, 3000);
+  wfPollOnce();
+}
+function wfRenderRun(t) {
+  const box = document.getElementById('wfRun'); box.innerHTML = '';
+  box.appendChild(wfel('div', '', 'Task ' + t.id + ' • ' + t.status + (t.outcome ? ' • ' + t.outcome : '') + (t.branch ? ' • ' + t.branch : '')));
+  t.steps.forEach((s) => {
+    const row = wfel('div', 'tech-row');
+    const left = wfel('div');
+    left.appendChild(wfel('div', 'tech-name', 'Schritt ' + s.n + ' [' + s.agent + '] — ' + s.status));
+    left.appendChild(wfel('div', 'small', (s.durationMs !== null && s.durationMs !== undefined ? Math.round(s.durationMs / 1000) + 's' : '') + (s.exitCode !== null && s.exitCode !== undefined ? ' • exit ' + s.exitCode : '') + (s.timedOut ? ' • TIMEOUT' : '')));
+    const det = document.createElement('details'); det.style.cssText = 'margin-top:6px';
+    const sum = wfel('summary', 'small', 'Anweisung + Output'); sum.style.cursor = 'pointer';
+    const pre = wfel('pre', 'small', 'ANWEISUNG:\n' + (s.instruction || '') + '\n\nOUTPUT:\n' + (s.output || '—'));
+    pre.style.cssText = 'white-space:pre-wrap;max-height:220px;overflow:auto;background:#0e0e0e;border:1px solid #222;border-radius:8px;padding:8px;margin-top:6px';
+    det.appendChild(sum); det.appendChild(pre); left.appendChild(det);
+    row.appendChild(left);
+    row.appendChild(wfel('span', 'tech-light ' + wfLight(s.status)));
+    box.appendChild(row);
+  });
+  if (t.diffStat) box.appendChild(wfel('div', 'small', 'Diff: ' + String(t.diffStat).split('\n').slice(0, 5).join(' | ')));
+  if (t.checkResult) box.appendChild(wfel('div', 'small', 'Check ' + t.checkResult.command + ': exit ' + t.checkResult.exitCode));
+}
+async function wfLoadTasks() {
+  try {
+    const r = await fetch(wfBase() + '/api/workflow', { headers: wfHeaders() });
+    if (!r.ok) return;
+    const list = await r.json();
+    const box = document.getElementById('wfTaskList'); box.innerHTML = '';
+    list.slice(0, 6).forEach((t) => {
+      const row = wfel('div', 'tech-row');
+      row.appendChild(wfel('div', 'small', t.id + ' • ' + t.status + (t.outcome ? '/' + t.outcome : '') + ' • ' + String(t.goal).slice(0, 60)));
+      const b = wfel('button', 'btn-dark', 'Ansehen'); b.onclick = () => { wfCurrentTask = t.id; wfPollOnce(); };
+      row.appendChild(b);
+      box.appendChild(row);
+    });
+  } catch { /* still offline */ }
+}
+
+async function apRefresh() {
+  const box = document.getElementById('apList'); if (!box) return;
+  try {
+    const r = await fetch(wfBase() + '/api/approvals?status=pending', { headers: wfHeaders() });
+    box.innerHTML = '';
+    if (!r.ok) { box.appendChild(wfel('div', 'small', r.status === 401 ? '⛔ Token fehlt (oben bei Bridge eintragen).' : 'Queue lädt nicht.')); return; }
+    const list = await r.json();
+    if (!list.length) { box.appendChild(wfel('div', 'small', 'Keine offenen Freigaben. ✅')); return; }
+    list.forEach((a) => {
+      const row = wfel('div', 'tech-row'); row.style.display = 'block';
+      row.appendChild(wfel('div', 'tech-name', 'Freigabe ' + a.id + ' • Task ' + a.taskId));
+      row.appendChild(wfel('div', 'small', a.goal));
+      const pre = wfel('pre', 'small', (a.summary || '') + '\n\nDIFFSTAT:\n' + (a.diffStat || '—'));
+      pre.style.cssText = 'white-space:pre-wrap;background:#0e0e0e;border:1px solid #222;border-radius:8px;padding:8px;margin-top:6px;max-height:160px;overflow:auto';
+      row.appendChild(pre);
+      if (a.diff) {
+        const det = document.createElement('details'); det.style.marginTop = '6px';
+        const sum = wfel('summary', 'small', 'Diff ansehen'); sum.style.cursor = 'pointer';
+        const dp = wfel('pre', 'small', a.diff);
+        dp.style.cssText = 'white-space:pre-wrap;background:#0e0e0e;border:1px solid #222;border-radius:8px;padding:8px;margin-top:6px;max-height:220px;overflow:auto';
+        det.appendChild(sum); det.appendChild(dp); row.appendChild(det);
+      }
+      const btns = wfel('div'); btns.style.cssText = 'display:flex;gap:10px;margin-top:8px';
+      [['yes', '✅ JA', 'btn-send'], ['no', '❌ NEIN', 'btn-orange'], ['info', '❓ MEHR INFOS', 'btn-dark']].forEach((d) => {
+        const b = wfel('button', d[2], d[1]);
+        b.onclick = () => apDecide(a.id, d[0]);
+        btns.appendChild(b);
+      });
+      row.appendChild(btns);
+      box.appendChild(row);
+    });
+  } catch { /* offline */ }
+}
+async function apDecide(id, decision) {
+  const byEl = document.getElementById('apBy');
+  const by = ((byEl && byEl.value) || 'human').trim() || 'human';
+  const r = await fetch(wfBase() + '/api/approvals/decide', { method: 'POST', headers: wfHeaders(), body: JSON.stringify({ id, decision, by }) });
+  if (!r.ok) alert('Fehler: HTTP ' + r.status);
+  apRefresh(); wfPollOnce();
+}
+
 </script>
 </body>
 </html>

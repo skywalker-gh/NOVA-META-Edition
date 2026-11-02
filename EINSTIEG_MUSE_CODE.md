@@ -493,3 +493,38 @@ Agent Bus (V2-MCP-Geflecht) · Ygdrassil-Mesh (P2P-Vision, Pre-Code) · Nova-Voi
   (Charter, MUSE-001, Trinity-Vertrag, Agent-Bus-Proposal, Gemini-HTTP) + Linear GUR-6/7/12.
 
 *– Ende des Einstiegsberichts. Bereit für Freigabe + P0. –*
+
+---
+
+## Anhang D – P1-Addendum: Workflow Manager Slice 1 (02.11.2026, `VERIFIZIERT`)
+
+**Scope (von Gürkan freigegeben: V6 + lineare Kette + Tommy/V6-Freigabe, „go"):** drei
+Orchestrator-Karten (Codex CLI / Gemini CLI / Muse Code) mit ehrlichem Handshake,
+Ketten-Ausführung über Bridge-Worker, Freigabe-Queue als Human-Authority-Ende.
+Kein Commit/Push/Merge ohne Human-Entscheid.
+
+**Neu/Geändert:** `nova-workflow.js` (Tasks, CLI-Worker via stdin-Prompts, git-Worktrees
+`task/<id>`, Check-Allowlist `npm test`/`node --check|test`, Approvals),
+`muse-spark-bridge.js` (`/api/agents|workflow|approvals`, `NOVA_SKIP_PROBE`),
+`index.html` (Workflow-Karte + Freigabe-Panel, Design/Alt-JS unberührt, Token nur
+Session, textContent-Rendering), `tommy/index.html` (echte Queue + Live-Status,
+S6-Rest `LLM_1130…` entfernt), `test/workflow.test.mjs` (5 Schwarzbox-Tests, Mock),
+`.env.example` (korrigierte Modell-IDs, s. u.), `.gitignore` (`tasks/`, `.nova-work/`).
+
+**Korrigiert (Meta-Modell-IDs `VERIFIZIERT` via `GET /v1/models`, 9 Modelle):**
+`muse-spark` und `muse-code` existieren **nicht** (404 `model_not_found`) → V6 und
+`.env.example` nutzen jetzt `muse-spark-1.3-contributor`. `.env` auf Workstation
+bitte angleichen (`MUSE_SPARK_MODEL`, `MUSE_CODE_MODEL`).
+
+**Live-Demo `VERIFIZIERT`:** Spark-Plan via Orchestrator-Code (`orchestrateWithSpark`,
+1 kleiner Call, wenige Cent); Task `tmvyq3swvj4mn` (Tommy-Live-Status): Codex exit 0
+in 29 s, Diff `tommy/index.html` +21/−1; Gemini exit 1 nach 197 s mit **429 Free-Tier-
+Quota** (echt, kein Code-Fehler – Retry in ~4 h); Muse-Review (Task `tmvyqa5n2sdf7`)
+→ `APPROVE`; Approval `amvyqalkoelvo` **pending** für Human-Entscheid.
+Check-Rot (exit 1) war ein Test-Hermetik-Bug (`.env`-Precondition, kein `.env` im
+Worktree) → gefixt via `.nova-work`-Fixture, Suite **`npm test`: 14/14 grün**,
+zusätzlich 9/9 in sauberem Worktree.
+
+**Offen:** Gemini-Quota (~4 h), externer Tommy-Tunnel (Phase 2), `.env`-Modell-IDs
+auf Workstation, Entscheidung über Demo-Approval + Übernahme von
+`task/tmvyq3swvj4mn` nach `main`.
