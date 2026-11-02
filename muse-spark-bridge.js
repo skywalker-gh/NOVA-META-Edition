@@ -53,6 +53,16 @@ const workflow = require('./nova-workflow.js').createWorkflow({
   mock: process.env.NOVA_WORKER_MOCK === '1',
 });
 
+// Memory index + provider fan-out (all models, memory-aware).
+const memory = require('./nova-memory.js').createMemory({
+  contextDir: path.join(PROJECT_ROOT, 'context'),
+  tasksDir: process.env.NOVA_TASKS_DIR || path.join(PROJECT_ROOT, 'tasks'),
+});
+const chat = require('./nova-chat.js').createChat({
+  contextDir: path.join(PROJECT_ROOT, 'context'),
+  memory,
+});
+
 // Bounded JSON body reader for POST /api/* (1 MiB cap).
 function readJsonBody(req) {
   return new Promise((resolve, reject) => {
@@ -186,6 +196,9 @@ const server = http.createServer(async (req, res) => {
           '/api/workflow - Tasks (GET/POST), /run, /cancel, /step-result, /cleanup (POST)',
           '/api/approvals - Queue (GET), /decide (POST)',
           '/api/keys/validate - Key check (POST)',
+          '/api/memory/index|context - Content memory index (GET)',
+          '/api/chat - Provider fan-out (POST), /chat/providers (GET)',
+          '/api/image - Meta image (POST)',
           '/status - This status'
         ],
         oldFolders: listOldNovaFolders()
@@ -288,6 +301,35 @@ const server = http.createServer(async (req, res) => {
       const full = resolveLocalPath('grafik/' + name); // containment + sensitive checks
       res.writeHead(200, { 'Content-Type': mime });
       res.end(fs.readFileSync(full));
+      return;
+    }
+
+    // ---- Memory index + provider fan-out ----
+    if (url.pathname === '/api/memory/index' && req.method === 'GET') {
+      sendJson(res, 200, memory.index());
+      return;
+    }
+    if (url.pathname === '/api/memory/context' && req.method === 'GET') {
+      const budget = Math.min(Math.max(Number(url.searchParams.get('budget')) || 6000, 500), 20000);
+      sendJson(res, 200, memory.context(budget));
+      return;
+    }
+    if (url.pathname === '/api/chat/providers' && req.method === 'GET') {
+      sendJson(res, 200, chat.providers());
+      return;
+    }
+    if (url.pathname === '/api/chat' && req.method === 'POST') {
+      const body = await readJsonBody(req);
+      const r = await chat.fanOut(body || {});
+      if (r.error) { sendJson(res, r.code || 400, { error: r.error }); return; }
+      sendJson(res, 200, r);
+      return;
+    }
+    if (url.pathname === '/api/image' && req.method === 'POST') {
+      const body = await readJsonBody(req);
+      const r = await chat.image(body || {});
+      if (r.error) { sendJson(res, r.code || 400, { error: r.error }); return; }
+      sendJson(res, 200, r);
       return;
     }
 

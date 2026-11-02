@@ -542,3 +542,21 @@ Abbrechen+Start rechts beisammen, Reset links/Senden rechts, E2E-Strings EN.
 **17/17 grün**. User-Kette `tmvyr7nzau3ja`: Muse ✓, Codex ✓ (Retry-Feature,
 Branch `task/tmvyr7nzau3ja`), Gemini ✗ 429 bis ~09:00. Freigabe `amvyqalkoelvo`
 mit JA entschieden, Demo-Branch gemergt (`c4afcc9`).
+
+## Anhang D3 – Nacht-Slice: Memory-Index + All-Provider-Fanout (03.11.2026, `VERIFIZIERT`)
+
+**Neu:** `nova-memory.js` (`/api/memory/index|context`: PROJECT_CONTEXT, Consensus,
+Bus-State, Profil, letzte Tasks/Approvals, budgetiert); `nova-chat.js`
+(`POST /api/chat`: 6 Provider parallel, Rollen-Prompts aus Connector-Skills,
+Memory injiziert, Keys transient > Server; `POST /api/image`: Muse Image 512);
+V6-Chat Bridge-first mit Direkt-Fallback + Memory-Badge + 🖼️-Button;
+`test/chat.test.mjs` (Fake-Server alle 4 Dialekte, Memory-Nachweis). Suite **22/22**.
+
+**Live-Rauchtest `VERIFIZIERT`:** Wonder + Grok-4 + Spark (nach Budget-Fix, zitiert
+`[project-context]`) + Image (78 KB b64) grün. Gefixt: `grok-beta` tot (404,
+deprecated) → `grok-4`; `gemini-1.5-flash` tot → `gemini-3.8-flash` (Vorschlag der
+API selbst); Spark braucht `maxTokens 3000` (150 Reasoning-Tokens schon für „OK");
+Orchestrator-`.env` Stale-Namen korrigiert. **Offen (User-Seite):** OpenAI- +
+Anthropic-Keys 401 (bitte in deren Dashboards erneuern); Google-Free-Quota bis
+~09:00. SAM (`muse-sam-3.1` 404) + Transcribe (404) ehrlich geparkt, kein Fake.
+Verbrauch Nacht: ~15 kleine Calls (Chat/Models/Probes) + 2 Test-Bilder, wenige $.

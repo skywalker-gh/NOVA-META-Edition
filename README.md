@@ -65,6 +65,17 @@ Token in `.env` (`NOVA_BRIDGE_TOKEN`). Externer Tommy-Zugriff braucht noch einen
 Tunnel (Phase 2). Demo-Task `tmvyq3swvj4mn` (Tommy-Live-Status) liegt als Branch
 `task/tmvyq3swvj4mn` + Approval in der Queue.
 
+## All-Provider Chat (Night Slice, 02.11.2026)
+
+One memory-aware fan-out: `POST /api/chat` asks Spark, Wonder, ChatGPT, Grok,
+Claude and Gemini in parallel, each with the unified memory index injected
+(`GET /api/memory/index|context`: project context, consensus, bus state,
+recent tasks/approvals). V6 chat uses the bridge first, direct browser calls
+stay as offline fallback. `POST /api/image` (Muse Image) + 🖼️ button in V6.
+Live states: Meta+spark/wonder/image + Grok-4 green; Gemini-3.8-flash correct
+model but Google free quota; OpenAI/Anthropic keys need refresh (401);
+SAM/transcribe have no REST shape (parked, no fake).
+
 ## Meta Tech Stack (Hackathon)
 
 - Muse Spark = PRECODER - Orchestration, planning
