@@ -7,21 +7,21 @@ require('dotenv').config();
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 const META_API_KEY = process.env.META_API_KEY;
 const GITHUB_PAT = process.env.GITHUB_PAT || process.env.GITHUB_TOKEN;
 const GITHUB_REPO = process.env.GITHUB_REPO || process.env.GITHUB_REPOSITORY || 'skywalker-gh/NOVA-META-Edition';
 const PORT = process.env.NOVA_PORT || 8000;
+const BRIDGE_TOKEN = process.env.NOVA_BRIDGE_TOKEN || '';
 
-console.log('[MUSE SPARK BRIDGE V2] 🟢 Starting REAL Server...');
-console.log(`Repo: ${GITHUB_REPO}`);
-console.log(`Meta Key: ${META_API_KEY ? 'SET ('+META_API_KEY.slice(0,8)+'...)' : 'MISSING!'}`);
-console.log(`GitHub PAT: ${GITHUB_PAT ? 'SET ('+GITHUB_PAT.slice(0,12)+'...)' : 'MISSING!'}`);
-console.log(`Port: ${PORT}`);
-
-if (!META_API_KEY) {
-  console.error('❌ META_API_KEY fehlt in .env');
-  process.exit(1);
+function printBanner() {
+  console.log('[MUSE SPARK BRIDGE V2] 🟢 Starting REAL Server...');
+  console.log(`Repo: ${GITHUB_REPO}`);
+  console.log(`Meta Key: ${META_API_KEY ? 'SET' : 'MISSING!'}`);
+  console.log(`GitHub PAT: ${GITHUB_PAT ? 'SET' : 'MISSING!'}`);
+  console.log(`Bridge Token: ${BRIDGE_TOKEN ? 'SET (/api/* requires Bearer)' : 'MISSING (/api/* open to local processes! Set NOVA_BRIDGE_TOKEN)'}`);
+  console.log(`Port: ${PORT}`);
 }
 
 async function fetchGitHubContent(filePath) {
@@ -40,14 +40,51 @@ async function fetchGitHubContent(filePath) {
   return data; // dir listing
 }
 
+// P0/S2: containment root = repo dir (canonicalized, symlink-safe).
+function canonicalRoot() {
+  try { return fs.realpathSync(process.cwd()); } catch { return path.resolve(process.cwd()); }
+}
+const PROJECT_ROOT = canonicalRoot();
+
+function isSensitiveName(name) {
+  const base = path.basename(String(name)).toLowerCase();
+  return base === '.env' || base.startsWith('.env.') || base === 'token.json'
+    || base.endsWith('.pem') || base.endsWith('.key');
+}
+
+function isInsideRoot(resolved) {
+  return resolved === PROJECT_ROOT || resolved.startsWith(PROJECT_ROOT + path.sep);
+}
+
+// P0/S2: throws Error('Forbidden: ...') for escape/sensitive, Error('File not found: ...') sonst.
+function resolveLocalPath(filePath) {
+  if (typeof filePath !== 'string' || !filePath.trim()) throw new Error('Missing ?path=');
+  if (isSensitiveName(filePath)) throw new Error('Forbidden: sensitive file');
+  const full = path.resolve(PROJECT_ROOT, filePath);
+  if (!isInsideRoot(full)) throw new Error('Forbidden: outside project root');
+  if (!fs.existsSync(full)) throw new Error(`File not found: ${filePath}`);
+  const real = fs.realpathSync(full);
+  if (!isInsideRoot(real)) throw new Error('Forbidden: outside project root');
+  if (isSensitiveName(real)) throw new Error('Forbidden: sensitive file');
+  return real;
+}
+
 function readLocalFile(filePath) {
-  // Sicher: nur innerhalb NOVA-META-Edition + alte Nova V2 Ordner
-  const base = process.cwd();
-  const full = path.resolve(base, filePath);
-  // Erlaube auch Desktop parent scan
-  console.log(`[Local Reader] Reading ${filePath} -> ${full}`);
-  if (!fs.existsSync(full)) throw new Error(`File not found: ${full}`);
+  const full = resolveLocalPath(filePath);
+  console.log(`[Local Reader] Reading ${filePath}`);
   return fs.readFileSync(full, 'utf8');
+}
+
+// P0/S2: Bearer-Auth für /api/* (V3-Disziplin: constant-time Vergleich über SHA-256).
+// Ohne konfigurierten Token bleibt der Loopback-Dev-Betrieb offen (mit Warnung im Banner).
+function isAuthorized(req, token = BRIDGE_TOKEN) {
+  if (!token) return true;
+  const header = req?.headers?.authorization || '';
+  const [scheme, value] = header.split(' ');
+  if (!value || String(scheme).toLowerCase() !== 'bearer') return false;
+  const a = crypto.createHash('sha256').update(String(value)).digest();
+  const b = crypto.createHash('sha256').update(String(token)).digest();
+  return crypto.timingSafeEqual(a, b);
 }
 
 function listOldNovaFolders() {
@@ -91,6 +128,13 @@ const server = http.createServer(async (req, res) => {
   if (req.method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
 
   console.log(`[HTTP] ${req.method} ${url.pathname}${url.search}`);
+
+  // P0/S2: /api/* braucht Bearer-Token sobald NOVA_BRIDGE_TOKEN gesetzt ist.
+  if (url.pathname.startsWith('/api/') && !isAuthorized(req)) {
+    res.writeHead(401, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'Unauthorized' }));
+    return;
+  }
 
   try {
     // Root status
@@ -178,7 +222,10 @@ const server = http.createServer(async (req, res) => {
     res.end(JSON.stringify({ error: 'Not found', path: url.pathname }));
   } catch (e) {
     console.error('[HTTP Error]', e.message);
-    res.writeHead(500, { 'Content-Type': 'application/json' });
+    const status = e.message.startsWith('Forbidden') ? 403
+      : e.message.startsWith('File not found') ? 404
+      : e.message.startsWith('Missing') ? 400 : 500;
+    res.writeHead(status, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ error: e.message }));
   }
 });
@@ -216,7 +263,13 @@ async function testConnections() {
   console.log(`[Old Folders] Found ${old.length}:`, old.map(f => f.name).join(', '));
 }
 
-server.listen(PORT, '127.0.0.1', async () => {
+function start() {
+  printBanner();
+  if (!META_API_KEY) {
+    console.error('❌ META_API_KEY fehlt in .env');
+    process.exit(1);
+  }
+  server.listen(PORT, '127.0.0.1', async () => {
   console.log(`\\n[HTTP Server] 🟢 Listening on http://127.0.0.1:${PORT}`);
   console.log(`[HTTP Server] Tommy: http://127.0.0.1:${PORT}/tommy`);
   console.log(`[HTTP Server] Status: http://127.0.0.1:${PORT}/status`);
@@ -226,4 +279,9 @@ server.listen(PORT, '127.0.0.1', async () => {
   await testConnections();
   console.log('\\n[NOVA Worker V2] 🟢 ACTIVE - REAL Internet-Brücke für Meta AI - Mit HTTP Server!');
   console.log('Lass Fenster offen!');
-});
+  });
+}
+
+if (require.main === module) start();
+
+module.exports = { server, start, readLocalFile, resolveLocalPath, isAuthorized, listOldNovaFolders, PROJECT_ROOT };

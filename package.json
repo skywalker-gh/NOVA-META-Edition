@@ -7,7 +7,8 @@
     "dev": "node muse-spark-bridge.js",
     "start": "node muse-spark-bridge.js",
     "bridge": "node muse-spark-bridge.js",
-    "tommy": "node muse-spark-bridge.js"
+    "tommy": "node muse-spark-bridge.js",
+    "test": "node --test test/*.test.mjs"
   },
   "dependencies": {
     "dotenv": "^18.0.9"

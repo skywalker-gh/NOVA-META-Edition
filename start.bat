@@ -13,12 +13,11 @@ if not exist .env (
 echo [1/2] Starte Muse Spark Bridge (Internet für Meta AI)...
 start cmd /k "node muse-spark-bridge.js"
 
-echo [2/2] Starte Dashboard...
+echo [2/2] Oeffne Tommy Portal im Browser...
 timeout /t 2
-start cmd /k "npm run dev"
+start http://127.0.0.1:8000/tommy
 
 echo.
-echo Beide Fenster offen lassen!
-echo - Bridge Fenster = Internet für Meta AI
-echo - Dev Fenster = Tommy Portal auf http://127.0.0.1:8000
+echo Bridge Fenster offen lassen!
+echo - Bridge Fenster = Internet für Meta AI + Tommy Portal auf http://127.0.0.1:8000/tommy
 pause

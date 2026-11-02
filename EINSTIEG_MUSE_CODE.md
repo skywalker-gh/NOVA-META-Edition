@@ -336,7 +336,7 @@ vertretbar, aber dokumentieren).
 - **STRATEGY_MODEL_CONTINUITY.md** (26.10.): Gemini-zentrisch (Pro→Flash-Fallback,
   Sub-Agenten-Delegation, autonome Modellwahl). Gilt laut Datei für alle NOVA-META-Ops –
   sollte auf Meta-Modelle aktualisiert werden (`HYPOTHESE`: veraltet, aber nicht widerrufen).
-- **Tommy:** Stiefsohn, Co-Entwickler, „Human Authority"-Partner per Browser-Link (s. 3.3).
+- **Tommy:** Co-Entwickler, „Human Authority"-Partner per Browser-Link (s. 3.3).
 - **E-Mail-Adresse** `guerkanguergm@gmail.com` steht in mehreren Prompts + `index.html`
   (Entwurfs-Funktion). `DOKUMENTIERT`, kein Leak (vom Autor selbst so vorgesehen).
 
@@ -347,8 +347,8 @@ vertretbar, aber dokumentieren).
   Yggdrasil-IPv6 binden, JSON-Payloads für alle CLIs, Peer-Registry mit Auto-Rerouting.
   Reine Pre-Code-Vision (`DOKUMENTIERT`, nichts implementiert).
 - **Node-Grid** (aus `user-profile.md`, `DOKUMENTIERT`): Main-PC (Zentrale), Xiaomi 14
-  (Termux-Agent), Lenovo-Laptop (Legacy-Worker), Xiaomi Note 10 des Vaters (Telemetry,
-  Gedenken). Termux-Orchestrator-Idee auch im Mesh-Doc.
+  (Termux-Agent), Lenovo-Laptop (Legacy-Worker), Xiaomi Note 10 (Telemetry/Reserve).
+  Termux-Orchestrator-Idee auch im Mesh-Doc.
 - **accentless_speaking** (nur V2, 15 Dateien, `VERIFIZIERT` gelesen): Flutter-App
   (Android, RP-Aussprache-Coach), G2G-Kollab-Protokoll (Cloud-/PC-Gemini), Stand 14.10.:
   Scaffolding. `OfflineRPEngine` ist ein **simulierter Prototyp** (erkennt nichts, scored
@@ -384,11 +384,11 @@ Schwere: 🔴 hoch · 🟡 mittel · 🟢 niedrig · 🔵 funktional/Hygiene.
 - **S3 🟡 API-Keys in Browser-localStorage.** `index.html` speichert 6 Provider-Keys in
   `nova_keys_v6` und ruft APIs direkt aus dem Browser auf. XSS oder geteiltes Profil =
   alle Keys weg. **Fix:** Calls serverseitig über Bridge mit serverseitigen Keys.
-- **S4 🔴 Persönliche Daten im Repo.** `context/ecosystem-memory/user-profile.md` enthält
-  sensible Biografie (Verluste, Trennung, Wohnsituation, Mutter in Notaufnahme). Tommy-Log
-  behauptet Repo = **öffentlich** (`DOKUMENTIERT`, von mir nicht verifiziert – keine
-  Netzprüfung). **Bitte sofort:** Repo-Sichtbarkeit prüfen; Profil entschärfen oder aus Git
-  nehmen (History beachten: steht seit Commit drin).
+- **S4 🔴 Persönliche Daten im Repo.** `context/ecosystem-memory/user-profile.md` enthielt
+  sensible private Biografie-Details (**P0: entschärft am 02.11.2026**, alte Stände nur noch
+  in Git-Historie – Purge nur mit ausdrücklicher Freigabe). Repo-Sichtbarkeit **VERIFIZIERT
+  öffentlich** (`private:false`, GitHub-API 02.11.2026) – bei öffentlichem Repo keine privaten
+  Details einchecken.
 - **S5 🟢 `.env`-Duplikate.** V2-Secrets liegen zusätzlich als Kopien in `context/`
   (4 Connector-`.env`s + gemini-`.env` nur dort). Mehr Kopien = mehr Risiko. **Fix:** eine
   Quelle, Rest löschen.

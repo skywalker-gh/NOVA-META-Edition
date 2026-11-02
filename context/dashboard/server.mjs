@@ -1,8 +1,61 @@
 import http from 'node:http';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import crypto from 'node:crypto';
+import { pathToFileURL } from 'node:url';
 
-const PORT = 8080;
+// P0/S1: Loopback-only + optional Bearer-Token (V3-Disziplin: constant-time via SHA-256).
+const PORT = Number(process.env.NOVA_DASHBOARD_PORT) || 8080;
+const HOST = '127.0.0.1';
+const DASHBOARD_TOKEN = process.env.NOVA_DASHBOARD_TOKEN || '';
+
+function isAuthorized(req, token = DASHBOARD_TOKEN) {
+  if (!token) return true;
+  const header = req?.headers?.authorization || '';
+  const [scheme, value] = header.split(' ');
+  if (!value || String(scheme).toLowerCase() !== 'bearer') return false;
+  const a = crypto.createHash('sha256').update(String(value)).digest();
+  const b = crypto.createHash('sha256').update(String(token)).digest();
+  return crypto.timingSafeEqual(a, b);
+}
+
+function isInsideDir(resolved, dir) {
+  return resolved === dir || resolved.startsWith(dir + path.sep);
+}
+
+// P0/S1: URL-Pfad -> Datei; null = blockiert (Escape, Dotfile, Decode-Fehler).
+// rootDir = context/-Verzeichnis (Server laeuft mit cwd=context/).
+function resolveStaticPath(pathname, rootDir = process.cwd()) {
+  const root = path.resolve(rootDir);
+  let decoded;
+  try {
+    decoded = decodeURIComponent(pathname);
+  } catch {
+    return null;
+  }
+  if (!decoded.startsWith('/')) return null;
+  let base;
+  let rel;
+  if (decoded.startsWith('/nova-sounds/')) {
+    base = path.join(root, 'nova-sounds');
+    rel = decoded.slice('/nova-sounds/'.length);
+  } else if (decoded === '/logo.ico') {
+    base = root; rel = 'logo.ico';
+  } else if (decoded === '/logo.png') {
+    base = root; rel = 'logo.png';
+  } else if (decoded === '/convertico-icon.ico' || decoded === '/convertico-icon (3).ico') {
+    base = root; rel = 'convertico-icon (3).ico';
+  } else {
+    base = path.join(root, 'dashboard');
+    rel = decoded === '/' ? 'index.html' : decoded.replace(/^\/+/, '');
+  }
+  if (!rel) return null;
+  const target = path.resolve(base, rel);
+  if (!isInsideDir(target, base)) return null;
+  const name = path.basename(target).toLowerCase();
+  if (name === '.env' || name.startsWith('.env.') || name.startsWith('.')) return null;
+  return target;
+}
 
 // Load .env keys if available
 async function loadEnv(dir) {
@@ -89,6 +142,7 @@ const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
   
   if (url.pathname === '/api/memory' && req.method === 'GET') {
+    if (!isAuthorized(req)) { res.writeHead(401, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: 'Unauthorized' })); return; }
     const projectContext = await getProjectContext();
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ content: projectContext }));
@@ -96,6 +150,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (url.pathname === '/api/chat' && req.method === 'POST') {
+    if (!isAuthorized(req)) { res.writeHead(401, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: 'Unauthorized' })); return; }
     let body = '';
     for await (const chunk of req) body += chunk;
     try {
@@ -153,15 +208,12 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // Serve static files
-  let filePath = '';
-  if (url.pathname.startsWith('/nova-sounds/')) {
-    filePath = path.join('nova-sounds', url.pathname.replace('/nova-sounds/', ''));
-  } else {
-    filePath = path.join('dashboard', url.pathname === '/' ? 'index.html' : url.pathname);
-    if (url.pathname === '/logo.ico') filePath = 'logo.ico';
-    if (url.pathname === '/logo.png') filePath = 'logo.png';
-    if (url.pathname === '/convertico-icon.ico' || url.pathname === '/convertico-icon (3).ico') filePath = 'convertico-icon (3).ico';
+  // Serve static files (P0/S1: containment-guarded)
+  const filePath = resolveStaticPath(url.pathname);
+  if (!filePath) {
+    res.writeHead(403);
+    res.end('Forbidden');
+    return;
   }
 
   try {
@@ -176,8 +228,14 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-initEnvs().then(() => {
-  server.listen(PORT, '0.0.0.0', () => {
-    console.log(`Nova Agent-Bus Dashboard Server running at http://localhost:${PORT}`);
+const isMainModule = process.argv[1] && pathToFileURL(path.resolve(process.argv[1])).href === import.meta.url;
+if (isMainModule) {
+  initEnvs().then(() => {
+    server.listen(PORT, HOST, () => {
+      console.log(`Nova Agent-Bus Dashboard Server running at http://localhost:${PORT}`);
+      if (!DASHBOARD_TOKEN) console.log('WARN: NOVA_DASHBOARD_TOKEN not set - /api/* open to local processes!');
+    });
   });
-});
+}
+
+export { server, resolveStaticPath, isAuthorized, HOST, PORT };
