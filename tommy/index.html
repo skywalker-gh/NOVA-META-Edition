@@ -87,7 +87,7 @@
     <div class="card active">
       <h3><span class="dot green"></span> NOVA Worker</h3>
       <p><strong>Codex V3 - Internet Bridge</strong><br>Läuft auf Main Node 127.0.0.1:8000, HAT Internet. Pusht für Meta AI auf GitHub.</p>
-      <div class="meta">FILE: muse-spark-bridge.js<br>STATUS: 🟢 ACTIVE - 01.11.2026 14:30</div>
+      <div class="meta">FILE: muse-spark-bridge.js<br><span id="worker-status">STATUS: Lade Live-Status…</span><br>REPO: <span id="worker-repo">Wird geladen…</span><br>META: <span id="worker-meta">—</span> | GITHUB: <span id="worker-github">—</span></div>
     </div>
 
     <div class="card active">
@@ -115,6 +115,26 @@
   NOVA-META-Edition • Yggdrasil • Meta Global AI Hackathon 2026 • $1M Pool<br>
   Built with Disiplin • Söllingen -> Silicon Valley • Tommy Portal v1 - 01.11.2026
 </div>
+
+<script>
+fetch('/status')
+  .then(response => {
+    if (!response.ok) throw new Error('Status nicht erreichbar');
+    return response.json();
+  })
+  .then(status => {
+    document.getElementById('worker-status').textContent = `STATUS: ${status.status || 'Unbekannt'}`;
+    document.getElementById('worker-repo').textContent = status.repo || 'Nicht verfügbar';
+    document.getElementById('worker-meta').textContent = `Meta ${status.metaConnected ? 'verbunden' : 'nicht verbunden'}`;
+    document.getElementById('worker-github').textContent = `${status.githubConnected ? 'verbunden' : 'nicht verbunden'}`;
+  })
+  .catch(() => {
+    document.getElementById('worker-status').textContent = 'STATUS: Live-Status nicht erreichbar';
+    document.getElementById('worker-repo').textContent = 'Nicht verfügbar';
+    document.getElementById('worker-meta').textContent = 'Meta unbekannt';
+    document.getElementById('worker-github').textContent = 'unbekannt';
+  });
+</script>
 
 </body>
 </html>
