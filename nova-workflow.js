@@ -169,13 +169,13 @@ function createWorkflow(opts) {
       out.push({
         id, label: AGENTS[id].label, role: AGENTS[id].role,
         status: r.ok ? 'ready' : 'unavailable', version: r.version,
-        detail: r.ok ? 'CLI startet (Auth zeigt erster Task)' : r.error,
+        detail: r.ok ? 'CLI starts (auth proven by first task)' : r.error,
         lastCheck: now(),
       });
     }
     out.push({
       id: 'muse', label: AGENTS.muse.label, role: 'session', status: 'session',
-      version: 'chat', detail: 'Interactive Session – holt Tasks aus Queue ab', lastCheck: now(),
+      version: 'chat', detail: 'Interactive session — picks up tasks from queue', lastCheck: now(),
     });
     agentsCache = { at: Date.now(), data: out };
     return out;
@@ -204,10 +204,15 @@ function createWorkflow(opts) {
     const role = step.agent === 'codex'
       ? 'writer: implement the minimal change that fulfills YOUR STEP'
       : 'reviewer: READ-ONLY – inspect and report, do not modify any files';
+    const prior = t.steps
+      .filter((s) => s.n < step.n && s.status === 'completed' && s.output)
+      .map((s) => `[Schritt ${s.n}/${s.agent}]:\n${String(s.output).slice(-3000)}`)
+      .join('\n\n');
     return [
       `NOVA-META-Edition task ${t.id}, step ${step.n}/${t.steps.length}. You are ${step.agent}, ${role}.`,
       `Worktree: ${t.worktree} (branch ${t.branch}, base ${t.baseCommit}). Stay inside it.`,
       `GOAL: ${t.goal}`,
+      ...(prior ? [`VORHERIGE SCHRITTE (Kontext, beachte sie):\n${prior}`] : []),
       `YOUR STEP: ${step.instruction}`,
       'Rules: no commit/push/merge; do not read .env files or secrets; end with a short summary + files touched.',
     ].join('\n');
@@ -268,7 +273,10 @@ function createWorkflow(opts) {
           return;
         }
         step.status = 'running'; step.startedAt = now(); t.status = 'running'; saveTask(t);
-        const r = await spawnCli(step.agent, buildPrompt(t, step), t.worktree, defaultTimeoutMs);
+        const prompt = buildPrompt(t, step);
+        step.prompt = trunc(prompt, 4000);
+        saveTask(t);
+        const r = await spawnCli(step.agent, prompt, t.worktree, defaultTimeoutMs);
         step.endedAt = now(); step.exitCode = r.exitCode; step.timedOut = r.timedOut;
         step.durationMs = r.durationMs; step.error = r.error;
         step.output = trunc(`--- stdout ---\n${r.stdout}\n--- stderr ---\n${r.stderr}`, MAX.output);
@@ -356,6 +364,40 @@ function createWorkflow(opts) {
     return { task: loadTask(t.id) };
   }
 
+  // ---------- key validation (transient: key never stored, never logged) ----------
+  const VALIDATE_URLS = {
+    meta: process.env.NOVA_URL_META || 'https://api.meta.ai/v1/models',
+    openai: process.env.NOVA_URL_OPENAI || 'https://api.openai.com/v1/models',
+    codex: process.env.NOVA_URL_CODEX || 'https://api.openai.com/v1/models',
+    grok: process.env.NOVA_URL_GROK || 'https://api.x.ai/v1/models',
+    claude: process.env.NOVA_URL_CLAUDE || 'https://api.anthropic.com/v1/models',
+    gemini: process.env.NOVA_URL_GEMINI || 'https://generativelanguage.googleapis.com/v1beta/models',
+  };
+
+  async function validateKey(provider, key) {
+    if (!VALIDATE_URLS[provider]) return { error: 'unknown provider', code: 400 };
+    if (typeof key !== 'string' || key.length < 4 || key.length > 500) return { error: 'key required', code: 400 };
+    const started = Date.now();
+    try {
+      let url = VALIDATE_URLS[provider];
+      const headers = {};
+      if (provider === 'gemini') url += (url.includes('?') ? '&' : '?') + 'key=' + encodeURIComponent(key);
+      else if (provider === 'claude') { headers['x-api-key'] = key; headers['anthropic-version'] = '2023-06-01'; }
+      else headers.authorization = 'Bearer ' + key;
+      const ctrl = new AbortController();
+      const to = setTimeout(() => ctrl.abort(), 20000);
+      let res;
+      try { res = await fetch(url, { headers, signal: ctrl.signal }); }
+      finally { clearTimeout(to); }
+      return {
+        ok: res.ok, status: res.status, latencyMs: Date.now() - started,
+        detail: res.ok ? 'valid' : ('HTTP ' + res.status),
+      };
+    } catch (e) {
+      return { ok: false, status: null, latencyMs: Date.now() - started, detail: 'unreachable: ' + String((e && e.message) || e).slice(0, 120) };
+    }
+  }
+
   // ---------- approvals ----------
   function decideApproval(body) {
     const { id, decision, by } = body || {};
@@ -389,7 +431,7 @@ function createWorkflow(opts) {
 
   return {
     AGENTS, getAgents, createTask, loadTask, listTasks, startTask, cancelTask,
-    submitStepResult, loadApprovals, decideApproval, cleanupTask, validateTaskInput,
+    submitStepResult, loadApprovals, decideApproval, cleanupTask, validateTaskInput, validateKey,
   };
 }
 

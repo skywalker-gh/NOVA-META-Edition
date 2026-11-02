@@ -100,6 +100,7 @@ test('WF: full mock lifecycle codex->gemini ends in approval + approved', async 
   assert.match(done.steps[1].output, /mock-ok:gemini/);
   assert.ok(done.checkResult && done.checkResult.exitCode === 0);
   assert.ok(done.approvalId);
+  assert.match(done.steps[1].prompt || '', /mock-ok:codex/, 'step output flows into next prompt');
 
   const ap = await api('GET', '/api/approvals?status=pending');
   assert.equal(ap.status, 200);
@@ -167,4 +168,18 @@ test('WF: cancel and agents handshake', async () => {
     assert.ok(a.id && a.label && a.status && a.lastCheck);
   }
   assert.ok(g.json.some((a) => a.id === 'muse' && a.status === 'session'));
+});
+
+test('WF: /grafik serves banner, blocks escape and non-images', async () => {
+  const img = await fetch(BASE + '/grafik/NOVA_Ygdrassil_Banner.jpg', { headers: { authorization: `Bearer ${TOKEN}` } });
+  assert.equal(img.status, 200);
+  assert.equal(img.headers.get('content-type'), 'image/jpeg');
+  assert.ok((await img.arrayBuffer()).byteLength > 10000);
+  // URL parser normalizes ../ away (route miss); deeper containment is unit-tested in p0.
+  const esc = await fetch(BASE + '/grafik/../../package.json', { headers: { authorization: `Bearer ${TOKEN}` } });
+  assert.equal(esc.status, 404);
+  const miss = await fetch(BASE + '/grafik/nope.png', { headers: { authorization: `Bearer ${TOKEN}` } });
+  assert.equal(miss.status, 404);
+  const txt = await fetch(BASE + '/grafik/x.txt', { headers: { authorization: `Bearer ${TOKEN}` } });
+  assert.equal(txt.status, 404);
 });

@@ -98,14 +98,14 @@
   </div>
 
   <div class="commander" style="text-align:left">
-    <h2 style="text-align:center">🗳️ FREIGABEN – HUMAN AUTHORITY</h2>
-    <p style="text-align:center">Echte Queue aus der Bridge – kein Demo-Modus.</p>
+    <h2 style="text-align:center">🗳️ APPROVALS – HUMAN AUTHORITY</h2>
+    <p style="text-align:center">Live queue from the bridge — no demo mode.</p>
     <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;align-items:center;justify-content:center">
-      <input id="tpToken" type="password" placeholder="Bridge-Token (nur Session)" style="background:#000;border:1px solid #333;color:#e0e0e0;border-radius:8px;padding:10px;font-family:'JetBrains Mono',monospace;min-width:240px">
+      <input id="tpToken" type="password" placeholder="Bridge token (session only)" style="background:#000;border:1px solid #333;color:#e0e0e0;border-radius:8px;padding:10px;font-family:'JetBrains Mono',monospace;min-width:240px">
       <input id="tpBy" value="Tommy" style="background:#000;border:1px solid #333;color:#e0e0e0;border-radius:8px;padding:10px;font-family:'JetBrains Mono',monospace;max-width:140px">
-      <button id="tpLoad" style="background:#00ff88;color:#000;border:none;border-radius:8px;padding:10px 18px;font-weight:700;cursor:pointer;font-family:'JetBrains Mono',monospace">↻ LADEN</button>
+      <button id="tpLoad" style="background:#00ff88;color:#000;border:none;border-radius:8px;padding:10px 18px;font-weight:700;cursor:pointer;font-family:'JetBrains Mono',monospace">↻ LOAD</button>
     </div>
-    <div id="tpLive" style="margin-top:12px;font-size:0.8rem;color:#888;font-family:'JetBrains Mono',monospace;text-align:center">Live-Status: lädt …</div>
+    <div id="tpLive" style="margin-top:12px;font-size:0.8rem;color:#888;font-family:'JetBrains Mono',monospace;text-align:center">Live status: loading …</div>
     <div id="tpList" style="margin-top:14px"></div>
   </div>
 
@@ -138,33 +138,33 @@
     try {
       const r = await fetch('/status');
       const s = await r.json();
-      box.textContent = 'Live: ' + s.repo + ' • Meta:' + (s.metaConnected ? 'JA' : 'NEIN') + ' • GitHub:' + (s.githubConnected ? 'JA' : 'NEIN') + ' • ' + new Date().toLocaleTimeString();
-    } catch (e) { box.textContent = 'Live-Status: Bridge antwortet nicht.'; }
+      box.textContent = 'Live: ' + s.repo + ' • Meta:' + (s.metaConnected ? 'YES' : 'NO') + ' • GitHub:' + (s.githubConnected ? 'YES' : 'NO') + ' • ' + new Date().toLocaleTimeString();
+    } catch (e) { box.textContent = 'Live status: bridge not responding.'; }
   }
   async function load() {
     const box = document.getElementById('tpList'); box.innerHTML = '';
     try {
       const r = await fetch('/api/approvals?status=pending', { headers: headers() });
-      if (r.status === 401) { box.appendChild(t('p', '⛔ Token fehlt/falsch.')); return; }
+      if (r.status === 401) { box.appendChild(t('p', '⛔ Token missing/wrong.')); return; }
       const list = await r.json();
-      if (!list.length) { const p = t('p', 'Keine offenen Freigaben. ✅'); p.style.color = '#888'; box.appendChild(p); return; }
+      if (!list.length) { const p = t('p', 'No pending approvals. ✅'); p.style.color = '#888'; box.appendChild(p); return; }
       list.forEach((a) => {
         const card = document.createElement('div');
         card.style.cssText = 'background:#000;border:1px solid #00ff8855;border-radius:8px;padding:14px;margin-top:10px';
-        const h = t('h3', 'Freigabe ' + a.id + ' • Task ' + a.taskId);
+        const h = t('h3', 'Approval ' + a.id + ' • Task ' + a.taskId);
         h.style.cssText = "font-family:'JetBrains Mono',monospace;color:#00ff88;font-size:1rem";
         const g = t('p', a.goal); g.style.cssText = 'color:#e0e0e0;margin-top:6px;font-size:0.9rem';
         const pre = t('pre', (a.summary || '') + '\n\nDIFFSTAT:\n' + (a.diffStat || '—'));
         pre.style.cssText = "white-space:pre-wrap;color:#0f0;background:#050505;border:1px solid #222;border-radius:6px;padding:10px;margin-top:8px;font-size:0.75rem;max-height:180px;overflow:auto;font-family:'JetBrains Mono',monospace";
         card.appendChild(h); card.appendChild(g); card.appendChild(pre);
         const row = document.createElement('div'); row.style.cssText = 'display:flex;gap:10px;margin-top:10px';
-        [['yes', '✅ JA', '#00ff88'], ['no', '❌ NEIN', '#ff5555'], ['info', '❓ MEHR INFOS', '#5555ff']].forEach((d) => {
+        [['yes', '✅ YES', '#00ff88'], ['no', '❌ NO', '#ff5555'], ['info', '❓ MORE INFO', '#5555ff']].forEach((d) => {
           const b = t('button', d[1]);
           b.style.cssText = "background:" + d[2] + ";color:#000;border:none;border-radius:8px;padding:10px 16px;font-weight:700;cursor:pointer;font-family:'JetBrains Mono',monospace";
           b.onclick = async () => {
             const by = (document.getElementById('tpBy').value || 'Tommy').trim() || 'Tommy';
             const rr = await fetch('/api/approvals/decide', { method: 'POST', headers: headers(), body: JSON.stringify({ id: a.id, decision: d[0], by }) });
-            if (!rr.ok) alert('Fehler: HTTP ' + rr.status);
+            if (!rr.ok) alert('Error: HTTP ' + rr.status);
             load();
           };
           row.appendChild(b);
@@ -172,7 +172,7 @@
         card.appendChild(row);
         box.appendChild(card);
       });
-    } catch (e) { box.appendChild(t('p', 'Queue lädt nicht: ' + e.message)); }
+    } catch (e) { box.appendChild(t('p', 'Queue unavailable: ' + e.message)); }
   }
   document.getElementById('tpLoad').onclick = () => { live(); load(); };
   live(); load();

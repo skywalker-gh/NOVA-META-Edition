@@ -63,6 +63,10 @@ body{font-family:Verdana, Geneva, sans-serif;background:#0a0a0a;color:#fff;line-
 .btn-orange:hover{box-shadow:0 0 15px rgba(245,158,11,0.6), 0 0 30px rgba(250,204,21,0.4) !important;}
 .btn-send:hover{box-shadow:0 0 15px rgba(0,100,224,0.6), 0 0 30px rgba(168,85,247,0.5) !important;}
 .btn-lila:hover{box-shadow:0 0 15px rgba(168,85,247,0.7), 0 0 30px rgba(236,72,153,0.5) !important;}
+.btn-neon{background:#a3e635;color:#000;border:none;padding:0 20px;border-radius:12px;font-weight:800;font-size:13px;height:38px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.btn-neon:hover{box-shadow:0 0 15px rgba(163,230,53,0.7) !important;transform:translateY(-2px)}
+.blink{animation:wfblink 1.2s infinite}
+@keyframes wfblink{0%,100%{opacity:1}50%{opacity:0.35}}
 
 </style>
 </head>
@@ -91,13 +95,13 @@ body{font-family:Verdana, Geneva, sans-serif;background:#0a0a0a;color:#fff;line-
 <textarea id="input" class="textarea" placeholder="Schreib hier..."></textarea>
 </div>
 <div style="margin-top:10px;display:flex;gap:10px;align-items:center;width:100%;flex-wrap:nowrap">
+<button class="btn-orange" onclick="clearChat()">↺ Reset</button>
 <button class="btn-plus" onclick="document.getElementById('fileInput').click()" title="Files, Bilder, Videos, Links, Projektordner"><span class="btn-plus-white">+</span></button>
 <input type="file" id="fileInput" style="display:none" multiple onchange="handleFiles(this.files)">
 <button class="btn-dark" onclick="quickInsert('Test Email an guerkanguergm@gmail.com')">📧 Test Email</button>
 <button class="btn-dark" onclick="quickInsert('Was geht aaaaab!? 👻')">Was geht aaaaab!? 👻</button>
 <button class="btn-dark" onclick="quickInsert('Let´s start a context building process for better understanding and reasoning 💻')">Let´s start a context building process 💻</button>
 <div style="display:flex;gap:10px;margin-left:auto">
-<button class="btn-orange" onclick="clearChat()">↺ Reset</button>
 <button class="btn-send" onclick="sendMessage()">▶ Senden</button>
 </div>
 </div>
@@ -127,7 +131,7 @@ body{font-family:Verdana, Geneva, sans-serif;background:#0a0a0a;color:#fff;line-
 <span id="keyStatus" class="small" style="flex:1"></span>
 <div style="display:flex;gap:10px;margin-left:auto">
 <button class="btn-orange" onclick="testAll()">⊸ 🔑 Alle Keys testen</button>
-<button class="btn-send" onclick="saveKeys()">💾 Speichern</button>
+<button class="btn-send" onclick="saveKeys();validateKeys()">💾 Speichern</button>
 </div>
 </div>
 </div>
@@ -148,27 +152,35 @@ body{font-family:Verdana, Geneva, sans-serif;background:#0a0a0a;color:#fff;line-
 
 <div class="card">
 <h3 class="header-lila" style="font-size:28px">NOVA <span style='font-weight:400;font-size:20px'>//</span> Workflow Manager ⛓️</h3>
-<p style="font-size:13px;margin-top:6px;color:#9ca3af">Lineare Task-Kette: Orchestratoren arbeiten Schritt für Schritt, das Ende landet bei Human Authority.</p>
-<div style="display:grid;grid-template-columns:1fr 1fr auto;gap:10px;margin-top:12px;align-items:end">
-<div><div class="small">Bridge</div><input id="wfBridge" class="input" value="http://127.0.0.1:8000"></div>
-<div><div class="small">Bridge-Token (nur Session, wird NICHT gespeichert)</div><input id="wfToken" class="input" type="password" placeholder="NOVA_BRIDGE_TOKEN"></div>
-<div><button class="btn-dark" onclick="wfRefresh()">↻ Verbinden</button></div>
+<p style="font-size:13px;margin-top:6px;color:#9ca3af">Linear task chain: orchestrators work step by step — the end lands at Human Authority.</p>
+<div style="margin-top:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+<span id="wfBlinker" class="tech-light light-gray" title="connection"></span>
+<button class="btn-neon" onclick="wfRefresh()">▶ Connect</button>
+<details style="margin-left:8px"><summary class="small" style="cursor:pointer">Advanced</summary>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px">
+<div><div class="small">Bridge URL</div><input id="wfBridge" class="input" value="http://127.0.0.1:8000"></div>
+<div><div class="small">Bridge token (session only, never stored)</div><input id="wfToken" class="input" type="password" placeholder="NOVA_BRIDGE_TOKEN (only if set in .env)"></div>
+</div></details>
 </div>
-<div id="wfConn" class="small" style="margin-top:8px">Nicht verbunden.</div>
-<h4 class="header-lila" style="margin-top:16px;font-size:18px">Orchestratoren</h4>
-<div id="wfAgents" class="tech-grid" style="margin-top:8px"></div>
-<h4 class="header-lila" style="margin-top:16px;font-size:18px">Neue Kette</h4>
-<textarea id="wfGoal" class="textarea" style="margin-top:8px;min-height:60px" placeholder="Ziel der Kette, z.B. Tommy-Portal zeigt Live-Status aus /status"></textarea>
+<div id="wfConn" class="small" style="margin-top:8px">Not connected.</div>
+<h4 class="header-lila" style="margin-top:16px;font-size:18px">Garage — click a card to add a step</h4>
+<div id="wfGarage" class="tech-grid" style="margin-top:8px"></div>
+<div id="wfGarageNote" class="small" style="margin-top:6px"></div>
+<h4 class="header-lila" style="margin-top:16px;font-size:18px">New chain</h4>
+<textarea id="wfGoal" class="textarea" style="margin-top:8px;min-height:60px" placeholder="Chain goal, e.g. Tommy portal shows live status from /status"></textarea>
 <div id="wfSteps" style="margin-top:8px"></div>
 <div style="margin-top:8px;display:flex;gap:10px;flex-wrap:wrap">
-<button class="btn-dark" onclick="wfAddStep()">+ Schritt (max 5)</button>
-<button class="btn-dark" onclick="wfDemo()">✨ Demo laden</button>
-<input id="wfCheck" class="input" style="max-width:260px" placeholder="optional Check: npm test">
-<button class="btn-send" onclick="wfStart()">▶ Kette starten</button>
-<button class="btn-orange" onclick="wfCancel()">⏹ Abbrechen</button>
+<button class="btn-dark" onclick="wfAddStep()">+ Step (max 5)</button>
+<button class="btn-dark" onclick="wfDemo()">✨ Example</button>
+<input id="wfCheck" class="input" style="max-width:300px" placeholder="Optional: check command, e.g. npm test" title="Optional: check command, e.g. npm test">
+<div style="display:flex;gap:10px;margin-left:auto">
+<button class="btn-orange" onclick="wfCancel()">⏹ Abort</button>
+<button class="btn-send" onclick="wfStart()">▶ Start</button>
 </div>
-<h4 class="header-lila" style="margin-top:16px;font-size:18px">Lauf</h4>
-<div id="wfRun" class="small" style="margin-top:8px">Noch kein Task gestartet.</div>
+</div>
+<h4 class="header-lila" style="margin-top:16px;font-size:18px">Run</h4>
+<div id="wfFlow" style="margin-top:8px"></div>
+<div id="wfRun" class="small" style="margin-top:8px">No task started yet.</div>
 <div id="wfTaskList" style="margin-top:8px"></div>
 </div>
 
@@ -177,8 +189,8 @@ body{font-family:Verdana, Geneva, sans-serif;background:#0a0a0a;color:#fff;line-
 <p style="font-size:13px;margin-top:6px;color:#9ca3af">Tommy - External Human Authority Node</p>
 <div style="margin-top:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
 <input id="apBy" class="input" style="max-width:200px" value="Gürkan">
-<button class="btn-dark" onclick="apRefresh()">↻ Queue laden</button>
-<span class="small">Entscheidungen wirken sofort (JA = fertig, NEIN = abgelehnt, INFO = Rückfrage).</span>
+<button class="btn-dark" onclick="apRefresh()">↻ Reload queue</button>
+<span class="small">Decisions apply instantly (YES = done, NO = rejected, INFO = question back).</span>
 </div>
 <div id="apList" style="margin-top:10px"></div>
 
@@ -247,6 +259,7 @@ let wfPollTimer = null;
 function wfBase() { return (document.getElementById('wfBridge').value || '').replace(/\/+$/, ''); }
 function wfHeaders() { const h = { 'Content-Type': 'application/json' }; if (wfTokenMem) h['Authorization'] = 'Bearer ' + wfTokenMem; return h; }
 function wfSetConn(t) { document.getElementById('wfConn').textContent = t; }
+function wfSetBlinker(on) { document.getElementById('wfBlinker').className = 'tech-light ' + (on ? 'light-green blink' : 'light-gray'); }
 function wfel(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined && text !== null) e.textContent = text; return e; }
 function wfLight(status) {
   if (status === 'ready' || status === 'completed' || status === 'approved') return 'light-green';
@@ -256,26 +269,45 @@ function wfLight(status) {
 
 async function wfRefresh() {
   wfTokenMem = document.getElementById('wfToken').value;
-  wfSetConn('Verbinde …');
+  wfSetConn('Connecting …');
   try {
     const r = await fetch(wfBase() + '/api/agents', { headers: wfHeaders() });
-    if (r.status === 401) { wfSetConn('⛔ 401: Bridge-Token fehlt/falsch.'); return; }
+    if (r.status === 401) { wfSetConn('⛔ 401: wrong or missing bridge token (Advanced).'); wfSetBlinker(false); return; }
     if (!r.ok) throw new Error('HTTP ' + r.status);
     const agents = await r.json();
-    const box = document.getElementById('wfAgents'); box.innerHTML = '';
+    const box = document.getElementById('wfGarage'); box.innerHTML = '';
     agents.forEach((a) => {
       const div = wfel('div', 'tech-row');
+      div.style.cursor = 'pointer';
+      div.title = 'Add ' + a.id + ' step';
+      div.onclick = () => wfAddStep(a.id === 'muse' ? 'muse' : a.id);
       const left = wfel('div');
       left.appendChild(wfel('div', 'tech-name', a.label));
       left.appendChild(wfel('div', 'small', (a.version ? a.version + ' • ' : '') + (a.detail || '') + ' • ' + new Date(a.lastCheck).toLocaleTimeString()));
       div.appendChild(left);
-      const st = a.status === 'ready' ? 'ready' : (a.status === 'unavailable' ? 'unavailable' : 'other');
-      div.appendChild(wfel('span', 'tech-light ' + wfLight(st)));
+      const live = a.status === 'ready';
+      const cls = live ? 'light-green blink' : (a.status === 'unavailable' ? 'light-red' : 'light-gray');
+      div.appendChild(wfel('span', 'tech-light ' + cls));
       box.appendChild(div);
     });
-    wfSetConn('Verbunden: ' + agents.length + ' Orchestratoren • ' + new Date().toLocaleTimeString());
+    const providers = [['Meta', 'metaKey'], ['OpenAI', 'openaiKey'], ['Grok', 'grokKey'], ['Claude', 'claudeKey'], ['Gemini', 'geminiKey']];
+    providers.forEach(([name, keyId]) => {
+      const div = wfel('div', 'tech-row');
+      div.style.opacity = '0.55';
+      div.title = 'Provider modules need an adapter (soon)';
+      div.onclick = () => { document.getElementById('wfGarageNote').textContent = name + ': provider module — adapter coming soon. The 3 orchestrators above are live.'; };
+      const left = wfel('div');
+      left.appendChild(wfel('div', 'tech-name', name));
+      const v = keyValidity[keyId];
+      left.appendChild(wfel('div', 'small', 'adapter soon • key: ' + (v === true ? 'valid' : v === false ? 'invalid' : 'unknown')));
+      div.appendChild(left);
+      div.appendChild(wfel('span', 'tech-light ' + (v === true ? 'light-green' : v === false ? 'light-red' : 'light-gray')));
+      box.appendChild(div);
+    });
+    wfSetConn('Connected: ' + agents.length + ' orchestrators • ' + new Date().toLocaleTimeString());
+    wfSetBlinker(true);
     wfLoadTasks(); apRefresh();
-  } catch (e) { wfSetConn('⛔ Bridge nicht erreichbar (' + e.message + '). Läuft start.bat?'); }
+  } catch (e) { wfSetConn('⛔ Bridge unreachable (' + e.message + '). Is start.bat running?'); wfSetBlinker(false); }
 }
 
 let wfSteps = [];
@@ -287,22 +319,29 @@ function wfAddStep(agent, instruction) {
 function wfRenderSteps() {
   const box = document.getElementById('wfSteps'); box.innerHTML = '';
   wfSteps.forEach((s, i) => {
-    const row = wfel('div'); row.style.cssText = 'display:grid;grid-template-columns:150px 1fr auto;gap:8px;margin-top:6px;align-items:center';
+    const row = wfel('div'); row.style.cssText = 'display:grid;grid-template-columns:44px 150px 1fr auto;gap:8px;margin-top:6px;align-items:center';
+    row.appendChild(wfel('div', 'tech-name', '#' + (i + 1)));
     const sel = wfel('select', 'input');
     ['codex', 'gemini', 'muse'].forEach((a) => { const o = document.createElement('option'); o.value = a; o.textContent = a; if (s.agent === a) o.selected = true; sel.appendChild(o); });
     sel.onchange = () => { s.agent = sel.value; };
-    const inp = wfel('input', 'input'); inp.placeholder = 'Anweisung für Schritt ' + (i + 1); inp.value = s.instruction; inp.oninput = () => { s.instruction = inp.value; };
+    const det = document.createElement('details');
+    const sum = wfel('summary', 'small', s.instruction ? ('Instructions: ' + s.instruction.slice(0, 70)) : 'Instructions (click to edit)');
+    sum.style.cursor = 'pointer';
+    const inp = wfel('input', 'input'); inp.placeholder = 'Instructions for step ' + (i + 1); inp.value = s.instruction;
+    inp.style.marginTop = '6px';
+    inp.oninput = () => { s.instruction = inp.value; };
+    det.appendChild(sum); det.appendChild(inp);
     const del = wfel('button', 'btn-dark', '✕'); del.onclick = () => { wfSteps.splice(i, 1); wfRenderSteps(); };
-    row.appendChild(sel); row.appendChild(inp); row.appendChild(del);
+    row.appendChild(sel); row.appendChild(det); row.appendChild(del);
     box.appendChild(row);
   });
 }
 function wfDemo() {
-  document.getElementById('wfGoal').value = 'Tommy-Portal zeigt Live-Status aus /status';
+  document.getElementById('wfGoal').value = 'Tommy portal shows live status from /status';
   document.getElementById('wfCheck').value = '';
   wfSteps = [
-    { agent: 'codex', instruction: 'Erweitere tommy/index.html: Lade per fetch("/status") den Bridge-Status und zeige Repo + Meta/GitHub-Flags in der NOVA-Worker-Karte an. Minimaler Eingriff, kein Redesign.' },
-    { agent: 'gemini', instruction: 'Prüfe den Diff des vorherigen Schritts (git diff) auf Korrektheit und Sicherheit. Fasse den Befund kurz zusammen.' },
+    { agent: 'codex', instruction: 'Extend tommy/index.html: fetch("/status") and show repo + Meta/GitHub flags in the NOVA-Worker card. Minimal change, no redesign.' },
+    { agent: 'gemini', instruction: 'Review the previous step diff (git diff) for correctness and security. Summarize briefly.' },
   ];
   wfRenderSteps();
 }
@@ -312,21 +351,21 @@ async function wfStart() {
   const goal = document.getElementById('wfGoal').value.trim();
   const check = document.getElementById('wfCheck').value.trim();
   const steps = wfSteps.map((s) => ({ agent: s.agent, instruction: s.instruction.trim() })).filter((s) => s.instruction);
-  if (!goal || !steps.length) { wfSetConn('⛔ Ziel + mindestens 1 Schritt mit Anweisung nötig.'); return; }
+  if (!goal || !steps.length) { wfSetConn('⛔ Goal + at least 1 step with instructions required.'); return; }
   try {
     const body = { goal, steps }; if (check) body.check = check;
     let r = await fetch(wfBase() + '/api/workflow', { method: 'POST', headers: wfHeaders(), body: JSON.stringify(body) });
-    if (!r.ok) throw new Error('Anlegen: HTTP ' + r.status + ' ' + (await r.text()).slice(0, 200));
+    if (!r.ok) throw new Error('Create: HTTP ' + r.status + ' ' + (await r.text()).slice(0, 200));
     const t = await r.json();
     wfCurrentTask = t.id;
     r = await fetch(wfBase() + '/api/workflow/run', { method: 'POST', headers: wfHeaders(), body: JSON.stringify({ id: t.id }) });
     if (!r.ok) throw new Error('Start: HTTP ' + r.status + ' ' + (await r.text()).slice(0, 200));
-    wfSetConn('▶ Task ' + t.id + ' läuft …');
+    wfSetConn('▶ Task ' + t.id + ' running …');
     wfPoll();
   } catch (e) { wfSetConn('⛔ ' + e.message); }
 }
 async function wfCancel() {
-  if (!wfCurrentTask) { wfSetConn('Kein aktiver Task.'); return; }
+  if (!wfCurrentTask) { wfSetConn('No active task.'); return; }
   await fetch(wfBase() + '/api/workflow/cancel', { method: 'POST', headers: wfHeaders(), body: JSON.stringify({ id: wfCurrentTask }) });
   wfPollOnce();
 }
@@ -336,7 +375,7 @@ async function wfPollOnce() {
     const r = await fetch(wfBase() + '/api/workflow?id=' + encodeURIComponent(wfCurrentTask), { headers: wfHeaders() });
     if (!r.ok) return 'err';
     const t = await r.json();
-    wfRenderRun(t); wfLoadTasks(); apRefresh();
+    wfRenderFlow(t); wfRenderRun(t); wfLoadTasks(); apRefresh();
     if (['completed', 'failed', 'cancelled'].includes(t.status)) return 'done';
     if (t.status === 'review_ready') return 'review';
     return 'run';
@@ -346,9 +385,26 @@ function wfPoll() {
   if (wfPollTimer) clearInterval(wfPollTimer);
   wfPollTimer = setInterval(async () => {
     const s = await wfPollOnce();
-    if (s === 'done' || s === 'review') { clearInterval(wfPollTimer); wfPollTimer = null; }
+    if (s === 'done' || s === 'review') { clearInterval(wfPollTimer); wfPollTimer = null;
+      wfSetConn(s === 'review' ? '✔ Review ready — decision needed below.' : '■ Task ended — see Run.'); }
   }, 3000);
   wfPollOnce();
+}
+function wfRenderFlow(t) {
+  const box = document.getElementById('wfFlow'); box.innerHTML = '';
+  const colors = ['#22c55e', '#3b82f6', '#a855f7'];
+  const row = wfel('div'); row.style.cssText = 'display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:4px 0';
+  t.steps.forEach((s, i) => {
+    const chip = wfel('span', 'badge', s.n + '·' + s.agent + ' ' + s.status);
+    chip.style.cssText = 'border:2px solid ' + colors[i % 3] + ';background:#151515;color:#fff';
+    row.appendChild(chip);
+    if (i < t.steps.length - 1) { const ar = wfel('span', '', '→'); ar.style.cssText = 'color:' + colors[i % 3] + ';font-weight:900'; row.appendChild(ar); }
+  });
+  const ar = wfel('span', '', '→'); ar.style.color = '#f59e0b'; row.appendChild(ar);
+  const fin = wfel('span', 'badge', '🏁 Tommy / You — decide');
+  fin.style.cssText = 'border:2px solid #f59e0b;background:#151515;color:#fff';
+  row.appendChild(fin);
+  box.appendChild(row);
 }
 function wfRenderRun(t) {
   const box = document.getElementById('wfRun'); box.innerHTML = '';
@@ -356,11 +412,11 @@ function wfRenderRun(t) {
   t.steps.forEach((s) => {
     const row = wfel('div', 'tech-row');
     const left = wfel('div');
-    left.appendChild(wfel('div', 'tech-name', 'Schritt ' + s.n + ' [' + s.agent + '] — ' + s.status));
+    left.appendChild(wfel('div', 'tech-name', 'Step ' + s.n + ' [' + s.agent + '] — ' + s.status));
     left.appendChild(wfel('div', 'small', (s.durationMs !== null && s.durationMs !== undefined ? Math.round(s.durationMs / 1000) + 's' : '') + (s.exitCode !== null && s.exitCode !== undefined ? ' • exit ' + s.exitCode : '') + (s.timedOut ? ' • TIMEOUT' : '')));
     const det = document.createElement('details'); det.style.cssText = 'margin-top:6px';
-    const sum = wfel('summary', 'small', 'Anweisung + Output'); sum.style.cursor = 'pointer';
-    const pre = wfel('pre', 'small', 'ANWEISUNG:\n' + (s.instruction || '') + '\n\nOUTPUT:\n' + (s.output || '—'));
+    const sum = wfel('summary', 'small', 'Instructions + output'); sum.style.cursor = 'pointer';
+    const pre = wfel('pre', 'small', 'INSTRUCTIONS:\n' + (s.instruction || '') + '\n\nOUTPUT:\n' + (s.output || '—'));
     pre.style.cssText = 'white-space:pre-wrap;max-height:220px;overflow:auto;background:#0e0e0e;border:1px solid #222;border-radius:8px;padding:8px;margin-top:6px';
     det.appendChild(sum); det.appendChild(pre); left.appendChild(det);
     row.appendChild(left);
@@ -379,7 +435,7 @@ async function wfLoadTasks() {
     list.slice(0, 6).forEach((t) => {
       const row = wfel('div', 'tech-row');
       row.appendChild(wfel('div', 'small', t.id + ' • ' + t.status + (t.outcome ? '/' + t.outcome : '') + ' • ' + String(t.goal).slice(0, 60)));
-      const b = wfel('button', 'btn-dark', 'Ansehen'); b.onclick = () => { wfCurrentTask = t.id; wfPollOnce(); };
+      const b = wfel('button', 'btn-dark', 'View'); b.onclick = () => { wfCurrentTask = t.id; wfPollOnce(); };
       row.appendChild(b);
       box.appendChild(row);
     });
@@ -391,25 +447,25 @@ async function apRefresh() {
   try {
     const r = await fetch(wfBase() + '/api/approvals?status=pending', { headers: wfHeaders() });
     box.innerHTML = '';
-    if (!r.ok) { box.appendChild(wfel('div', 'small', r.status === 401 ? '⛔ Token fehlt (oben bei Bridge eintragen).' : 'Queue lädt nicht.')); return; }
+    if (!r.ok) { box.appendChild(wfel('div', 'small', r.status === 401 ? '⛔ Token missing (Advanced above).' : 'Queue unavailable.')); return; }
     const list = await r.json();
-    if (!list.length) { box.appendChild(wfel('div', 'small', 'Keine offenen Freigaben. ✅')); return; }
+    if (!list.length) { box.appendChild(wfel('div', 'small', 'No pending approvals. ✅')); return; }
     list.forEach((a) => {
       const row = wfel('div', 'tech-row'); row.style.display = 'block';
-      row.appendChild(wfel('div', 'tech-name', 'Freigabe ' + a.id + ' • Task ' + a.taskId));
+      row.appendChild(wfel('div', 'tech-name', 'Approval ' + a.id + ' • Task ' + a.taskId));
       row.appendChild(wfel('div', 'small', a.goal));
       const pre = wfel('pre', 'small', (a.summary || '') + '\n\nDIFFSTAT:\n' + (a.diffStat || '—'));
       pre.style.cssText = 'white-space:pre-wrap;background:#0e0e0e;border:1px solid #222;border-radius:8px;padding:8px;margin-top:6px;max-height:160px;overflow:auto';
       row.appendChild(pre);
       if (a.diff) {
         const det = document.createElement('details'); det.style.marginTop = '6px';
-        const sum = wfel('summary', 'small', 'Diff ansehen'); sum.style.cursor = 'pointer';
+        const sum = wfel('summary', 'small', 'View diff'); sum.style.cursor = 'pointer';
         const dp = wfel('pre', 'small', a.diff);
         dp.style.cssText = 'white-space:pre-wrap;background:#0e0e0e;border:1px solid #222;border-radius:8px;padding:8px;margin-top:6px;max-height:220px;overflow:auto';
         det.appendChild(sum); det.appendChild(dp); row.appendChild(det);
       }
       const btns = wfel('div'); btns.style.cssText = 'display:flex;gap:10px;margin-top:8px';
-      [['yes', '✅ JA', 'btn-send'], ['no', '❌ NEIN', 'btn-orange'], ['info', '❓ MEHR INFOS', 'btn-dark']].forEach((d) => {
+      [['yes', '✅ YES', 'btn-send'], ['no', '❌ NO', 'btn-orange'], ['info', '❓ MORE INFO', 'btn-dark']].forEach((d) => {
         const b = wfel('button', d[2], d[1]);
         b.onclick = () => apDecide(a.id, d[0]);
         btns.appendChild(b);
@@ -423,9 +479,46 @@ async function apDecide(id, decision) {
   const byEl = document.getElementById('apBy');
   const by = ((byEl && byEl.value) || 'human').trim() || 'human';
   const r = await fetch(wfBase() + '/api/approvals/decide', { method: 'POST', headers: wfHeaders(), body: JSON.stringify({ id, decision, by }) });
-  if (!r.ok) alert('Fehler: HTTP ' + r.status);
+  if (!r.ok) alert('Error: HTTP ' + r.status);
   apRefresh(); wfPollOnce();
 }
+
+// Real key validation via bridge (aa3): green = provider says OK, red = invalid.
+let keyValidity = {};
+const KEY_PROVIDERS = [['metaKey', 'meta'], ['openaiKey', 'openai'], ['grokKey', 'grok'], ['claudeKey', 'claude'], ['geminiKey', 'gemini'], ['codexKey', 'codex']];
+async function validateKeys() {
+  const jobs = KEY_PROVIDERS.map(async ([id, provider]) => {
+    const field = document.getElementById(id);
+    const light = document.getElementById('light-' + id);
+    const val = ((field && field.value) || '').trim();
+    if (!val) { keyValidity[id] = null; if (light) light.className = 'tech-light light-gray'; return; }
+    try {
+      const r = await fetch(wfBase() + '/api/keys/validate', { method: 'POST', headers: wfHeaders(), body: JSON.stringify({ provider, key: val }) });
+      if (r.status === 401 || r.status === 404) { keyValidity[id] = null; return; }
+      const d = await r.json().catch(() => ({}));
+      const ok = r.ok && d.ok === true;
+      keyValidity[id] = ok;
+      if (light) light.className = 'tech-light ' + (ok ? 'light-green' : 'light-red');
+    } catch { keyValidity[id] = null; }
+  });
+  await Promise.all(jobs);
+  applyValidityLights();
+}
+function applyValidityLights() {
+  const map = { spark: 'metaKey', wonder: 'metaKey', image: 'metaKey', sam: 'metaKey', code: 'metaKey', llama: 'metaKey', chatgpt: 'openaiKey', codex: 'openaiKey', grok: 'grokKey', claude: 'claudeKey', gemini: 'geminiKey', 'gemini-cli': 'geminiKey' };
+  let touched = false;
+  Object.keys(map).forEach((tech) => {
+    const v = keyValidity[map[tech]];
+    if (v === true) { techStatus[tech] = 'green'; touched = true; }
+    else if (v === false) { techStatus[tech] = 'red'; touched = true; }
+  });
+  if (touched && typeof renderTechs === 'function') renderTechs();
+}
+const _origLights = updateTechLightsFromKeys;
+updateTechLightsFromKeys = function () { _origLights(); applyValidityLights(); };
+setTimeout(() => { try { validateKeys(); } catch {} }, 1500);
+
+
 
 </script>
 </body>

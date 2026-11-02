@@ -528,3 +528,17 @@ zusätzlich 9/9 in sauberem Worktree.
 **Offen:** Gemini-Quota (~4 h), externer Tommy-Tunnel (Phase 2), `.env`-Modell-IDs
 auf Workstation, Entscheidung über Demo-Approval + Übernahme von
 `task/tmvyq3swvj4mn` nach `main`.
+
+## Anhang D2 – Runde 2: Redesign + Ketten-Fix + Key-Prüfung (02.11.2026, `VERIFIZIERT`)
+
+**UI (V6/Tommy, Jury-Englisch):** Garage mit Blinkern (Klick = Schritt), Flow-Streifen
+mit Farb-Spuren + Tommy-Finish, kompakte Steps (Details), neongrüner Connect,
+Abbrechen+Start rechts beisammen, Reset links/Senden rechts, E2E-Strings EN.
+`grafik/aa4.png` (V6-Regie) + `aa5.png` (V2-Graph-Vision) als Referenz im Repo.
+
+**Backend:** Schritt-Output fließt in Folge-Prompts (vorher Lücke, jetzt mit Test);
+`POST /api/keys/validate` prüft Keys live beim Provider (transient, nie geloggt);
+`GET /grafik/*` serviert das Tommy-Banner (Bilder only, Containment). Suite
+**17/17 grün**. User-Kette `tmvyr7nzau3ja`: Muse ✓, Codex ✓ (Retry-Feature,
+Branch `task/tmvyr7nzau3ja`), Gemini ✗ 429 bis ~09:00. Freigabe `amvyqalkoelvo`
+mit JA entschieden, Demo-Branch gemergt (`c4afcc9`).

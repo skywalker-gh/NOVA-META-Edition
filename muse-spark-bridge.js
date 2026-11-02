@@ -185,6 +185,7 @@ const server = http.createServer(async (req, res) => {
           '/api/agents - Worker handshake (GET)',
           '/api/workflow - Tasks (GET/POST), /run, /cancel, /step-result, /cleanup (POST)',
           '/api/approvals - Queue (GET), /decide (POST)',
+          '/api/keys/validate - Key check (POST)',
           '/status - This status'
         ],
         oldFolders: listOldNovaFolders()
@@ -255,6 +256,13 @@ const server = http.createServer(async (req, res) => {
       sendJson(res, 200, r);
       return;
     }
+    if (url.pathname === '/api/keys/validate' && req.method === 'POST') {
+      const body = await readJsonBody(req);
+      const r = await workflow.validateKey(body && body.provider, body && body.key);
+      if (r.error) { sendJson(res, r.code || 400, { error: r.error }); return; }
+      sendJson(res, 200, { ok: r.ok, status: r.status, latencyMs: r.latencyMs, detail: r.detail });
+      return;
+    }
     if (url.pathname === '/api/approvals' && req.method === 'GET') {
       const all = workflow.loadApprovals();
       const status = url.searchParams.get('status');
@@ -266,6 +274,20 @@ const server = http.createServer(async (req, res) => {
       const r = workflow.decideApproval(body);
       if (r.error) { sendJson(res, r.code || 400, { error: r.error }); return; }
       sendJson(res, 200, r.approval);
+      return;
+    }
+
+    // Static grafik assets for /tommy (public banner, same-origin <img>).
+    if (url.pathname.startsWith('/grafik/') && req.method === 'GET') {
+      const name = url.pathname.slice('/grafik/'.length);
+      const ext = path.extname(name).toLowerCase();
+      const mime = ext === '.jpg' || ext === '.jpeg' ? 'image/jpeg'
+        : ext === '.png' ? 'image/png' : ext === '.gif' ? 'image/gif'
+        : ext === '.webp' ? 'image/webp' : ext === '.ico' ? 'image/x-icon' : null;
+      if (!name || !mime) { sendJson(res, 404, { error: 'Not found' }); return; }
+      const full = resolveLocalPath('grafik/' + name); // containment + sensitive checks
+      res.writeHead(200, { 'Content-Type': mime });
+      res.end(fs.readFileSync(full));
       return;
     }
 
