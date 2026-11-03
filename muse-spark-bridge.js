@@ -200,6 +200,7 @@ const server = http.createServer(async (req, res) => {
           '/api/memory/index|context - Content memory index (GET)',
           '/api/chat - Provider fan-out (POST), /chat/providers (GET)',
           '/api/image - Meta image (POST)',
+          '/nova-sounds/* - UI sound pack (GET)',
           '/status - This status'
         ],
         oldFolders: listOldNovaFolders()
@@ -321,6 +322,19 @@ const server = http.createServer(async (req, res) => {
         : ext === '.webp' ? 'image/webp' : ext === '.ico' ? 'image/x-icon' : null;
       if (!name || !mime) { sendJson(res, 404, { error: 'Not found' }); return; }
       const full = resolveLocalPath('grafik/' + name); // containment + sensitive checks
+      res.writeHead(200, { 'Content-Type': mime });
+      res.end(fs.readFileSync(full));
+      return;
+    }
+
+    // Static UI sounds for /v6 (same-origin <audio>, containment via resolveLocalPath).
+    if (url.pathname.startsWith('/nova-sounds/') && req.method === 'GET') {
+      let name = url.pathname.slice('/nova-sounds/'.length);
+      try { name = decodeURIComponent(name); } catch { sendJson(res, 400, { error: 'bad encoding' }); return; }
+      const ext = path.extname(name).toLowerCase();
+      const mime = ext === '.mp3' ? 'audio/mpeg' : ext === '.json' ? 'application/json' : null;
+      if (!name || !mime) { sendJson(res, 404, { error: 'Not found' }); return; }
+      const full = resolveLocalPath('context/nova-sounds/' + name); // containment + sensitive checks
       res.writeHead(200, { 'Content-Type': mime });
       res.end(fs.readFileSync(full));
       return;

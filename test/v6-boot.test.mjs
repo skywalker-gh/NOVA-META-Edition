@@ -86,3 +86,11 @@ test('V6: aa5 dock cards with lamps and dots', () => {
   assert.ok(html.includes('wfTommyLight'), 'Tommy lamp element');
   assert.ok(html.includes('Connector Problem! Check the Dockingstation below'), 'master red text');
 });
+
+test('V6: UI click sounds wired (audio + delegated playSfx)', () => {
+  assert.ok(html.includes('id="sfx-click"'), 'click audio element required');
+  assert.ok(html.includes('id="sfx-bass"'), 'bass audio element required');
+  assert.ok(html.includes('/nova-sounds/nova_ui_bass_hit.mp3'), 'click src must hit bridge route');
+  assert.ok(html.includes('function playSfx(id'), 'playSfx helper required');
+  assert.ok(html.includes("closest('button')"), 'delegated button click wiring required');
+});

@@ -26,9 +26,9 @@ Nova-Ygdrassil is an advanced multi-model AI agent-bus and orchestration platfor
 - **ChatGPT Bridge**: Tested and verified ("Ja, die Brücke steht. Wie kann ich Ihnen helfen?").
 - **Claude Bridge**: Tested and verified live on 2026-11-04 (model `claude-sonnet-5-5`, credits loaded).
 - **Codex V3**: 32/32 unit tests passing, local worker configuration ready.
-- **UI Sound Pack**: 15 MP3s live in `context/nova-sounds/` (served as audio/mpeg) + 3 original tracks in `context/Sounds/`. Wired into `context/dashboard/index.html`; V6 wiring pending.
+- **UI Sound Pack**: 7 MP3s in `context/nova-sounds/` (user pruned silent ones 2026-11-04; V6 clicks use the bass pair) + 3 original tracks in `context/Sounds/`. Wired into `context/dashboard/index.html` and V6 (`index.html`: playSfx + delegated button clicks via bridge `/nova-sounds/*`). Needs bridge restart to go live.
 
 ## 5. Aggregated Model Handoffs
 No active handoff artifacts currently found in root.
 
-*Last Auto-Sync:* 2026-11-04 (Claude verified, sounds on disk)
+*Last Auto-Sync:* 2026-11-04 (Claude verified, V6 sounds wired)

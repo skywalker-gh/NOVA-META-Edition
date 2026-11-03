@@ -972,6 +972,28 @@ function wfPersist() {
 
 
 
+// NOVA UI click sounds (audio elements below; skipped when the DOM lacks listener APIs).
+function playSfx(id, volume) {
+  try {
+    var el = document.getElementById(id);
+    if (!el || typeof el.play !== 'function') return;
+    el.volume = volume || 0.6;
+    el.currentTime = 0;
+    el.play().catch(function () {});
+  } catch (e) {}
+}
+// Delegated click feedback: primary/execute actions get bass, everything else a click.
+if (document && typeof document.addEventListener === 'function') {
+  document.addEventListener('click', function (ev) {
+    var btn = ev.target && ev.target.closest ? ev.target.closest('button') : null;
+    if (!btn) return;
+    if (btn.classList.contains('btn-primary') || btn.id === 'executeWorkflowBtn' || /execute/i.test(btn.id)) playSfx('sfx-bass', 0.65);
+    else playSfx('sfx-click', 0.6);
+  });
+}
 </script>
+<!-- NOVA UI Sound Pack (served by bridge /nova-sounds/*) -->
+<audio id="sfx-click" src="/nova-sounds/nova_ui_bass_hit.mp3" preload="auto"></audio>
+<audio id="sfx-bass" src="/nova-sounds/nova_ui_bass_thump.mp3" preload="auto"></audio>
 </body>
 </html>

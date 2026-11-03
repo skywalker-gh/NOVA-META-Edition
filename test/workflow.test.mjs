@@ -261,3 +261,18 @@ test('WF: /grafik serves banner, blocks escape and non-images', async () => {
   const txt = await fetch(BASE + '/grafik/x.txt', { headers: { authorization: `Bearer ${TOKEN}` } });
   assert.equal(txt.status, 404);
 });
+
+test('WF: /nova-sounds serves mp3 + map, blocks escape and non-audio', async () => {
+  const auth = { authorization: `Bearer ${TOKEN}` };
+  const mp3 = await fetch(BASE + '/nova-sounds/nova_ui_bass_hit.mp3', { headers: auth });
+  assert.equal(mp3.status, 200);
+  assert.equal(mp3.headers.get('content-type'), 'audio/mpeg');
+  assert.ok((await mp3.arrayBuffer()).byteLength > 1000);
+  const map = await fetch(BASE + '/nova-sounds/sounds-map.json', { headers: auth });
+  assert.equal(map.status, 200);
+  assert.equal(map.headers.get('content-type'), 'application/json');
+  const miss = await fetch(BASE + '/nova-sounds/nope.mp3', { headers: auth });
+  assert.equal(miss.status, 404);
+  const txt = await fetch(BASE + '/nova-sounds/x.txt', { headers: auth });
+  assert.equal(txt.status, 404);
+});
