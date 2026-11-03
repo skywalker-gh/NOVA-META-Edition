@@ -4,9 +4,11 @@
 
 [Repository](https://github.com/skywalker-gh/NOVA-META-Edition) · [Hackathon: Meta Global AI Developer Hackathon 2026](https://cerebralvalley.ai/e/meta-ai-developer-hackathon)
 
-> **Dedicated to my father, in loving memory.**  
-> This work is part of my journey, and your place in my life remains part of its story.  
-> — Gürkan
+> **Dedicated to Hüseyin Gür — 50 years as a welder in Germany.**  
+> A life shaped by fire, steel and hands that build things to last. His craft lives on in the precision and connections of NOVA // YGGDRASIL.  
+> — Gürkan Gür
+
+The full dedication is preserved in **[DEDICATION_HUSEYIN_GUR.md](DEDICATION_HUSEYIN_GUR.md)**.
 
 > **Core idea:** NOVA is a connected multi-model AI ecosystem. Its vision brings together Multi-Agent Bus Chat, a Workflow Manager and Human Authority: specialised models and agents collaborate through shared context, tasks move through coordinated workflows, and consequential decisions remain under human control. The current META Edition implements key parts of this vision; the implementation status and boundaries are documented below.
 
