@@ -19,6 +19,7 @@ body{font-family:Verdana, Geneva, sans-serif;background:#0a0a0a;color:#fff;line-
 .btn{padding:10px 16px;border-radius:12px;font-weight:700;font-size:13px;line-height:18px;height:38px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;border:none;transition:all 0.2s}
 .btn-plus{background:linear-gradient(135deg,#0064e0,#a855f7);color:#fff;border:none;padding:10px 16px;border-radius:12px;font-weight:900;font-size:18px;line-height:18px;height:38px;min-width:42px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
 .btn-plus-white{color:#fff;font-weight:900;font-size:20px;line-height:18px}
+
 .btn-send{background:linear-gradient(135deg,#0064e0,#a855f7);color:#fff;border:none;padding:10px 20px;border-radius:12px;font-weight:800;font-size:13px;line-height:18px;height:38px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;margin-left:auto}
 .btn-dark{background:#222;color:#fff;border:1px solid #333;padding:10px 16px;border-radius:12px;font-weight:600;font-size:13px;line-height:18px;height:38px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
 .btn-orange{background:linear-gradient(135deg,#f59e0b,#facc15);color:#000;border:none;padding:10px 16px;border-radius:12px;font-weight:800;font-size:13px;line-height:18px;height:38px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
@@ -67,6 +68,53 @@ body{font-family:Verdana, Geneva, sans-serif;background:#0a0a0a;color:#fff;line-
 .btn-neon:hover{box-shadow:0 0 15px rgba(163,230,53,0.7) !important;transform:translateY(-2px)}
 .blink{animation:wfblink 1.2s infinite}
 @keyframes wfblink{0%,100%{opacity:1}50%{opacity:0.35}}
+#wfCanvas{position:relative;height:340px;background:#0b0b0f;border:1px solid #222;border-radius:12px;overflow:hidden;background-image:linear-gradient(#16161c 1px,transparent 1px),linear-gradient(90deg,#16161c 1px,transparent 1px);background-size:28px 28px}
+.wf-node{position:absolute;width:170px;background:#151515;border:1px solid #333;border-radius:10px;padding:8px;cursor:grab;user-select:none;z-index:2}
+.wf-node:hover{box-shadow:0 0 12px rgba(168,85,247,.45)}
+#wfGarage{display:flex;gap:10px;flex-wrap:wrap}
+.wf-dock-card{position:relative;width:200px;background:#151515;border:1px solid #333;border-radius:10px;padding:8px;cursor:pointer;user-select:none;transition:box-shadow .15s ease}
+.wf-dock-card:hover{box-shadow:0 0 14px rgba(168,85,247,.55)}
+.wf-dock-head{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:800;color:#fff;gap:6px}
+#techs{display:flex;gap:10px;flex-wrap:wrap}
+.chat-wrap{display:flex;gap:20px;align-items:stretch;margin-bottom:20px}
+.chat-wrap>.card{flex:1;min-width:0;margin-bottom:0}
+.chat-pic{width:340px;flex:none;position:relative;min-height:0}
+.chat-pic-img{width:100%;height:100%;object-fit:cover;border-radius:16px;border:1px solid #222;display:block;transition:box-shadow .25s ease}
+.chat-pic-img:hover{box-shadow:0 0 30px rgba(168,85,247,.6)}
+.chat-pic-cap{position:absolute;left:12px;right:12px;bottom:12px;text-align:center;font-size:12px;color:#e9d5ff;background:rgba(0,0,0,.6);border:1px solid #a855f7;border-radius:8px;padding:4px 8px;opacity:0;transition:opacity .25s ease;pointer-events:none}
+.chat-pic:hover .chat-pic-cap{opacity:1}
+@media (prefers-reduced-motion:reduce){.chat-pic-img,.chat-pic-cap{transition:none}}
+.chat-pic-frame{aspect-ratio:2/3;width:100%;background:#111;border:1px dashed #444;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#6b7280;font-size:28px;text-align:center}
+@media(max-width:1000px){.chat-wrap{flex-direction:column}.chat-pic{width:100%;max-width:340px}.chat-pic-img{height:auto;aspect-ratio:2/3}}
+.wf-dock-card.sel{border-color:#a3e635;box-shadow:0 0 12px rgba(163,230,53,.35)}
+.wf-pin-row{display:flex;align-items:center;gap:6px;height:18px;font-size:9px;color:#9ca3af}
+.wf-pin-row.out{justify-content:flex-end}
+.wf-pin{width:12px;height:12px;border-radius:50%;background:#333;border:1px solid #777;cursor:pointer;padding:0;flex:none}
+.wf-pin:hover{background:#a3e635;border-color:#a3e635}
+.wf-pins{margin:4px 0}
+.wf-dock-ports{font-size:9px;color:#6b7280;margin-top:4px;letter-spacing:2px}
+.wf-ghost{box-shadow:0 0 18px rgba(163,230,53,.5)}
+
+
+.btn-dark:hover{box-shadow:0 0 15px rgba(168,85,247,.7)}
+@media (prefers-reduced-motion:reduce){.wf-dock-card,.btn-dark{transition:none}}
+#wfCanvas.wf-drop{outline:2px dashed #a3e635;outline-offset:-2px}
+.wf-node-head{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:800;color:#fff}
+.wf-node-x{background:none;border:none;color:#888;cursor:pointer;font-size:12px;padding:0 2px}
+.wf-node-x:hover{color:#ff5555}
+
+
+
+
+#wfFinish{position:absolute;right:10px;top:10px;background:#151515;border:2px solid #f59e0b;border-radius:10px;padding:6px 10px;font-size:12px;color:#fff;z-index:1}
+@media (prefers-reduced-motion:reduce){.blink{animation:none}}
+.wf-divider{height:2px;margin:14px 0 4px;background:linear-gradient(90deg,transparent,#a855f7,transparent);box-shadow:0 0 12px rgba(168,85,247,.6);border-radius:2px}
+.light-yellow{background:#facc15;box-shadow:0 0 8px rgba(250,204,21,.8)}
+.light-orange{background:#fb923c;box-shadow:0 0 8px rgba(251,146,60,.8)}
+.btn-dark,.btn-send,.btn-orange,.btn-neon,.btn-lila,.btn-plus{transition:box-shadow .15s ease}
+.tech-row{transition:box-shadow .15s ease}
+.tech-row:hover{box-shadow:0 0 10px rgba(168,85,247,.25)}
+@media (prefers-reduced-motion:reduce){.btn-dark,.btn-send,.btn-orange,.btn-neon,.btn-lila,.btn-plus,.tech-row{transition:none}}
 
 </style>
 </head>
@@ -77,8 +125,8 @@ body{font-family:Verdana, Geneva, sans-serif;background:#0a0a0a;color:#fff;line-
 </div>
 
 <div class="card">
-<h2 style="font-size:38px"><span style="font-weight:800">NOVA</span> <span style="font-weight:400">// Ygdrassil</span></h2>
-<p style="font-size:13px;margin-top:6px;color:#9ca3af"><span style="font-weight:800">Multi Agent Ecosystem // Muse Spark Version 1.0 - </span><span style="font-weight:400">Build for the Meta Global AI Developer Hackathon - 2026</span></p>
+<h2 style="font-size:38px"><span style="font-weight:800;color:#fff">NOVA</span> <span style="font-weight:400;font-size:30px;color:#fff">// Ygdrassil</span></h2>
+<p style="font-size:13px;margin-top:6px;color:#9ca3af"><span style="font-weight:800">Multi-Model AI Ecosystem</span> <span style="font-weight:400">// Multi-Agent Bus Chat, Workflow Manager & Human Authority</span><br><span style="font-weight:800;color:#0064e0">Muse Spark Version 1.0</span> <span style="font-weight:400">- Build for the Meta Global AI Developer Hackathon - 2026</span></p>
 <div style="margin-top:12px">
 <span class="badge badge-green">Public ✅ Jury</span>
 <span class="badge badge-blue">.env in .gitignore safe</span>
@@ -87,39 +135,44 @@ body{font-family:Verdana, Geneva, sans-serif;background:#0a0a0a;color:#fff;line-
 <p style="margin-top:12px">▶ <a class="link" href="https://github.com/skywalker-gh/NOVA-META-Edition" target="_blank">https://github.com/skywalker-gh/NOVA-META-Edition</a> - <a class="btn-send" href="https://github.com/skywalker-gh/NOVA-META-Edition" target="_blank" style="text-decoration:none">▶ GitHub</a> <a class="btn-lila" href="https://discord.com/users/1564189792839663729" target="_blank" style="text-decoration:none;margin-left:8px">▶ Discord</a></p>
 </div>
 
+<div class="chat-wrap">
 <div class="card">
-<h2 style="font-size:28px" class="header-lila">NOVA <span style='font-weight:400;font-size:20px'>//</span> Chat 💻</h2>
+<h2 style="font-size:28px" class="header-lila">NOVA <span style='font-weight:400;font-size:20px'>// Chat 💻</span> <span id="chatLight" class="tech-light light-gray"></span> <span id="chatActive" class="small"></span></h2>
 <p style="font-size:13px;margin-top:6px;color:#9ca3af">Multi Agent Bus - Chat Bridge & MCP Tunnel</p>
+<div class="wf-divider"></div>
+<div style="display:flex;gap:10px;align-items:center;margin-top:12px">
+<button class="btn-plus" onclick="addNewTech()" title="Add custom agent"><span class="btn-plus-white">+</span></button>
+<h4 class="header-lila" style="font-size:18px;margin:0">AI Agents & Models 🤖</h4>
+</div>
+<p style="font-size:13px;margin-top:6px;color:#9ca3af">Choose your Agent or Agents (For Multiple Answers). Advanced Codepad with shared context memory.<br><i>Activate your Agent to send him a message in the chat below.</i></p>
+<div class="wf-divider"></div>
+<div id="techs" class="tech-grid" style="margin-top:12px"></div>
+<div class="wf-divider"></div>
 <div id="messages" class="messages" style="margin-top:12px"></div>
+<div class="wf-divider"></div>
 <div id="memBadge" class="small" style="margin-top:6px">Memory: –</div>
 <div style="margin-top:12px">
-<textarea id="input" class="textarea" placeholder="Schreib hier..."></textarea>
+<textarea id="input" class="textarea" placeholder="Write here... (Enter = send)"></textarea>
 </div>
 <div style="margin-top:10px;display:flex;gap:10px;align-items:center;width:100%;flex-wrap:nowrap">
-<button class="btn-orange" onclick="clearChat()">↺ Reset</button>
 <button class="btn-plus" onclick="document.getElementById('fileInput').click()" title="Files, Bilder, Videos, Links, Projektordner"><span class="btn-plus-white">+</span></button>
 <input type="file" id="fileInput" style="display:none" multiple onchange="handleFiles(this.files)">
 <button class="btn-dark" onclick="quickInsert('Test Email an guerkanguergm@gmail.com')">📧 Test Email</button>
-<button class="btn-dark" onclick="quickInsert('Was geht aaaaab!? 👻')">Was geht aaaaab!? 👻</button>
+<button class="btn-dark" onclick="quickInsert('Whats up!? 👻')">WhatsApp 👻</button>
 <button class="btn-dark" onclick="quickInsert('Let´s start a context building process for better understanding and reasoning 💻')">Let´s start a context building process 💻</button>
 <div style="display:flex;gap:10px;margin-left:auto">
-<button class="btn-send" onclick="sendMessage()">▶ Senden</button>
-<button class="btn-lila" onclick="sendImage()">🖼️</button>
+<button class="btn-orange" onclick="clearChat()">↺ Reset</button>
+<button class="btn-lila" onclick="sendImage()" title="Generate image">▶&nbsp;<b>Generate Image</b></button>
+<button class="btn-send" onclick="sendMessage()">▶ Send</button>
 </div>
 </div>
+<div class="wf-divider"></div>
 </div>
-
-<div class="card">
-<div style="display:flex;justify-content:space-between;align-items:center">
-<h3 class="header-lila" style="font-size:28px">NOVA <span style='font-weight:400;font-size:20px'>//</span> AI Agents & Models 🤖</h3>
-<button class="btn-plus" onclick="addNewTech()"><span class="btn-plus-white">+</span></button>
-</div>
-<p style="font-size:13px;margin-top:6px;color:#9ca3af">Choose your Destiny xD <b>Immortal Codepad!</b> Advanced shared context memory.</p>
-<div id="techs" class="tech-grid" style="margin-top:12px"></div>
+<aside class="chat-pic"><img class="chat-pic-img" src="grafik/nova-new-chat-side3%20Kopie.png" alt="NOVA side artwork"><div class="chat-pic-cap">Created with Muse Image</div></aside>
 </div>
 
 <div class="card">
-<h3 class="header-lila" style="font-size:28px">NOVA <span style='font-weight:400;font-size:20px'>//</span> API Keys 🔑</h3>
+<h3 class="header-lila" style="font-size:28px">NOVA <span style='font-weight:400;font-size:20px'>// API Keys 🔑</span></h3>
 <p style="font-size:13px;margin-top:6px;color:#9ca3af">Enter your API key in the boxes below to enable it for the Multi Agent Bus and the <span style="font-weight:800">NOVA // Ygdrassil Ecosystem.</span></p>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;margin-bottom:4px">
 <div style="display:flex;align-items:center;gap:10px;background:#151515;border:1px solid #222;border-radius:12px;padding:4px 12px"><input id="metaKey" class="input" style="border:none;background:transparent;padding:8px 0" placeholder="Meta API Key (Spark/Wonder)" oninput="updateKeyLights()"><span id="light-metaKey" class="tech-light light-gray" style="flex-shrink:0"></span></div>
@@ -139,7 +192,7 @@ body{font-family:Verdana, Geneva, sans-serif;background:#0a0a0a;color:#fff;line-
 </div>
 
 <div class="card">
-<h3 class="header-lila" style="font-size:28px">NOVA <span style='font-weight:400;font-size:20px'>//</span> Build Log 📝</h3>
+<h3 class="header-lila" style="font-size:28px">NOVA <span style='font-weight:400;font-size:20px'>// Build Log 📝</span></h3>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px">
 <div>
 <input id="todoInput" class="input" placeholder="Neues Todo..." onkeydown="if(event.key==='Enter')addTodo()">
@@ -153,8 +206,11 @@ body{font-family:Verdana, Geneva, sans-serif;background:#0a0a0a;color:#fff;line-
 </div>
 
 <div class="card">
-<h3 class="header-lila" style="font-size:28px">NOVA <span style='font-weight:400;font-size:20px'>//</span> Workflow Manager ⛓️</h3>
-<p style="font-size:13px;margin-top:6px;color:#9ca3af">Linear task chain: orchestrators work step by step — the end lands at Human Authority.</p>
+<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+<h3 class="header-lila" style="font-size:28px;margin:0">NOVA <span style='font-weight:400;font-size:20px'>// Multi Agent-Bus / Workflow Manager ⛓️</span> <span id="wfMasterLight" class="tech-light light-gray"></span> <span id="wfMasterText" class="small"></span></h3>
+<span class="small" style="margin-left:auto;border:1px solid #a855f7;color:#d8b4fe;border-radius:8px;padding:2px 8px">N8N STYLE NODE GRAPH</span>
+</div>
+<p style="font-size:13px;margin-top:6px;color:#9ca3af">Visual Workflow Manager to chain AI Agents and Task Sources seamlessly.</p>
 <div style="margin-top:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
 <span id="wfBlinker" class="tech-light light-gray" title="connection"></span>
 <button class="btn-neon" onclick="wfRefresh()">▶ Connect</button>
@@ -165,29 +221,45 @@ body{font-family:Verdana, Geneva, sans-serif;background:#0a0a0a;color:#fff;line-
 </div></details>
 </div>
 <div id="wfConn" class="small" style="margin-top:8px">Not connected.</div>
-<h4 class="header-lila" style="margin-top:16px;font-size:18px">Garage — click a card to add a step</h4>
+<div style="margin-top:8px;display:flex;gap:10px;flex-wrap:wrap">
+<button class="btn-dark" onclick="wfTaskSource()">＋ Task Source</button>
+<button class="btn-dark" onclick="wfAddStep()">＋ Add Agent / Subagent</button>
+<button class="btn-orange" onclick="wfCancel()">⏹ Abort</button>
+<button class="btn-send" onclick="wfStart()">▶ Execute Workflow</button>
+<button class="btn-dark" onclick="wfSave()">💾 Save</button>
+<button class="btn-dark" onclick="wfResetGraph()">⟳ Reset</button>
+</div>
+<h4 class="header-lila" style="margin-top:16px;font-size:18px">Agent-Bus Dockingstation</h4>
 <div id="wfGarage" class="tech-grid" style="margin-top:8px"></div>
 <div id="wfGarageNote" class="small" style="margin-top:6px"></div>
-<h4 class="header-lila" style="margin-top:16px;font-size:18px">New chain</h4>
-<textarea id="wfGoal" class="textarea" style="margin-top:8px;min-height:60px" placeholder="Chain goal, e.g. Tommy portal shows live status from /status"></textarea>
-<div id="wfSteps" style="margin-top:8px"></div>
-<div style="margin-top:8px;display:flex;gap:10px;flex-wrap:wrap">
-<button class="btn-dark" onclick="wfAddStep()">+ Step (max 5)</button>
-<button class="btn-dark" onclick="wfDemo()">✨ Example</button>
-<input id="wfCheck" class="input" style="max-width:300px" placeholder="Optional: check command, e.g. npm test" title="Optional: check command, e.g. npm test">
-<div style="display:flex;gap:10px;margin-left:auto">
-<button class="btn-orange" onclick="wfCancel()">⏹ Abort</button>
-<button class="btn-send" onclick="wfStart()">▶ Start</button>
+<div class="wf-divider"></div>
+<h4 class="header-lila" style="margin-top:16px;font-size:18px">Flow canvas</h4>
+<div style="display:flex;gap:10px;align-items:center;margin-top:6px;flex-wrap:wrap">
+<span class="small">Drag a card from the Dockingstation onto the canvas (or click it). Move cards freely, click output → input to wire. Port 1 drives execution • ports 2–3: merge (Phase 2).</span>
+<button class="btn-dark" onclick="wfEdges=[];wfWireFrom=null;wfPersist();wfCanvasRender();wfSyncSteps();">✕ Clear wires</button>
 </div>
+<div id="wfCanvas" style="margin-top:8px"><div id="wfFinish" title="Chain end lands here (approval)">🏁 Tommy / You</div></div>
+<div id="wfCanvasHint" class="small" style="margin-top:6px"></div>
+<div class="wf-divider"></div>
+<h4 class="header-lila" style="margin-top:16px;font-size:18px">Task Source</h4>
+<div style="margin-top:8px;display:flex;gap:10px;align-items:center">
+<button class="btn-dark" onclick="document.getElementById('wfFile').click()" title="Upload source file (.md/.txt/.png/.jpg)">＋</button>
+<input id="wfFile" type="file" accept=".md,.txt,.png,.jpg,.jpeg,.gif,.webp" style="display:none" onchange="wfFilePicked(this)">
+<input id="wfAsk" class="input" style="flex:1" placeholder="Ask anything — Enter puts it on the canvas as the first card" onkeydown="if(event.key==='Enter')wfAskSend()">
+<button class="btn-dark" onclick="wfDemo()" title="Load demo chain">✨</button>
+<button class="btn-send" onclick="wfAskSend()">➤ Send</button>
 </div>
 <h4 class="header-lila" style="margin-top:16px;font-size:18px">Run</h4>
+<div style="margin-top:6px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn-dark" onclick="wfDownload()">⬇ Result (.md)</button>
+<button class="btn-send" onclick="wfMerge()" title="Merge the task retry branch into this checkout (needs Human Authority approval)">⑂ Merge retry branch</button></div>
 <div id="wfFlow" style="margin-top:8px"></div>
 <div id="wfRun" class="small" style="margin-top:8px">No task started yet.</div>
 <div id="wfTaskList" style="margin-top:8px"></div>
+<div class="small" style="margin-top:8px;color:#4b5563">V6 UI rev 8 · source-chat + pointer-drag</div>
 </div>
 
 <div class="card">
-<h3 class="header-lila" style="font-size:28px">NOVA <span style='font-weight:400;font-size:20px'>//</span> Human Authority Module 🕵</h3>
+<h3 class="header-lila" style="font-size:28px">NOVA <span style='font-weight:400;font-size:20px'>// Human Authority Module 🕵</span> <span id="apLamp" class="tech-light light-gray"></span> <span id="apLampText" class="small"></span></h3>
 <p style="font-size:13px;margin-top:6px;color:#9ca3af">Tommy - External Human Authority Node</p>
 <div style="margin-top:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
 <input id="apBy" class="input" style="max-width:200px" value="Gürkan">
@@ -218,7 +290,28 @@ function saveTechsList(list){localStorage.setItem('nova_techs_v6',JSON.stringify
 let TECHS=loadTechs();
 let selected=new Set(JSON.parse(localStorage.getItem('nova_selected_v6')||'["spark"]'));
 let techStatus={};
-function renderTechs(){const c=document.getElementById('techs');c.innerHTML='';TECHS.forEach(t=>{const isActive=selected.has(t.id);let lightClass='light-gray';if(isActive){const s=techStatus[t.id]||'gray';if(s==='green')lightClass='light-green';else if(s==='red')lightClass='light-red';}const div=document.createElement('div');div.className='tech-row'+(isActive?' active':'');div.innerHTML=`<span class="tech-name">${t.name}</span><span class="tech-light ${lightClass}"></span>`;div.onclick=()=>{if(selected.has(t.id))selected.delete(t.id);else selected.add(t.id);saveSelected();renderTechs();};div.oncontextmenu=(e)=>{e.preventDefault();if(confirm('Tech '+t.name+' löschen?')){TECHS=TECHS.filter(x=>x.id!==t.id);selected.delete(t.id);saveTechsList(TECHS);saveSelected();renderTechs();}};c.appendChild(div);});}
+const TECH_EMOJI = { spark:'🌌', wonder:'🔮', image:'🎨', sam:'👁', code:'💻', llama:'🦙', chatgpt:'💬', grok:'⚡', gemini:'✨', codex:'🖥', claude:'📝', 'gemini-cli':'⌨' };
+function renderTechs(){
+  const c=document.getElementById('techs'); if(!c) return; c.innerHTML='';
+  TECHS.forEach(t=>{
+    const isActive=selected.has(t.id);
+    let lightClass='light-gray';
+    if(isActive){const st=techStatus[t.id]||'gray';if(st==='green')lightClass='light-green';else if(st==='red')lightClass='light-red';}
+    const div=document.createElement('div');
+    div.className='wf-dock-card'+(isActive?' sel':'');
+    div.style.width='170px';
+    div.title='Click: toggle (multi-select for multiple answers) • right-click: delete';
+    const head=document.createElement('div'); head.className='wf-dock-head';
+    const nm=document.createElement('span'); nm.textContent=(TECH_EMOJI[t.id]||'🤖')+' '+t.name;
+    const lamp=document.createElement('span'); lamp.className='tech-light '+lightClass;
+    head.appendChild(nm); head.appendChild(lamp); div.appendChild(head);
+    const sub=document.createElement('div'); sub.className='small'; sub.textContent=isActive?'active — sends + receives':'click to activate';
+    div.appendChild(sub);
+    div.onclick=()=>{if(selected.has(t.id))selected.delete(t.id);else selected.add(t.id);saveSelected();renderTechs();};
+    div.oncontextmenu=(e)=>{e.preventDefault();if(confirm('Tech '+t.name+' löschen?')){TECHS=TECHS.filter(x=>x.id!==t.id);selected.delete(t.id);saveTechsList(TECHS);saveSelected();renderTechs();}};
+    c.appendChild(div);
+  });
+}
 function saveSelected(){localStorage.setItem('nova_selected_v6',JSON.stringify([...selected]));}
 renderTechs();
 function addNewTech(){const name=prompt('Name der neuen Tech?');if(!name)return;const id=name.toLowerCase().replace(/[^a-z0-9]/g,'-')+'-'+Date.now();TECHS.push({id,name});saveTechsList(TECHS);renderTechs();}
@@ -237,8 +330,9 @@ function loadKeys(){const raw=localStorage.getItem('nova_keys_v6')||localStorage
 function updateKeyDots(){const raw=localStorage.getItem('nova_keys_v6');if(!raw)return;const k=JSON.parse(raw);const dots=[];if(k.meta)dots.push('Meta ✅');if(k.openai)dots.push('OpenAI ✅');if(k.grok)dots.push('Grok ✅');if(k.claude)dots.push('Claude ✅');if(k.gemini)dots.push('Gemini ✅');document.getElementById('keyStatus').textContent=dots.join(' | ');}
 function updateTechLightsFromKeys(){const raw=localStorage.getItem('nova_keys_v6');if(!raw)return;const k=JSON.parse(raw);TECHS.forEach(t=>{const id=t.id;if(['spark','wonder','image','sam','code','llama'].includes(id)){techStatus[id]=k.meta?'green':'gray';}else if(['chatgpt','codex'].includes(id)){techStatus[id]=k.openai?'green':'gray';}else if(id==='grok'){techStatus[id]=k.grok?'green':'gray';}else if(id==='claude'){techStatus[id]=k.claude?'green':'gray';}else if(id.includes('gemini')){techStatus[id]=k.gemini?'green':'gray';}});renderTechs();}
 loadKeys();
-function addMessage(role,text,tech){const m=document.getElementById('messages');const div=document.createElement('div');div.className='msg '+(role==='user'?'msg-user':'msg-assist');const label=tech?`<div class="small">${tech.toUpperCase()} • ${new Date().toLocaleTimeString()}</div>`:'';
- div.innerHTML=label+`<div style="margin-top:4px;white-space:pre-wrap">${text}</div>`;m.appendChild(div);m.scrollTop=m.scrollHeight;}
+function addMessage(role,text,tech){const m=document.getElementById('messages');const div=document.createElement('div');div.className='msg '+(role==='user'?'msg-user':'msg-assist');
+ if(tech){const lab=document.createElement('div');lab.className='small';lab.textContent=String(tech).toUpperCase()+' • '+new Date().toLocaleTimeString();div.appendChild(lab);}const bd=document.createElement('div');bd.style.cssText='margin-top:4px;white-space:pre-wrap';bd.textContent=text;div.appendChild(bd);m.appendChild(div);m.scrollTop=m.scrollHeight;}
+function mailDraftLink(mailto){const box=document.getElementById('messages');const last=box.lastChild;if(!last)return;const a=document.createElement('a');a.href=mailto;a.className='btn-send';a.style.cssText='margin-top:8px;display:inline-block;text-decoration:none';a.textContent='Mail öffnen';last.appendChild(a);box.scrollTop=box.scrollHeight;}
 function quickInsert(t){document.getElementById('input').value=t;document.getElementById('input').focus();}
 function handleFiles(files){if(!files||files.length===0)return;let names=[...files].map(f=>f.name).join(', ');addMessage('user','📎 Hochgeladen: '+names,'upload');document.getElementById('input').value+='\n[Files: '+names+']';}
 // Bridge-first fan-out (memory-aware). Falls back to direct browser calls.
@@ -250,7 +344,7 @@ function wfChatHeaders() { const h = {'Content-Type':'application/json'}; try { 
 async function sendMessage(){
   const input=document.getElementById('input');const text=input.value.trim();if(!text)return;input.value='';
   addMessage('user',text,Array.from(selected).join(','));
-  const emailMatch=text.match(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i);if(emailMatch){const email=emailMatch[0];const subject=encodeURIComponent('Test von NOVA Ygdrassil - V6 Clean');const body=encodeURIComponent(`Hi,\n\nTest aus V6 Clean\nTech: ${Array.from(selected).join(', ')}\nZeit: ${new Date().toLocaleString()}\n\nGruß Gürkan`);const mailto=`mailto:${email}?subject=${subject}&body=${body}`;addMessage('assist',`📧 Entwurf für <b>${email}</b><br><a href="${mailto}" class="btn-send" style="margin-top:8px;display:inline-block;text-decoration:none">Mail öffnen</a>`,'system');}
+  const emailMatch=text.match(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i);if(emailMatch){const email=emailMatch[0];const subject=encodeURIComponent('Test von NOVA Ygdrassil - V6 Clean');const body=encodeURIComponent(`Hi,\n\nTest aus V6 Clean\nTech: ${Array.from(selected).join(', ')}\nZeit: ${new Date().toLocaleString()}\n\nGruß Gürkan`);const mailto=`mailto:${email}?subject=${subject}&body=${body}`;addMessage('assist','📧 Entwurf für '+email,'system');mailDraftLink(mailto);}
   const providers=[...new Set([...selected].map(t=>TECH_PROVIDER[t]).filter(Boolean))];
   const keys=wfChatKeys();const wkeys={};providers.forEach(p=>{const k=keys[TECH_KEY[p]];if(k)wkeys[p]=k;});
   try{
@@ -280,12 +374,13 @@ async function sendImage(){
   }catch(e){ addMessage('assist','⚠️ image failed: '+e.message+' | Bridge needed.','system'); }
 }
 
-async function sendMessageLegacy(){const input=document.getElementById('input');const text=input.value.trim();if(!text)return;input.value='';addMessage('user',text,Array.from(selected).join(','));const emailMatch=text.match(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i);if(emailMatch){const email=emailMatch[0];const subject=encodeURIComponent('Test von NOVA Ygdrassil - V6 Clean');const body=encodeURIComponent(`Hi,\n\nTest aus V6 Clean\nTech: ${Array.from(selected).join(', ')}\nZeit: ${new Date().toLocaleString()}\n\nGruß Gürkan`);const mailto=`mailto:${email}?subject=${subject}&body=${body}`;addMessage('assist',`📧 Entwurf für <b>${email}</b><br><a href="${mailto}" class="btn-send" style="margin-top:8px;display:inline-block;text-decoration:none">Mail öffnen</a>`,'system');}
+async function sendMessageLegacy(){const input=document.getElementById('input');const text=input.value.trim();if(!text)return;input.value='';addMessage('user',text,Array.from(selected).join(','));const emailMatch=text.match(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i);if(emailMatch){const email=emailMatch[0];const subject=encodeURIComponent('Test von NOVA Ygdrassil - V6 Clean');const body=encodeURIComponent(`Hi,\n\nTest aus V6 Clean\nTech: ${Array.from(selected).join(', ')}\nZeit: ${new Date().toLocaleString()}\n\nGruß Gürkan`);const mailto=`mailto:${email}?subject=${subject}&body=${body}`;addMessage('assist','📧 Entwurf für '+email,'system');mailDraftLink(mailto);}
  const raw=localStorage.getItem('nova_keys_v6');const keys=raw?JSON.parse(raw):{};for(const techId of selected){let txt='';let failed=false;try{if((techId==='chatgpt'||techId==='codex')&&keys.openai){const model=techId==='codex'?'gpt-4o':'gpt-4o-mini';const res=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+keys.openai},body:JSON.stringify({model,messages:[{role:'user',content:text}]})});if(!res.ok)throw new Error('HTTP '+res.status);const d=await res.json();txt=d.choices?.[0]?.message?.content||'Keine Antwort';}else if(['spark','wonder','image','sam','code','llama'].includes(techId)&&keys.meta){const model=techId==='wonder'?'muse-wonder-1.0':'muse-spark-1.3-contributor';const res=await fetch('https://api.meta.ai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+keys.meta},body:JSON.stringify({model,messages:[{role:'user',content:text}]})});if(!res.ok)throw new Error('HTTP '+res.status);const d=await res.json();txt=d.choices?.[0]?.message?.content||d.message||'Keine Antwort';}else if(techId==='grok'&&keys.grok){const res=await fetch('https://api.x.ai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+keys.grok},body:JSON.stringify({model:'grok-4',messages:[{role:'user',content:text}]})});if(!res.ok)throw new Error('HTTP '+res.status);const d=await res.json();txt=d.choices?.[0]?.message?.content||'Keine Antwort';}else if(techId==='claude'&&keys.claude){const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':keys.claude,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-3-5-sonnet-20241022',max_tokens:1024,messages:[{role:'user',content:text}]})});if(!res.ok)throw new Error('HTTP '+res.status);const d=await res.json();txt=d.content?.[0]?.text||'Keine Antwort';}else if(techId.includes('gemini')&&keys.gemini){const res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key='+keys.gemini,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:text}]}]})});if(!res.ok)throw new Error('HTTP '+res.status);const d=await res.json();txt=d.candidates?.[0]?.content?.parts?.[0]?.text||'Keine Antwort';}else{txt=`⚠️ Kein Key für ${techId}. Echo: "${text}"`;}}catch(e){txt=`⚠️ ${techId} fehlgeschlagen: ${e.message} | Echo: "${text}"`;failed=true;}techStatus[techId]=failed?'red':'green';addMessage('assist',txt,techId+(failed?' • ROT':' • GRÜN'));renderTechs();}}
 async function testAll(){document.getElementById('input').value='Hallo - Teste alle Techs V6 Clean';sendMessage();}
-function addTodo(){const inp=document.getElementById('todoInput');const txt=inp.value.trim();if(!txt)return;const list=document.getElementById('todoList');const div=document.createElement('div');div.style.cssText='background:#151515;border:1px solid #222;border-radius:8px;padding:8px;margin-top:6px;display:flex;justify-content:space-between';div.innerHTML=`<span>${txt}</span><span style="cursor:pointer" onclick="this.parentElement.remove();saveTodos()">✕</span>`;list.appendChild(div);inp.value='';saveTodos();}
+function todoRow(t){const div=document.createElement('div');div.style.cssText='background:#151515;border:1px solid #222;border-radius:8px;padding:8px;margin-top:6px;display:flex;justify-content:space-between';const sp=document.createElement('span');sp.textContent=t;const del=document.createElement('span');del.style.cursor='pointer';del.textContent='✕';del.onclick=()=>{div.remove();saveTodos();};div.appendChild(sp);div.appendChild(del);return div;}
+function addTodo(){const inp=document.getElementById('todoInput');const txt=inp.value.trim();if(!txt)return;const list=document.getElementById('todoList');list.appendChild(todoRow(txt));inp.value='';saveTodos();}
 function saveTodos(){const items=[...document.querySelectorAll('#todoList div span:first-child')].map(s=>s.textContent);localStorage.setItem('nova_todos_v6',JSON.stringify(items));}
-function loadTodos(){const raw=localStorage.getItem('nova_todos_v6');if(!raw)return;try{const items=JSON.parse(raw);items.forEach(t=>{const list=document.getElementById('todoList');const div=document.createElement('div');div.style.cssText='background:#151515;border:1px solid #222;border-radius:8px;padding:8px;margin-top:6px;display:flex;justify-content:space-between';div.innerHTML=`<span>${t}</span><span style="cursor:pointer" onclick="this.parentElement.remove();saveTodos()">✕</span>`;list.appendChild(div);});}catch(e){}}
+function loadTodos(){const raw=localStorage.getItem('nova_todos_v6');if(!raw)return;try{const items=JSON.parse(raw);items.forEach(t=>{const list=document.getElementById('todoList');list.appendChild(todoRow(t));});}catch(e){}}
 loadTodos();
 function saveLog(){localStorage.setItem('nova_log_v6',document.getElementById('buildLog').value);}
 function loadLog(){const raw=localStorage.getItem('nova_log_v6');if(raw)document.getElementById('buildLog').value=raw;}loadLog();
@@ -313,88 +408,97 @@ async function wfRefresh() {
   wfSetConn('Connecting …');
   try {
     const r = await fetch(wfBase() + '/api/agents', { headers: wfHeaders() });
-    if (r.status === 401) { wfSetConn('⛔ 401: wrong or missing bridge token (Advanced).'); wfSetBlinker(false); return; }
+    if (r.status === 401) { wfSetConn('⛔ 401: wrong or missing bridge token (Advanced).'); wfSetBlinker(false); wfMasterUpdate(null); wfConnOk = false; wfEverConn = true; wfHumanLamp(); return; }
     if (!r.ok) throw new Error('HTTP ' + r.status);
     const agents = await r.json();
     const box = document.getElementById('wfGarage'); box.innerHTML = '';
-    agents.forEach((a) => {
-      const div = wfel('div', 'tech-row');
-      div.style.cursor = 'pointer';
-      div.title = 'Add ' + a.id + ' step';
-      div.onclick = () => wfAddStep(a.id === 'muse' ? 'muse' : a.id);
-      const left = wfel('div');
-      left.appendChild(wfel('div', 'tech-name', a.label));
-      left.appendChild(wfel('div', 'small', (a.version ? a.version + ' • ' : '') + (a.detail || '') + ' • ' + new Date(a.lastCheck).toLocaleTimeString()));
-      div.appendChild(left);
-      const live = a.status === 'ready';
-      const cls = live ? 'light-green blink' : (a.status === 'unavailable' ? 'light-red' : 'light-gray');
-      div.appendChild(wfel('span', 'tech-light ' + cls));
-      box.appendChild(div);
+    const DOCK = [
+      { agent: 'gemini', icon: '✨', name: 'Gemini CLI' },
+      { agent: 'codex', icon: '💻', name: 'Codex Worker' },
+      { agent: null, icon: '🛡', name: 'Phobos CI', planned: true },
+      { agent: 'grok', icon: '⚡', name: 'Grok Reviewer' },
+      { agent: null, icon: '👤', name: 'Tommy PC', human: true },
+    ];
+    const byId = {}; agents.forEach((a) => { byId[a.id] = a; });
+    DOCK.forEach((c) => {
+      const card = wfel('div', 'wf-dock-card');
+      const a = c.agent ? byId[c.agent] : null;
+      const head = wfel('div', 'wf-dock-head');
+      head.appendChild(wfel('span', '', c.icon + ' ' + c.name));
+      const lamp = wfel('span', 'tech-light ' + (c.planned ? 'light-gray' : c.human ? 'light-orange' : a && a.status === 'ready' ? 'light-green blink' : 'light-red'));
+      if (c.human) lamp.id = 'wfTommyLight';
+      head.appendChild(lamp); card.appendChild(head);
+      card.appendChild(wfel('div', 'small', c.planned ? 'planned module — not connected yet' : c.human ? 'human authority — decides at the end' : ((a.version ? a.version + ' • ' : '') + (a.detail || ''))));
+      const ports = wfel('div', 'wf-dock-ports'); ports.textContent = '\u25CF \u25CF \u25CF In \u00B7 Out \u25CF \u25CF \u25CF'; card.appendChild(ports);
+      if (c.planned) { card.style.opacity = '0.65'; card.title = 'Phobos CI — planned'; }
+      else if (c.human) { card.title = 'Tommy PC — human authority'; }
+      else if (a) { card.title = 'Add ' + a.id + ' step (click or drag)'; }
+      card.onpointerdown = (ev) => wfDockDrag(ev, c, a);
+      box.appendChild(card);
     });
-    const providers = [['Meta', 'metaKey'], ['OpenAI', 'openaiKey'], ['Grok', 'grokKey'], ['Claude', 'claudeKey'], ['Gemini', 'geminiKey']];
-    providers.forEach(([name, keyId]) => {
-      const div = wfel('div', 'tech-row');
-      div.style.opacity = '0.55';
-      div.title = 'Provider modules need an adapter (soon)';
-      div.onclick = () => { document.getElementById('wfGarageNote').textContent = name + ': provider module — adapter coming soon. The 3 orchestrators above are live.'; };
-      const left = wfel('div');
-      left.appendChild(wfel('div', 'tech-name', name));
-      const v = keyValidity[keyId];
-      left.appendChild(wfel('div', 'small', 'adapter soon • key: ' + (v === true ? 'valid' : v === false ? 'invalid' : 'unknown')));
-      div.appendChild(left);
-      div.appendChild(wfel('span', 'tech-light ' + (v === true ? 'light-green' : v === false ? 'light-red' : 'light-gray')));
-      box.appendChild(div);
-    });
+    try { wfTommyLamp(); } catch {}
     wfSetConn('Connected: ' + agents.length + ' orchestrators • ' + new Date().toLocaleTimeString());
-    wfSetBlinker(true);
+    try { document.getElementById('wfGarageNote').textContent = 'Drag a card onto the canvas, or click it to add a step.'; } catch {}
+    wfCanvasHint(wfNodes.length ? wfNodes.length + ' card(s) on canvas. Drag to move, output \u2192 input to wire.' : 'Garage is live \u2014 drag a card onto this canvas.');
+    wfSetBlinker(true); wfConnOk = true; wfEverConn = true; wfMasterUpdate(agents);
     wfLoadTasks(); apRefresh();
-  } catch (e) { wfSetConn('⛔ Bridge unreachable (' + e.message + '). Is start.bat running?'); wfSetBlinker(false); }
+  } catch (e) { wfSetConn('⛔ Bridge unreachable (' + e.message + '). Start it with start.bat, then press Connect \u2014 or open http://127.0.0.1:8000/v6'); wfSetBlinker(false); wfMasterUpdate(null); wfConnOk = false; wfHumanLamp();
+    try { document.getElementById('wfGarageNote').textContent = 'No bridge \u2014 cards appear after Connect. Is start.bat running?'; } catch {}
+    wfCanvasHint('Offline: start the bridge (start.bat) and press Connect.'); }
 }
 
 let wfSteps = [];
-function wfAddStep(agent, instruction) {
-  if (wfSteps.length >= 5) return;
-  wfSteps.push({ agent: agent || 'codex', instruction: instruction || '' });
-  wfRenderSteps();
-}
-function wfRenderSteps() {
-  const box = document.getElementById('wfSteps'); box.innerHTML = '';
-  wfSteps.forEach((s, i) => {
-    const row = wfel('div'); row.style.cssText = 'display:grid;grid-template-columns:44px 150px 1fr auto;gap:8px;margin-top:6px;align-items:center';
-    row.appendChild(wfel('div', 'tech-name', '#' + (i + 1)));
-    const sel = wfel('select', 'input');
-    ['codex', 'gemini', 'muse'].forEach((a) => { const o = document.createElement('option'); o.value = a; o.textContent = a; if (s.agent === a) o.selected = true; sel.appendChild(o); });
-    sel.onchange = () => { s.agent = sel.value; };
-    const det = document.createElement('details');
-    const sum = wfel('summary', 'small', s.instruction ? ('Instructions: ' + s.instruction.slice(0, 70)) : 'Instructions (click to edit)');
-    sum.style.cursor = 'pointer';
-    const inp = wfel('input', 'input'); inp.placeholder = 'Instructions for step ' + (i + 1); inp.value = s.instruction;
-    inp.style.marginTop = '6px';
-    inp.oninput = () => { s.instruction = inp.value; };
-    det.appendChild(sum); det.appendChild(inp);
-    const del = wfel('button', 'btn-dark', '✕'); del.onclick = () => { wfSteps.splice(i, 1); wfRenderSteps(); };
-    row.appendChild(sel); row.appendChild(det); row.appendChild(del);
-    box.appendChild(row);
-  });
+function wfAddStep(agent, instruction, x, y) {
+  if (wfSteps.length >= 5) { wfCanvasHint('Max 5 steps — delete one first (✕ on the card).'); return; }
+  const __u = 'n' + Date.now().toString(36) + Math.floor(Math.random() * 1e4).toString(36);
+  wfSteps.push({ uid: __u, agent: agent || 'codex', instruction: instruction || '' });
+  wfNodeAdd(__u, agent || 'codex', x, y);
 }
 function wfDemo() {
-  document.getElementById('wfGoal').value = 'Tommy portal shows live status from /status';
-  document.getElementById('wfCheck').value = '';
+  wfNodes = []; wfEdges = []; wfWireFrom = null;
+  const p = 'n' + Date.now().toString(36);
+  wfNodes.push({ uid: p + 's', agent: 'source', kind: 'text', text: 'Tommy portal shows live status from /status', x: 20, y: 60 });
   wfSteps = [
-    { agent: 'codex', instruction: 'Extend tommy/index.html: fetch("/status") and show repo + Meta/GitHub flags in the NOVA-Worker card. Minimal change, no redesign.' },
-    { agent: 'gemini', instruction: 'Review the previous step diff (git diff) for correctness and security. Summarize briefly.' },
+    { uid: p + 'a', agent: 'codex', instruction: 'Extend tommy/index.html: fetch("/status") and show repo + Meta/GitHub flags in the NOVA-Worker card. Minimal change, no redesign.' },
+    { uid: p + 'b', agent: 'gemini', instruction: 'Review the previous step diff (git diff) for correctness and security. Summarize briefly.' },
   ];
-  wfRenderSteps();
+  wfNodeAdd(p + 'a', 'codex', 230, 60); wfNodeAdd(p + 'b', 'gemini', 440, 90);
+  wfEdges.push({ from: { uid: p + 's', port: 0 }, to: { uid: p + 'a', port: 0 } });
+  wfEdges.push({ from: { uid: p + 'a', port: 0 }, to: { uid: p + 'b', port: 0 } });
+  wfPersist(); wfCanvasRender(); wfSyncSteps();
+  wfCanvasHint('Demo loaded — press ▶ Execute Workflow.');
 }
-wfAddStep();
+(function wfBoot(){
+  const cv = document.getElementById('wfCanvas');
+  if (cv) {
+    cv.onclick = (ev) => { if (ev.target === cv && !wfNodes.length) wfCanvasHint('Drag a card here from the Dockingstation \u2014 or click a card.'); };
+
+
+  }
+
+  try {
+    const d = JSON.parse(localStorage.getItem('nova_canvas_v6') || 'null');
+    if (d && Array.isArray(d.nodes) && d.nodes.length) {
+      wfNodes = d.nodes; wfEdges = d.edges || []; wfSteps = Array.isArray(d.steps) ? d.steps : [];
+
+      wfCanvasRender(); return;
+    }
+  } catch {}
+
+  try { document.getElementById('wfGarageNote').textContent = 'Connecting to the bridge \u2026'; } catch {}
+  wfCanvasHint('Waiting for bridge \u2026 cards appear after Connect.');
+  setTimeout(() => { try { wfRefresh(); } catch {} }, 800);
+})();
 
 async function wfStart() {
-  const goal = document.getElementById('wfGoal').value.trim();
-  const check = document.getElementById('wfCheck').value.trim();
+  const __src = wfNodes.filter((x) => x.agent === 'source').sort((a, b) => a.x - b.x)[0];
+  const goal = __src ? String(__src.text || '').trim().slice(0, 2000) : '';
+
   const steps = wfSteps.map((s) => ({ agent: s.agent, instruction: s.instruction.trim() })).filter((s) => s.instruction);
-  if (!goal || !steps.length) { wfSetConn('⛔ Goal + at least 1 step with instructions required.'); return; }
+  if (!goal) { wfSetConn('⛔ No source card on the canvas — ask below ⬇ (or ＋ upload) first.'); return; }
+  if (!steps.length) { wfSetConn('⛔ ' + wfSteps.length + ' step(s) on canvas, but none has instructions — click a card, type instructions, then Execute.'); return; }
   try {
-    const body = { goal, steps }; if (check) body.check = check;
+    const body = { goal, steps };
     let r = await fetch(wfBase() + '/api/workflow', { method: 'POST', headers: wfHeaders(), body: JSON.stringify(body) });
     if (!r.ok) throw new Error('Create: HTTP ' + r.status + ' ' + (await r.text()).slice(0, 200));
     const t = await r.json();
@@ -416,6 +520,7 @@ async function wfPollOnce() {
     const r = await fetch(wfBase() + '/api/workflow?id=' + encodeURIComponent(wfCurrentTask), { headers: wfHeaders() });
     if (!r.ok) return 'err';
     const t = await r.json();
+    wfLastTask = t; wfConnOk = true; wfEverConn = true;
     wfRenderFlow(t); wfRenderRun(t); wfLoadTasks(); apRefresh();
     if (['completed', 'failed', 'cancelled'].includes(t.status)) return 'done';
     if (t.status === 'review_ready') return 'review';
@@ -426,7 +531,7 @@ function wfPoll() {
   if (wfPollTimer) clearInterval(wfPollTimer);
   wfPollTimer = setInterval(async () => {
     const s = await wfPollOnce();
-    if (s === 'done' || s === 'review') { clearInterval(wfPollTimer); wfPollTimer = null;
+    if (s === 'done' || s === 'review') { clearInterval(wfPollTimer); wfPollTimer = null; wfHumanLamp();
       wfSetConn(s === 'review' ? '✔ Review ready — decision needed below.' : '■ Task ended — see Run.'); }
   }, 3000);
   wfPollOnce();
@@ -442,14 +547,19 @@ function wfRenderFlow(t) {
     if (i < t.steps.length - 1) { const ar = wfel('span', '', '→'); ar.style.cssText = 'color:' + colors[i % 3] + ';font-weight:900'; row.appendChild(ar); }
   });
   const ar = wfel('span', '', '→'); ar.style.color = '#f59e0b'; row.appendChild(ar);
-  const fin = wfel('span', 'badge', '🏁 Tommy / You — decide');
-  fin.style.cssText = 'border:2px solid #f59e0b;background:#151515;color:#fff';
+  const endState = (t.status === 'review_ready' || (t.status === 'completed' && t.outcome === 'approved')) ? 'ok' : ((t.status === 'failed' || t.outcome === 'rejected') ? 'bad' : 'idle');
+  const endColor = endState === 'ok' ? '#22c55e' : endState === 'bad' ? '#ef4444' : '#f59e0b';
+  const fin = wfel('span', 'badge', '🏁 Tommy / You — ' + (endState === 'ok' ? 'green light' : endState === 'bad' ? 'blocked' : 'decide'));
+  fin.style.cssText = 'border:2px solid ' + endColor + ';background:#151515;color:#fff';
+  try { const f0 = document.getElementById('wfFinish'); if (f0) f0.style.boxShadow = '0 0 ' + (endState === 'idle' ? '8' : '18') + 'px ' + endColor; } catch {}
   row.appendChild(fin);
   box.appendChild(row);
 }
 function wfRenderRun(t) {
   const box = document.getElementById('wfRun'); box.innerHTML = '';
-  box.appendChild(wfel('div', '', 'Task ' + t.id + ' • ' + t.status + (t.outcome ? ' • ' + t.outcome : '') + (t.branch ? ' • ' + t.branch : '')));
+  box.appendChild(wfel('div', '', 'Task ' + t.id + ' • ' + t.status + (t.outcome ? ' • ' + t.outcome : '') + (t.branch ? ' • ' + t.branch : '') + (t.mergedAt ? ' • merged ' + t.mergedAt : '')));
+  const lastDone = t.steps.filter((x) => x.status === 'completed' && x.output).pop();
+  if (lastDone) box.appendChild(wfel('div', 'small', 'Result: ' + String(lastDone.output).replace(/\s+/g, ' ').slice(0, 220)));
   t.steps.forEach((s) => {
     const row = wfel('div', 'tech-row');
     const left = wfel('div');
@@ -490,7 +600,7 @@ async function apRefresh() {
     box.innerHTML = '';
     if (!r.ok) { box.appendChild(wfel('div', 'small', r.status === 401 ? '⛔ Token missing (Advanced above).' : 'Queue unavailable.')); return; }
     const list = await r.json();
-    if (!list.length) { box.appendChild(wfel('div', 'small', 'No pending approvals. ✅')); return; }
+    wfPendingCount = list.length; wfHumanLamp(); if (!list.length) { box.appendChild(wfel('div', 'small', 'No pending approvals. ✅')); return; }
     list.forEach((a) => {
       const row = wfel('div', 'tech-row'); row.style.display = 'block';
       row.appendChild(wfel('div', 'tech-name', 'Approval ' + a.id + ' • Task ' + a.taskId));
@@ -558,6 +668,307 @@ function applyValidityLights() {
 const _origLights = updateTechLightsFromKeys;
 updateTechLightsFromKeys = function () { _origLights(); applyValidityLights(); };
 setTimeout(() => { try { validateKeys(); } catch {} }, 1500);
+setTimeout(() => { try { wfPing(); } catch {} }, 2000);
+async function wfMerge() {
+  const t = wfLastTask;
+  if (!t) { wfSetConn('Nothing to merge yet \u2014 run a chain first.'); return; }
+  wfSetConn('Checking approval for ' + t.id + ' \u2026');
+  try {
+    const g = await fetch(wfBase() + '/api/workflow?id=' + encodeURIComponent(t.id), { headers: wfHeaders() });
+    if (!g.ok) throw new Error('HTTP ' + g.status);
+    const live = await g.json();
+    wfLastTask = live;
+    if (!(live.status === 'completed' && live.outcome === 'approved')) {
+      wfSetConn('\u26D4 Merge blocked: ' + (live.branch || live.id) + ' needs Human Authority approval (yes) \u2014 decide in the Tommy portal first.');
+      apRefresh(); return;
+    }
+    if (live.mergedAt) { wfSetConn('Already merged at ' + live.mergedAt + ' (' + (live.mergeCommit || '?') + ').'); return; }
+    if (!confirm('Merge ' + live.branch + ' into this checkout?')) return;
+    const r = await fetch(wfBase() + '/api/workflow/merge', { method: 'POST', headers: wfHeaders(), body: JSON.stringify({ id: live.id }) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(j.error || ('HTTP ' + r.status));
+    wfSetConn('Merged \u2713 ' + live.branch + ' \u2192 ' + ((j.task && j.task.mergeCommit) || 'HEAD'));
+    if (j.task) { wfLastTask = j.task; wfRenderFlow(j.task); wfRenderRun(j.task); }
+    wfLoadTasks(); apRefresh();
+  } catch (e) { wfSetConn('\u26D4 Merge failed: ' + e.message); }
+}
+
+// aa5 batch: master light, taskbar actions, result download, end/human lamps.
+let wfLastTask = null;
+let wfConnOk = false;
+let wfEverConn = false;
+let wfPendingCount = 0;
+function wfTaskSource() { const g = document.getElementById('wfAsk'); if (g) { g.focus(); try { g.scrollIntoView({ block: 'nearest' }); } catch {} } wfSetConn('Task Source: type below ⬇ or ＋ upload — Enter puts it on the canvas.'); }
+function wfSave() { wfPersist(); wfSetConn('Saved ✓ ' + new Date().toLocaleTimeString()); }
+function wfSourceAdd(text, kind, x, y) {
+  const __u = 'n' + Date.now().toString(36) + Math.floor(Math.random() * 1e4).toString(36);
+  const k = wfNodes.filter((v) => v.agent === 'source').length;
+  wfNodes.push({ uid: __u, agent: 'source', kind: kind || 'text', text: String(text || '').slice(0, 4000), x: x !== undefined ? x : 20, y: y !== undefined ? y : 60 + (k % 3) * 40 });
+  wfPersist(); wfCanvasRender();
+  wfCanvasHint('Source card placed — wire its outputs into the chain, then ▶ Execute Workflow.');
+}
+function wfAskSend() {
+  const el = document.getElementById('wfAsk');
+  const v = ((el && el.value) || '').trim();
+  if (!v) { wfCanvasHint('Type your question first — Enter puts it on the canvas.'); return; }
+  wfSourceAdd(v, 'text');
+  el.value = '';
+}
+function wfFilePicked(inp) {
+  const f = inp && inp.files && inp.files[0];
+  if (!f) return;
+  const done = (txt) => { wfSourceAdd((f.name ? '[' + f.name + '] ' : '') + txt, 'file'); try { inp.value = ''; } catch {} };
+  if (/image\//.test(f.type || '')) done('(image attached — describe what to do with it in a step)');
+  else { const r = new FileReader(); r.onload = () => done(String(r.result || '').slice(0, 3500)); r.onerror = () => done('(unreadable file)'); r.readAsText(f); }
+}
+function wfCycleAgent(uid) {
+  const order = ['codex', 'gemini', 'grok', 'muse'];
+  const sc = wfSteps.find((x) => x.uid === uid);
+  const nd = wfNodes.find((x) => x.uid === uid);
+  if (!sc || !nd || nd.agent === 'source') return;
+  const nx = order[(order.indexOf(sc.agent) + 1) % order.length];
+  sc.agent = nx; nd.agent = nx; wfPersist(); wfCanvasRender();
+}
+function wfResetGraph() { wfEdges = []; wfWireFrom = null; wfPersist(); wfCanvasRender(); wfSyncSteps(); wfCanvasHint('Graph reset — wires cleared, cards kept.'); }
+function wfTommyLamp() { const el = document.getElementById('wfTommyLight'); if (!el) return;
+  let cls = 'light-gray';
+  if (wfEverConn && !wfConnOk) cls = 'light-yellow';
+  else if (wfConnOk && (wfPendingCount > 0 || !!wfPollTimer)) cls = 'light-green blink';
+  else if (wfConnOk) cls = 'light-orange';
+  el.className = 'tech-light ' + cls; }
+function wfPinPos(uid, side, port, cvRect) {
+  try {
+    const el = wfCanvasEl().querySelector('.wf-node[data-uid="' + uid + '"] .' + (side === 'in' ? 'wf-pin-in' : 'wf-pin-out') + '[data-p="' + port + '"]');
+    if (!el) return null;
+    const r = el.getBoundingClientRect();
+    return { x: r.left - cvRect.left + r.width / 2, y: r.top - cvRect.top + r.height / 2 };
+  } catch { return null; }
+}
+function wfDockDrag(ev, c, a) {
+  if (ev.button !== undefined && ev.button !== 0) return;
+  ev.preventDefault();
+  const sx = ev.clientX, sy = ev.clientY;
+  let ghost = null;
+  const overCanvas = (x, y) => { const r = wfCanvasEl().getBoundingClientRect(); return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom; };
+  const move = (e2) => {
+    if (!ghost && Math.hypot(e2.clientX - sx, e2.clientY - sy) > 6 && a && !c.planned && !c.human) {
+      ghost = document.createElement('div');
+      ghost.className = 'wf-dock-card wf-ghost';
+      ghost.textContent = c.icon + ' ' + c.name;
+      ghost.style.cssText = 'position:fixed;z-index:99;pointer-events:none;opacity:.9;margin:0;';
+      document.body.appendChild(ghost);
+    }
+    if (ghost) {
+      ghost.style.left = (e2.clientX - 100) + 'px'; ghost.style.top = (e2.clientY - 20) + 'px';
+      wfCanvasEl().classList.toggle('wf-drop', overCanvas(e2.clientX, e2.clientY));
+    }
+  };
+  const up = (e3) => {
+    window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up);
+    wfCanvasEl().classList.remove('wf-drop');
+    if (!ghost) {
+      if (c.planned) { document.getElementById('wfGarageNote').textContent = 'Phobos CI: planned module \u2014 not connected yet.'; }
+      else if (c.human) { try { document.getElementById('apList').scrollIntoView({ block: 'nearest' }); } catch {} }
+      else if (a) wfAddStep(a.id);
+      return;
+    }
+    ghost.remove(); ghost = null;
+    if (!overCanvas(e3.clientX, e3.clientY) || !a) return;
+    if (wfSteps.length >= 5) { wfCanvasHint('Max 5 steps \u2014 delete one first (\u2715 on the card or step).'); return; }
+    const r = wfCanvasEl().getBoundingClientRect();
+    const x = Math.max(0, Math.min(r.width - 180, Math.round(e3.clientX - r.left - 85)));
+    const y = Math.max(0, Math.min(r.height - 120, Math.round(e3.clientY - r.top - 40)));
+    wfAddStep(a.id, '', x, y);
+    wfCanvasHint(a.id + ' placed \u2014 drag to move, click output \u2192 input to wire.');
+  };
+  window.addEventListener('pointermove', move); window.addEventListener('pointerup', up);
+}
+function wfMasterUpdate(agents) {
+  const light = document.getElementById('wfMasterLight'), txt = document.getElementById('wfMasterText');
+  if (!light || !txt) return;
+  const ok = agents && agents.length > 0 && agents.every((a) => a.status === 'ready' || a.status === 'session');
+  light.className = 'tech-light ' + (ok ? 'light-green blink' : 'light-red');
+  txt.textContent = ok ? 'Active!' : 'Connector Problem! Check the Dockingstation below for more information.';
+  txt.style.color = ok ? '#22c55e' : '#ef4444';
+}
+async function wfPing() {
+  const light = document.getElementById('chatLight'), txt = document.getElementById('chatActive');
+  try {
+    const r = await fetch(wfChatBase() + '/status');
+    if (!r.ok) throw new Error('bad');
+    if (light) light.className = 'tech-light light-green blink';
+    if (txt) { txt.textContent = 'Active!'; txt.style.color = '#22c55e'; }
+    wfConnOk = true; wfEverConn = true;
+  } catch {
+    if (light) light.className = 'tech-light light-red';
+    if (txt) { txt.textContent = 'Offline'; txt.style.color = '#ef4444'; }
+    wfConnOk = false;
+  }
+  wfHumanLamp();
+}
+function wfHumanLamp() {
+  const lamp = document.getElementById('apLamp'), txt = document.getElementById('apLampText');
+  if (!lamp || !txt) return;
+  const running = !!wfPollTimer;
+  let cls = 'light-gray', label = '—', color = '#9ca3af';
+  if (wfEverConn && !wfConnOk) { cls = 'light-yellow'; label = 'Offline — autonomous possible'; color = '#facc15'; }
+  else if (wfConnOk && (wfPendingCount > 0 || running)) { cls = 'light-green blink'; label = 'Online'; color = '#22c55e'; }
+  else if (wfConnOk) { cls = 'light-orange'; label = 'Idle'; color = '#fb923c'; }
+  lamp.className = 'tech-light ' + cls;
+  txt.textContent = label; txt.style.color = color; try { wfTommyLamp(); } catch {}
+}
+function wfDownload() {
+  const t = wfLastTask;
+  if (!t) { wfSetConn('Nothing to download yet — run a chain first.'); return; }
+  const lines = ['# NOVA workflow result', '', 'Task: ' + t.id + ' • ' + t.status + (t.outcome ? '/' + t.outcome : ''), 'Goal: ' + (t.goal || ''), ''];
+  (t.steps || []).forEach((s) => {
+    lines.push('## Step ' + s.n + ' [' + s.agent + '] — ' + s.status);
+    lines.push('');
+    lines.push('Instructions: ' + (s.instruction || ''));
+    lines.push('');
+    lines.push('Output:');
+    lines.push('```');
+    lines.push(String(s.output || '—').slice(0, 4000));
+    lines.push('```');
+    lines.push('');
+  });
+  if (t.diffStat) { lines.push('## Diffstat'); lines.push('```'); lines.push(t.diffStat); lines.push('```'); }
+  const blob = new Blob([lines.join('\n')], { type: 'text/markdown' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'nova-' + t.id + '.md';
+  document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+}
+
+// Node canvas (aa4/aa5): garage deck + free-place flow, port 1 drives execution.
+let wfNodes = [];
+let wfEdges = [];
+let wfWireFrom = null;
+const TRACE_COLORS = ['#22c55e', '#3b82f6', '#a855f7'];
+function wfCanvasEl() { return document.getElementById('wfCanvas'); }
+function wfNodeAdd(uid, agent, x, y) {
+  if (wfNodes.some((n) => n.uid === uid)) return;
+  const i = wfNodes.length;
+  wfNodes.push({ uid, agent, x: x !== undefined ? x : 20 + (i % 3) * 210, y: y !== undefined ? y : 60 + Math.floor(i / 3) * 150 });
+  wfPersist(); wfCanvasRender();
+}
+function wfNodeDel(uid) {
+  wfNodes = wfNodes.filter((n) => n.uid !== uid);
+  wfEdges = wfEdges.filter((e) => e.from.uid !== uid && e.to.uid !== uid);
+  if (wfWireFrom && wfWireFrom.uid === uid) wfWireFrom = null;
+  wfPersist(); wfCanvasRender();
+}
+function wfCanvasRender() {
+  const cv = wfCanvasEl(); if (!cv) return;
+  cv.querySelectorAll('.wf-node').forEach((n) => n.remove());
+  let svg = cv.querySelector('svg');
+  if (!svg) { svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); svg.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1'; cv.appendChild(svg); }
+  svg.innerHTML = '';
+  wfNodes.forEach((nn) => cv.appendChild(wfNodeEl(nn)));
+  const cvRect = cv.getBoundingClientRect();
+  wfEdges.forEach((e, i) => {
+    const p1 = wfPinPos(e.from.uid, 'out', e.from.port, cvRect);
+    const p2 = wfPinPos(e.to.uid, 'in', e.to.port, cvRect);
+    if (!p1 || !p2) return;
+    const mx = (p1.x + p2.x) / 2;
+    const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    p.setAttribute('d', 'M' + p1.x + ',' + p1.y + ' C' + mx + ',' + p1.y + ' ' + mx + ',' + p2.y + ' ' + p2.x + ',' + p2.y);
+    p.setAttribute('stroke', TRACE_COLORS[i % 3]); p.setAttribute('stroke-width', '2.5'); p.setAttribute('fill', 'none');
+    svg.appendChild(p);
+  });
+}
+function wfNodeEl(n) {
+  const d = wfel('div', 'wf-node'); d.dataset.uid = n.uid;
+  const isSrc = n.agent === 'source';
+  if (isSrc) d.style.borderStyle = 'dashed';
+  d.style.left = n.x + 'px'; d.style.top = n.y + 'px';
+  const head = wfel('div', 'wf-node-head');
+  const nm = wfel('span', '', n.agent === 'source' ? '💬 Source' : n.agent);
+  if (!isSrc) { nm.style.cursor = 'pointer'; nm.title = 'Click: switch agent'; nm.onclick = (ev) => { ev.stopPropagation(); wfCycleAgent(n.uid); }; }
+  head.appendChild(nm);
+  const del = wfel('button', 'wf-node-x', '✕');
+  del.onclick = (ev) => { ev.stopPropagation(); const i = wfSteps.findIndex((s) => s.uid === n.uid); if (i >= 0) wfSteps.splice(i, 1); wfNodeDel(n.uid); };
+  head.appendChild(del); d.appendChild(head);
+  const step = wfSteps.find((s) => s.uid === n.uid);
+  const sub = wfel('div', 'small', isSrc ? String(n.text || '').slice(0, 140) : (step && step.instruction ? step.instruction.slice(0, 42) : '⚠ click here — type instructions'));
+  sub.style.cssText = 'color:#9ca3af;margin:4px 0;min-height:16px;font-size:10px';
+  if (!isSrc && !(step && step.instruction)) sub.style.color = '#f59e0b';
+  d.appendChild(sub);
+
+  const edit = wfel('textarea', 'input'); edit.value = step ? step.instruction : ''; edit.placeholder = 'Instructions…';
+  edit.style.cssText = 'display:none;margin-top:4px;min-height:52px;font-size:11px';
+  edit.onclick = (ev) => ev.stopPropagation();
+  edit.oninput = () => { const s2 = wfSteps.find((s) => s.uid === n.uid); if (s2) { s2.instruction = edit.value; sub.textContent = edit.value.trim() ? edit.value.trim().slice(0, 42) : '⚠ click here — type instructions'; sub.style.color = edit.value.trim() ? '#9ca3af' : '#f59e0b'; } wfPersist(); };
+  edit.onchange = () => { wfPersist(); };
+  d.appendChild(edit);
+  d.onclick = () => { if (isSrc) return; edit.style.display = edit.style.display === 'none' ? 'block' : 'none'; };
+  const pins = wfel('div', 'wf-pins');
+  if (!isSrc) for (let p = 0; p < 3; p++) {
+    const irow = wfel('div', 'wf-pin-row');
+    const idot = wfel('button', 'wf-pin wf-pin-in'); idot.dataset.p = String(p);
+    idot.title = 'Input ' + (p + 1) + (p > 0 ? ' (merge: Phase 2)' : '');
+    idot.onclick = (ev) => { ev.stopPropagation(); wfWireTo(n.uid, p); };
+    irow.appendChild(idot); irow.appendChild(wfel('span', '', 'In ' + (p + 1))); pins.appendChild(irow);
+  }
+  const hr = document.createElement('hr'); hr.style.cssText = 'border-color:#222;margin:3px 0'; if (!isSrc) pins.appendChild(hr);
+  for (let p = 0; p < 3; p++) {
+    const orow = wfel('div', 'wf-pin-row out');
+    orow.appendChild(wfel('span', '', 'Out ' + (p + 1)));
+    const odot = wfel('button', 'wf-pin wf-pin-out'); odot.dataset.p = String(p);
+    odot.title = 'Output ' + (p + 1) + (p > 0 ? ' (merge: Phase 2)' : '');
+    odot.onclick = (ev) => { ev.stopPropagation(); wfWireFrom = { uid: n.uid, port: p }; wfCanvasHint('Output ' + (p + 1) + ' selected \u2014 click an input.'); };
+    orow.appendChild(odot); pins.appendChild(orow);
+  }
+  d.appendChild(pins);
+  d.onpointerdown = (ev) => { if (ev.target.closest('button') || ev.target.closest('textarea')) return; wfDragStart(ev, n); };
+  return d;
+}
+function wfWireTo(uid, port) {
+  if (!wfWireFrom) { wfCanvasHint('Click an output dot first, then an input.'); return; }
+  if (wfWireFrom.uid === uid) { wfWireFrom = null; return; }
+  wfEdges = wfEdges.filter((e) => !(e.to.uid === uid && e.to.port === port));
+  wfEdges.push({ from: { uid: wfWireFrom.uid, port: wfWireFrom.port }, to: { uid, port } });
+  wfWireFrom = null; wfPersist(); wfCanvasRender(); wfSyncSteps();
+  wfCanvasHint(wfEdges.length + ' wire(s). Port 1 defines the chain.');
+}
+function wfCanvasHint(t) { const el = document.getElementById('wfCanvasHint'); if (el) el.textContent = t; }
+function wfSyncSteps() {
+  const incoming = {}, outgoing = {};
+  wfEdges.filter((e) => e.from.port === 0 && e.to.port === 0).forEach((e) => { incoming[e.to.uid] = e.from.uid; outgoing[e.from.uid] = e.to.uid; });
+  const order = [], seen = new Set();
+  wfNodes.filter((n) => !incoming[n.uid]).sort((a, b) => a.x - b.x).forEach((st) => {
+    let cur = st.uid;
+    while (cur && !seen.has(cur)) { seen.add(cur); order.push(cur); cur = outgoing[cur]; }
+  });
+  wfNodes.slice().sort((a, b) => a.x - b.x).forEach((n) => { if (!seen.has(n.uid)) order.push(n.uid); });
+  const byUid = {}; wfSteps.forEach((s) => { byUid[s.uid] = s; });
+  const next = [];
+  order.forEach((u) => { if (byUid[u]) { next.push(byUid[u]); delete byUid[u]; } });
+  Object.values(byUid).forEach((s) => next.push(s));
+  wfSteps = next; wfPersist();
+}
+function wfDragStart(ev, n) {
+  ev.preventDefault();
+  const cv = wfCanvasEl().getBoundingClientRect();
+  const dx = ev.clientX - cv.left - n.x, dy = ev.clientY - cv.top - n.y;
+  const move = (e2) => {
+    n.x = Math.max(0, Math.min(cv.width - 180, e2.clientX - cv.left - dx));
+    n.y = Math.max(0, Math.min(cv.height - 120, e2.clientY - cv.top - dy));
+    wfCanvasRender();
+  };
+  const up = (e3) => { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up);
+    try { const dock = document.getElementById('wfGarage'); const over = e3 && document.elementFromPoint(e3.clientX, e3.clientY);
+      if (dock && over && dock.contains(over)) { const i = wfSteps.findIndex((x) => x.uid === n.uid); if (i >= 0) wfSteps.splice(i, 1);
+        wfNodes = wfNodes.filter((x) => x.uid !== n.uid); wfEdges = wfEdges.filter((e) => e.from.uid !== n.uid && e.to.uid !== n.uid);
+        wfPersist(); wfCanvasRender(); wfSyncSteps(); wfCanvasHint(n.agent + ' snapped back to the Dockingstation.'); return; } } catch {}
+    wfPersist(); };
+  window.addEventListener('pointermove', move); window.addEventListener('pointerup', up);
+}
+function wfPersist() {
+  try {
+
+    localStorage.setItem('nova_canvas_v6', JSON.stringify({ nodes: wfNodes, edges: wfEdges, steps: wfSteps }));
+  } catch {}
+}
 
 
 

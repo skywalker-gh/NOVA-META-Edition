@@ -151,6 +151,69 @@ test('WF: muse step pauses for session input, reject path works', async () => {
   assert.equal(again.status, 409);
 });
 
+test('WF: merge blocked without Human Authority approval, works after yes', async () => {
+  const c = await api('POST', '/api/workflow', {
+    goal: 'mock merge goal',
+    steps: [{ agent: 'codex', instruction: 'change something' }],
+  });
+  assert.equal(c.status, 201);
+  const id = c.json.id;
+
+  const early = await api('POST', '/api/workflow/merge', { id });
+  assert.equal(early.status, 409);
+  assert.match(early.json.error, /Human Authority approval/);
+
+  await api('POST', '/api/workflow/run', { id });
+  const done = await waitFor(async () => {
+    const g = await api('GET', `/api/workflow?id=${id}`);
+    return g.json.status === 'review_ready' ? g.json : null;
+  }, 'merge task review_ready');
+
+  const pre = await api('POST', '/api/workflow/merge', { id });
+  assert.equal(pre.status, 409);
+
+  const d = await api('POST', '/api/approvals/decide', { id: done.approvalId, decision: 'yes', by: 'Test' });
+  assert.equal(d.status, 200);
+
+  const m = await api('POST', '/api/workflow/merge', { id });
+  assert.equal(m.status, 200);
+  assert.equal(m.json.ok, true);
+  assert.ok(m.json.task.mergedAt);
+
+  const twice = await api('POST', '/api/workflow/merge', { id });
+  assert.equal(twice.status, 409);
+  assert.match(twice.json.error, /already merged/);
+
+  const ghost = await api('POST', '/api/workflow/merge', { id: 't-nope' });
+  assert.equal(ghost.status, 404);
+});
+
+test('WF: grok reviewer runs as mock step, agents list grok', async () => {
+  const g = await api('GET', '/api/agents');
+  assert.equal(g.status, 200);
+  const grok = g.json.find((a) => a.id === 'grok');
+  assert.ok(grok, 'agents must include grok');
+  assert.ok(['ready', 'unavailable'].includes(grok.status));
+  assert.equal(grok.role, 'reviewer');
+
+  const c = await api('POST', '/api/workflow', {
+    goal: 'mock grok review goal',
+    steps: [
+      { agent: 'codex', instruction: 'write thing' },
+      { agent: 'grok', instruction: 'review thing' },
+    ],
+  });
+  assert.equal(c.status, 201);
+  const id = c.json.id;
+  await api('POST', '/api/workflow/run', { id });
+  const done = await waitFor(async () => {
+    const t = await api('GET', `/api/workflow?id=${id}`);
+    return t.json.status === 'review_ready' ? t.json : null;
+  }, 'grok task review_ready');
+  assert.equal(done.steps[1].status, 'completed');
+  assert.match(done.steps[1].output, /mock-ok:grok/);
+});
+
 test('WF: cancel and agents handshake', async () => {
   const c = await api('POST', '/api/workflow', {
     goal: 'mock cancel goal',
@@ -163,11 +226,23 @@ test('WF: cancel and agents handshake', async () => {
 
   const g = await api('GET', '/api/agents');
   assert.equal(g.status, 200);
-  assert.equal(g.json.length, 3);
+  assert.equal(g.json.length, 4);
   for (const a of g.json) {
     assert.ok(a.id && a.label && a.status && a.lastCheck);
   }
   assert.ok(g.json.some((a) => a.id === 'muse' && a.status === 'session'));
+  assert.ok(g.json.some((a) => a.id === 'grok' && a.role === 'reviewer'));
+});
+
+test('WF: /v6 serves the V6 dashboard (public, same-origin UI)', async () => {
+  for (const p of ['/v6', '/v6/']) {
+    const r = await fetch(BASE + p);
+    assert.equal(r.status, 200);
+    assert.match(r.headers.get('content-type') || '', /text\/html/);
+    const html = await r.text();
+    assert.ok(html.includes('wfCanvas'), p + ' must contain the flow canvas');
+    assert.ok(html.includes('wfGarage'), p + ' must contain the garage');
+  }
 });
 
 test('WF: /grafik serves banner, blocks escape and non-images', async () => {
@@ -180,6 +255,9 @@ test('WF: /grafik serves banner, blocks escape and non-images', async () => {
   assert.equal(esc.status, 404);
   const miss = await fetch(BASE + '/grafik/nope.png', { headers: { authorization: `Bearer ${TOKEN}` } });
   assert.equal(miss.status, 404);
+  const spaced = await fetch(BASE + '/grafik/nova-new-chat-side3%20Kopie.png', { headers: { authorization: `Bearer ${TOKEN}` } });
+  assert.equal(spaced.status, 200);
+  assert.equal(spaced.headers.get('content-type'), 'image/png');
   const txt = await fetch(BASE + '/grafik/x.txt', { headers: { authorization: `Bearer ${TOKEN}` } });
   assert.equal(txt.status, 404);
 });

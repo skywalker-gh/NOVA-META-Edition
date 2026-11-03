@@ -154,9 +154,11 @@
         const h = t('h3', 'Approval ' + a.id + ' • Task ' + a.taskId);
         h.style.cssText = "font-family:'JetBrains Mono',monospace;color:#00ff88;font-size:1rem";
         const g = t('p', a.goal); g.style.cssText = 'color:#e0e0e0;margin-top:6px;font-size:0.9rem';
+        const br = t('p', 'Branch: task/' + a.taskId + (a.checkResult ? ' • Check ' + a.checkResult.command + ': exit ' + a.checkResult.exitCode : ''));
+        br.style.cssText = 'color:#888;margin-top:4px;font-size:0.75rem';
         const pre = t('pre', (a.summary || '') + '\n\nDIFFSTAT:\n' + (a.diffStat || '—'));
         pre.style.cssText = "white-space:pre-wrap;color:#0f0;background:#050505;border:1px solid #222;border-radius:6px;padding:10px;margin-top:8px;font-size:0.75rem;max-height:180px;overflow:auto;font-family:'JetBrains Mono',monospace";
-        card.appendChild(h); card.appendChild(g); card.appendChild(pre);
+        card.appendChild(h); card.appendChild(g); card.appendChild(br); card.appendChild(pre);
         const row = document.createElement('div'); row.style.cssText = 'display:flex;gap:10px;margin-top:10px';
         [['yes', '✅ YES', '#00ff88'], ['no', '❌ NO', '#ff5555'], ['info', '❓ MORE INFO', '#5555ff']].forEach((d) => {
           const b = t('button', d[1]);

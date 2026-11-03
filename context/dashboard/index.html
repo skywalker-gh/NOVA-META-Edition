@@ -651,6 +651,55 @@
         }
     </script>
 
+    <!-- NOVA UI Sound Pack Elements -->
+    <audio id="sfx-click" src="/nova-sounds/nova_ui_click_sharp.mp3" preload="auto"></audio>
+    <audio id="sfx-confirm" src="/nova-sounds/nova_ui_confirm.mp3" preload="auto"></audio>
+    <audio id="sfx-whoosh" src="/nova-sounds/nova_ui_whoosh.mp3" preload="auto"></audio>
+    <audio id="sfx-whoosh-reverse" src="/nova-sounds/nova_ui_whoosh_reverse.mp3" preload="auto"></audio>
+    <audio id="sfx-bass" src="/nova-sounds/nova_ui_bass_thump.mp3" preload="auto"></audio>
+    <audio id="sfx-blip" src="/nova-sounds/nova_ui_blip.mp3" preload="auto"></audio>
+    <audio id="amb-intro" src="/sounds/Gee%20-%20Autonom%20(Original%20Mix).mp3" preload="auto"></audio>
+
+    <script>
+        function playSfx(id, volume = 0.6) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.volume = volume;
+            el.currentTime = 0;
+            el.play().catch(() => {});
+        }
+
+        // Original-track ambient rotation (user rights cleared)
+        const NOVA_TRACKS = [
+            '/sounds/Gee%20-%20Autonom%20(Original%20Mix).mp3',
+            '/sounds/Ali%20Tat%20-%20Ghost%20(Gee%20Remix).mp3',
+            '/sounds/Marco%20D%20-%20Black%20Rose%20(Gee%20Remix)%20%5BGee%20Mastering%5D%2006.06.2017.mp3'
+        ];
+        let novaTrackIx = 0;
+        document.getElementById('amb-intro').addEventListener('ended', () => {
+            novaTrackIx = (novaTrackIx + 1) % NOVA_TRACKS.length;
+            const el = document.getElementById('amb-intro');
+            el.src = NOVA_TRACKS[novaTrackIx];
+            el.play().catch(() => {});
+        });
+
+        // Play subtle ambient intro on load
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => playSfx('amb-intro', 0.2), 800);
+            
+            // Wire global button clicks for audio feedback
+            document.querySelectorAll('button').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (btn.classList.contains('btn-primary') || btn.id === 'executeWorkflowBtn') {
+                        playSfx('sfx-bass', 0.65);
+                    } else {
+                        playSfx('sfx-click', 0.6);
+                    }
+                });
+            });
+        });
+    </script>
+
     <footer>
         NOVA // Yggdrasil • Multi Agent-Bus Ecosystem & Workflow Manager • Built for Meta Global AI Hackathon 2026
     </footer>

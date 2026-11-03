@@ -188,12 +188,13 @@ const server = http.createServer(async (req, res) => {
         port: PORT,
         endpoints: [
           '/tommy - Tommy Portal',
+          '/v6 - V6 Dashboard (Workflow Manager)',
           '/api/github/content?path=context/STRATEGY_MODEL_CONTINUITY.md - GitHub file',
           '/api/local/read?path=context/STRATEGY_MODEL_CONTINUITY.md - Local file',
           '/api/local/old-folders - List old Nova folders',
           '/api/github/list?path=context - List GitHub dir',
           '/api/agents - Worker handshake (GET)',
-          '/api/workflow - Tasks (GET/POST), /run, /cancel, /step-result, /cleanup (POST)',
+          '/api/workflow - Tasks (GET/POST), /run, /cancel, /step-result, /cleanup, /merge (POST)',
           '/api/approvals - Queue (GET), /decide (POST)',
           '/api/keys/validate - Key check (POST)',
           '/api/memory/index|context - Content memory index (GET)',
@@ -214,6 +215,19 @@ const server = http.createServer(async (req, res) => {
       if (fs.existsSync(p1)) content = fs.readFileSync(p1, 'utf8');
       else if (fs.existsSync(p2)) content = fs.readFileSync(p2, 'utf8');
       else content = '<h1>Tommy Portal - Not found - Run git pull</h1>';
+      res.writeHead(200, { 'Content-Type': 'text/html' });
+      res.end(content);
+      return;
+    }
+
+    // V6 dashboard (Workflow Manager UI, same-origin API calls).
+    if (url.pathname === '/v6' || url.pathname === '/v6/') {
+      let content = null;
+      const p1 = path.join(process.cwd(), 'index.html');
+      const p2 = path.join(process.cwd(), 'online-dashboard', 'index.html');
+      if (fs.existsSync(p1)) content = fs.readFileSync(p1, 'utf8');
+      else if (fs.existsSync(p2)) content = fs.readFileSync(p2, 'utf8');
+      else content = '<h1>V6 Dashboard - Not found - Run git pull</h1>';
       res.writeHead(200, { 'Content-Type': 'text/html' });
       res.end(content);
       return;
@@ -269,6 +283,13 @@ const server = http.createServer(async (req, res) => {
       sendJson(res, 200, r);
       return;
     }
+    if (url.pathname === '/api/workflow/merge' && req.method === 'POST') {
+      const body = await readJsonBody(req);
+      const r = await workflow.mergeTask(body && body.id);
+      if (r.error) { sendJson(res, r.code || 400, { error: r.error }); return; }
+      sendJson(res, 200, r);
+      return;
+    }
     if (url.pathname === '/api/keys/validate' && req.method === 'POST') {
       const body = await readJsonBody(req);
       const r = await workflow.validateKey(body && body.provider, body && body.key);
@@ -292,7 +313,8 @@ const server = http.createServer(async (req, res) => {
 
     // Static grafik assets for /tommy (public banner, same-origin <img>).
     if (url.pathname.startsWith('/grafik/') && req.method === 'GET') {
-      const name = url.pathname.slice('/grafik/'.length);
+      let name = url.pathname.slice('/grafik/'.length);
+      try { name = decodeURIComponent(name); } catch { sendJson(res, 400, { error: 'bad encoding' }); return; }
       const ext = path.extname(name).toLowerCase();
       const mime = ext === '.jpg' || ext === '.jpeg' ? 'image/jpeg'
         : ext === '.png' ? 'image/png' : ext === '.gif' ? 'image/gif'
@@ -433,6 +455,7 @@ function start() {
   server.listen(PORT, '127.0.0.1', async () => {
   console.log(`\\n[HTTP Server] 🟢 Listening on http://127.0.0.1:${PORT}`);
   console.log(`[HTTP Server] Tommy: http://127.0.0.1:${PORT}/tommy`);
+  console.log(`[HTTP Server] V6 Dashboard: http://127.0.0.1:${PORT}/v6`);
   console.log(`[HTTP Server] Status: http://127.0.0.1:${PORT}/status`);
   console.log(`[HTTP Server] GitHub Content: http://127.0.0.1:${PORT}/api/github/content?path=context/STRATEGY_MODEL_CONTINUITY.md`);
   console.log(`[HTTP Server] Local Read: http://127.0.0.1:${PORT}/api/local/read?path=context/STRATEGY_MODEL_CONTINUITY.md`);

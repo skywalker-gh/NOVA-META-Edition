@@ -185,6 +185,7 @@ The current worker roles are:
 
 - **Codex CLI:** implementation worker (writer).
 - **Gemini CLI:** review worker (reviewer).
+- **Grok Reviewer:** API review worker via xAI (reviewer, read-only).
 - **Muse Code:** interactive chat-session worker; the workflow pauses until its step result is submitted.
 
 The workflow implementation includes:
@@ -309,9 +310,17 @@ npm start
 The default bridge port is `8000`. Open the local dashboard in your browser at:
 
 ```text
+<<<<<<< HEAD
 http://127.0.0.1:8000/
 ```
 
+=======
+http://127.0.0.1:8000/v6
+```
+
+(Root `/` returns JSON status; the dashboard lives at `/v6`, Tommy at `/tommy`.)
+
+>>>>>>> nova/night-shift-2026-11-03
 The Tommy portal is served at:
 
 ```text
@@ -326,7 +335,11 @@ On Windows, `start.bat` starts the bridge and opens the Tommy portal. Keep the b
 npm test
 ```
 
+<<<<<<< HEAD
 The test suite uses Node's built-in test runner and covers provider fan-out, key validation, workflow lifecycle and security boundaries. The latest repository commit records **22/22 tests passing**. This is the last recorded result, not a claim that the suite was re-run as part of this README update.
+=======
+The test suite uses Node's built-in test runner and covers provider fan-out, key validation, workflow lifecycle and security boundaries. The latest repository commit records **45/45 tests passing**. This is the last recorded result, not a claim that the suite was re-run as part of this README update.
+>>>>>>> nova/night-shift-2026-11-03
 
 ## 8. Configuration
 
