@@ -140,7 +140,7 @@ body{font-family:Verdana, Geneva, sans-serif;background:#0a0a0a;color:#fff;line-
 </div>
 
 <div class="banner-wrap">
-<img src="/prework/NOVA-TOP-LAYER%20Kopie.png" alt="NOVA // Ygdrassil Banner">
+<img id="bannerImg" src="/prework/NOVA-TOP-LAYER%20Kopie.png" alt="NOVA // Ygdrassil Banner">
 </div>
 
 <div class="card" id="topLayer">
@@ -1013,6 +1013,23 @@ function wfPersist() {
 
 
 
+// Static-host fallback (GitHub Pages): no bridge routes there, use repo-relative art paths.
+(function () {
+  try {
+    var host = (typeof location !== 'undefined' && location.hostname) || '';
+    if (host === '127.0.0.1' || host === 'localhost' || host === '') return;
+    var base = 'context/Grafik%20Prework%20for%20Web%20and%20Design/';
+    function swap(id, file) {
+      var el = document.getElementById(id);
+      if (el) el.src = base + encodeURIComponent(file);
+    }
+    swap('trapImg', 'Muse Image - Ygdrassil.png');
+    swap('trapLogo', 'NOVA - Meta Logo - Transparent Kopie.png');
+    swap('bannerImg', 'NOVA-TOP-LAYER Kopie.png');
+    var top = document.getElementById('topLayer');
+    if (top) top.style.background = "linear-gradient(rgba(10,10,10,.8),rgba(10,10,10,.8)),url('" + base + encodeURIComponent('NOVA-SECOND-LAYER.png') + "') center/cover,#111";
+  } catch (e) {}
+})();
 // NOVA Human Trap: image fades to black, logo click opens the page and starts sound.
 (function () {
   try {

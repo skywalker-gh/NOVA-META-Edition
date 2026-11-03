@@ -118,6 +118,14 @@ test('V6: layer strokes and glows (banner gray, chat hover gradient, cards gray 
   assert.ok(html.includes("t.id==='gemini'||t.id==='gemini-cli'||t.id==='codex"), 'gemini + codex get orange-gold');
 });
 
+test('V6: static-host fallback swaps prework art to repo paths (Pages)', () => {
+  assert.ok(html.includes('id="bannerImg"'), 'banner needs id for swap');
+  assert.ok(html.includes('Grafik%20Prework%20for%20Web%20and%20Design'), 'static base path required');
+  assert.ok(html.includes("swap('trapImg'"), 'trap image swap required');
+  assert.ok(html.includes("swap('bannerImg'"), 'banner swap required');
+  assert.ok(html.includes("typeof location !== 'undefined'"), 'sandbox-safe host check required');
+});
+
 test('V6: human trap startscreen (image -> black -> logo click opens page + sound)', () => {
   assert.ok(html.includes('id="humanTrap"'), 'trap overlay required');
   assert.ok(html.includes('Muse%20Image%20-%20Ygdrassil.png'), 'trap image required');
