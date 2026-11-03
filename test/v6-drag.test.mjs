@@ -108,6 +108,8 @@ function buildCtx() {
     },
     createElement: (tag) => new El(tag, doc),
     createElementNS: (_ns, tag) => new El(tag, doc),
+    querySelectorAll: (sel) => Object.values(els).flatMap((e) => e.querySelectorAll(sel)),
+    querySelector: (sel) => doc.querySelectorAll(sel)[0] || null,
     elementFromPoint: (...a) => doc._elFromPoint(...a),
     body: null,
   };
@@ -276,13 +278,29 @@ test('V6chat: card click toggles multi-select', () => {
   assert.ok(!T.doc.getElementById('techs').children[7].className.includes('sel'));
 });
 
+test('V6chat: messages and todos render HTML inert (XSS-safe)', () => {
+  T.sb.addMessage('user', '<img src=x onerror="window.XSS=1"><script>window.XSS=1</script>', 't<>est');
+  const msgs = T.doc.getElementById('messages').children;
+  const last = msgs[msgs.length - 1];
+  assert.equal(last.querySelector('img'), null);
+  assert.equal(last.querySelector('script'), null);
+  assert.match(last.textContent, /<img src=x/);
+  assert.match(last.textContent, /T<>EST/);
+  T.doc.getElementById('todoInput').value = '<b>hi</b>';
+  T.sb.addTodo();
+  const todos = T.doc.getElementById('todoList').children;
+  assert.equal(todos[todos.length - 1].querySelector('b'), null);
+  assert.match(todos[todos.length - 1].textContent, /<b>hi<\/b>/);
+});
+
 test('V6chat: send fans out to selected agents and lights them green', async () => {
   T.doc.getElementById('techs').children[7].onclick();
   T.doc.getElementById('input').value = 'hi';
+  const before = T.doc.getElementById('messages').children.length;
   await T.sb.sendMessage();
   const msgs = T.doc.getElementById('messages').children;
-  assert.equal(msgs.length, 3);
-  assert.match(msgs[0].textContent, /hi/);
+  assert.equal(msgs.length, before + 3);
+  assert.match(msgs[before].textContent, /hi/);
   assert.match(T.doc.getElementById('memBadge').textContent, /Memory: 10 chars/);
   const techs = T.doc.getElementById('techs');
   assert.ok(techs.children[0].querySelector('.tech-light').className.includes('light-green'));
