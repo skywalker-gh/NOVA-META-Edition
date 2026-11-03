@@ -1,5 +1,9 @@
 # NOVA UI Sound Pack
 
+> **Actual state (v3):** the designed `.mp3` pack is installed (15 files from the desktop zip, source: Ghost Gee Remix).
+> The music bed additionally rotates the user originals from `context/Sounds/` (all rights cleared) via `/sounds/`.
+> Real files live in `sounds-map.json`.
+
 Source: **Ali Tat – Ghost (Gee Remix)** (128 BPM)  
 Processed with fades + `aecho` (reverb/delay) + high/low-pass filtering for clean UI use.
 

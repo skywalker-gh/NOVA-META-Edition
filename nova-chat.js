@@ -16,7 +16,7 @@ const PROVIDERS = {
   wonder: {
     label: 'Muse Wonder', model: process.env.MUSE_WONDER_MODEL || 'muse-wonder-1.0',
     kind: 'openai-chat', url: process.env.NOVA_CHAT_URL_META || `${META_BASE}/chat/completions`,
-    envKey: 'META_API_KEY', maxTokens: 2000,
+    envKey: 'META_API_KEY', maxTokens: 4000, // deep reasoner: 2000 starved it to (empty), like spark at 1200
     role: 'You are Muse Wonder, NOVA deep reasoning. Analyze tradeoffs from project memory and mark uncertainty explicitly.',
   },
   chatgpt: {

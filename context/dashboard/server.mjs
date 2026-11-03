@@ -39,6 +39,9 @@ function resolveStaticPath(pathname, rootDir = process.cwd()) {
   if (decoded.startsWith('/nova-sounds/')) {
     base = path.join(root, 'nova-sounds');
     rel = decoded.slice('/nova-sounds/'.length);
+  } else if (decoded.startsWith('/sounds/')) {
+    base = path.join(root, 'Sounds');
+    rel = decoded.slice('/sounds/'.length);
   } else if (decoded === '/logo.ico') {
     base = root; rel = 'logo.ico';
   } else if (decoded === '/logo.png') {
@@ -219,7 +222,7 @@ const server = http.createServer(async (req, res) => {
   try {
     const data = await fs.readFile(filePath);
     const ext = path.extname(filePath);
-    const mime = ext === '.html' ? 'text/html' : ext === '.ico' ? 'image/x-icon' : ext === '.png' ? 'image/png' : ext === '.js' ? 'text/javascript' : ext === '.mp3' ? 'audio/mpeg' : 'text/plain';
+    const mime = ext === '.html' ? 'text/html' : ext === '.ico' ? 'image/x-icon' : ext === '.png' ? 'image/png' : ext === '.js' ? 'text/javascript' : ext === '.mp3' ? 'audio/mpeg' : ext === '.wav' ? 'audio/wav' : 'text/plain';
     res.writeHead(200, { 'Content-Type': mime });
     res.end(data);
   } catch {

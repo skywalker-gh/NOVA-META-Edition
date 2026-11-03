@@ -39,6 +39,7 @@ function createWorkflow(opts) {
     codex: { id: 'codex', label: 'Codex CLI (local workspace)', role: 'writer' },
     gemini: { id: 'gemini', label: 'Gemini CLI (local workspace)', role: 'reviewer' },
     muse: { id: 'muse', label: 'Muse Code (Chat-Session)', role: 'session' },
+    grok: { id: 'grok', label: 'Grok Reviewer (x.ai API)', role: 'reviewer' },
   };
 
   let runningTaskId = null;
@@ -98,6 +99,48 @@ function createWorkflow(opts) {
     });
   }
 
+  // Grok reviewer via x.ai API. Inherently read-only (no tools, no files).
+  // Key transient from server env, never stored or logged.
+  function spawnGrok(prompt, timeoutMs) {
+    return new Promise((resolve) => {
+      const started = Date.now();
+      const done = (exitCode, stdout, error, timedOut) => resolve({
+        exitCode, timedOut: !!timedOut, durationMs: Date.now() - started,
+        stdout: trunc(stdout || '', MAX.output), stderr: '',
+        error: error ? String(error).slice(0, 500) : null,
+      });
+      const key = process.env.XAI_API_KEY || '';
+      if (key.length < 4) { done(1, '', 'XAI_API_KEY missing in server .env'); return; }
+      const ctrl = new AbortController();
+      const to = setTimeout(() => ctrl.abort(), Math.min(timeoutMs, 120000));
+      const url = process.env.NOVA_CHAT_URL_GROK || 'https://api.x.ai/v1/chat/completions';
+      fetch(url, {
+        method: 'POST', signal: ctrl.signal,
+        headers: { 'content-type': 'application/json', authorization: 'Bearer ' + key },
+        body: JSON.stringify({
+          model: process.env.GROK_MODEL || 'grok-4',
+          messages: [
+            { role: 'system', content: 'You are Grok Reviewer for NOVA. READ-ONLY: inspect the context and instructions, report VERIFIED vs UNVERIFIED findings. You cannot modify files. End with a short verdict + files concerned.' },
+            { role: 'user', content: String(prompt).slice(0, 12000) },
+          ],
+          max_tokens: 1500,
+        }),
+      }).then(async (r) => {
+        clearTimeout(to);
+        const txt = await r.text().catch(() => '');
+        if (!r.ok) { done(1, '', 'grok HTTP ' + r.status + ': ' + txt.slice(0, 200)); return; }
+        let reply = '';
+        try { reply = JSON.parse(txt).choices?.[0]?.message?.content || ''; } catch { reply = ''; }
+        if (!reply) { done(1, '', 'grok empty reply'); return; }
+        done(0, reply, null);
+      }).catch((e) => {
+        clearTimeout(to);
+        done(1, '', (/abort/i.test(String((e && e.message) || '')) ? 'grok timed out: ' : 'grok unreachable: ') + String((e && e.message) || e).slice(0, 200),
+          /abort/i.test(String((e && e.message) || '')));
+      });
+    });
+  }
+
   // Spawn a CLI worker. Prompt ALWAYS via stdin (VERIFIED for codex + gemini).
   function spawnCli(agentId, prompt, cwd, timeoutMs) {
     return new Promise((resolve) => {
@@ -117,6 +160,7 @@ function createWorkflow(opts) {
           { cwd, timeout: Math.min(timeoutMs, 30000), maxBuffer: 1024 * 1024, windowsHide: true }, finish);
         return;
       }
+      if (agentId === 'grok') { spawnGrok(prompt, timeoutMs).then((r) => finish(r.error ? new Error(r.error) : null, r.stdout, r.stderr)); return; }
       const bin = agentId === 'codex' ? codexBin : geminiBin;
       const args = agentId === 'codex' ? ['exec'] : [];
       if (process.platform === 'win32') {
@@ -176,6 +220,13 @@ function createWorkflow(opts) {
     out.push({
       id: 'muse', label: AGENTS.muse.label, role: 'session', status: 'session',
       version: 'chat', detail: 'Interactive session — picks up tasks from queue', lastCheck: now(),
+    });
+    const hasGrok = !!(process.env.XAI_API_KEY && process.env.XAI_API_KEY.length >= 4);
+    out.push({
+      id: 'grok', label: AGENTS.grok.label, role: 'reviewer',
+      status: hasGrok ? 'ready' : 'unavailable', version: process.env.GROK_MODEL || 'grok-4',
+      detail: hasGrok ? 'x.ai API reviewer (auth proven by first task)' : 'XAI_API_KEY missing in server .env',
+      lastCheck: now(),
     });
     agentsCache = { at: Date.now(), data: out };
     return out;
@@ -429,9 +480,50 @@ function createWorkflow(opts) {
     return { ok: true };
   }
 
+  // Merge the task retry branch (task/<id>) into the current checkout.
+  // Human-Authority gate: only after decision=yes. Commits worktree changes first.
+  async function mergeTask(id) {
+    const t = loadTask(id);
+    if (!t) return { error: 'task not found', code: 404 };
+    if (t.mergedAt) return { error: 'already merged at ' + t.mergedAt, code: 409 };
+    if (!(t.status === 'completed' && t.outcome === 'approved')) {
+      return { error: 'merge blocked: task needs Human Authority approval (yes) first', code: 409 };
+    }
+    if (mock) {
+      t.mergedAt = now(); t.mergeCommit = 'mock'; saveTask(t);
+      return { ok: true, task: t, note: 'mock merge (no git ops in mock mode)' };
+    }
+    if (!t.branch) return { error: 'no retry branch recorded for this task', code: 409 };
+    if (t.worktree && fs.existsSync(t.worktree)) {
+      const add = await git(['add', '-A'], t.worktree);
+      if (!add.ok) return { error: 'git add failed: ' + trunc(add.stderr || add.error || '', 300), code: 500 };
+      const ci = await git(['-c', 'user.name=NOVA Workflow', '-c', 'user.email=nova@local',
+        'commit', '-m', `task ${t.id}: ${t.goal}`], t.worktree);
+      const ciOut = (ci.stdout + '\n' + ci.stderr).toLowerCase();
+      if (!ci.ok && !ciOut.includes('nothing to commit')) {
+        return { error: 'git commit failed: ' + trunc(ci.stderr || ci.error || '', 300), code: 500 };
+      }
+    }
+    const br = await git(['rev-parse', '--verify', t.branch], projectRoot);
+    if (!br.ok) return { error: 'retry branch gone: ' + t.branch + ' (cleaned up?)', code: 409 };
+    const mg = await git(['merge', '--no-ff', '--no-edit', t.branch,
+      '-m', `Merge ${t.branch} (NOVA task ${t.id})`], projectRoot);
+    if (!mg.ok) {
+      return {
+        error: 'merge failed — resolve conflicts in the main checkout, then retry: '
+          + trunc((mg.stdout + '\n' + mg.stderr).trim() || mg.error || '', 500),
+        code: 409,
+      };
+    }
+    const head = await git(['rev-parse', '--short', 'HEAD'], projectRoot);
+    t.mergedAt = now(); t.mergeCommit = head.ok ? head.stdout.trim() : null;
+    saveTask(t);
+    return { ok: true, task: t };
+  }
+
   return {
     AGENTS, getAgents, createTask, loadTask, listTasks, startTask, cancelTask,
-    submitStepResult, loadApprovals, decideApproval, cleanupTask, validateTaskInput, validateKey,
+    submitStepResult, loadApprovals, decideApproval, cleanupTask, mergeTask, validateTaskInput, validateKey,
   };
 }
 
