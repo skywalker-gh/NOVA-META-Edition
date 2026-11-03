@@ -1,16 +1,20 @@
 # NOVA // Ygdrassil — META Edition
 
-**A human-governed, multi-model AI workspace for context-aware collaboration, agent workflows and accountable execution.**
+**A Multi-Model AI Ecosystem with Multi-Agent Bus Chat, Workflow Manager & Human Authority.**
 
 [Repository](https://github.com/skywalker-gh/NOVA-META-Edition) · [Hackathon: Meta Global AI Developer Hackathon 2026](https://cerebralvalley.ai/e/meta-ai-developer-hackathon)
 
-> **Core idea:** NOVA does not treat AI as a single chatbot. It brings specialised models, tools, project memory and human decision-making into one observable workflow — while keeping execution bounded and consequential decisions under human control.
+> **Dedicated to my father, in loving memory.**  
+> This work is part of my journey, and your place in my life remains part of its story.  
+> — Gürkan
+
+> **Core idea:** NOVA is a connected multi-model AI ecosystem. Its vision brings together Multi-Agent Bus Chat, a Workflow Manager and Human Authority: specialised models and agents collaborate through shared context, tasks move through coordinated workflows, and consequential decisions remain under human control. The current META Edition implements key parts of this vision; the implementation status and boundaries are documented below.
 
 ---
 
 ## 1. What is NOVA?
 
-NOVA // Ygdrassil is an evolving multi-model AI system designed to help a person move from an unclear problem to a reasoned plan, a coordinated implementation and a reviewable result.
+NOVA // Ygdrassil is an evolving multi-model AI ecosystem designed to connect specialised models, agents, shared project context and human participants in one collaborative environment. Its intended operating model combines Multi-Agent Bus Chat for cross-model collaboration, a Workflow Manager for coordinated task execution, and Human Authority for accountable decisions. The goal is to move from an unclear problem to a reasoned plan, a coordinated implementation and a reviewable result.
 
 The META Edition is the current Hackathon implementation. It combines:
 
