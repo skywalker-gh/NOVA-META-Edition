@@ -201,6 +201,7 @@ const server = http.createServer(async (req, res) => {
           '/api/chat - Provider fan-out (POST), /chat/providers (GET)',
           '/api/image - Meta image (POST)',
           '/nova-sounds/* - UI sound pack (GET)',
+          '/prework/* - Prework graphics (GET)',
           '/status - This status'
         ],
         oldFolders: listOldNovaFolders()
@@ -335,6 +336,46 @@ const server = http.createServer(async (req, res) => {
       const mime = ext === '.mp3' ? 'audio/mpeg' : ext === '.json' ? 'application/json' : null;
       if (!name || !mime) { sendJson(res, 404, { error: 'Not found' }); return; }
       const full = resolveLocalPath('context/nova-sounds/' + name); // containment + sensitive checks
+      if (mime === 'application/json') {
+        res.writeHead(200, { 'Content-Type': mime });
+        res.end(fs.readFileSync(full));
+        return;
+      }
+      // Stream audio (Range/206): browsers need seeks for big beds like NEON CITY.
+      const size = fs.statSync(full).size;
+      const range = String(req.headers.range || '');
+      const m = range.match(/^bytes=(\d*)-(\d*)$/);
+      if (m && (m[1] || m[2])) {
+        let start = m[1] ? parseInt(m[1], 10) : 0;
+        let end = m[2] ? parseInt(m[2], 10) : size - 1;
+        if (Number.isNaN(start) || Number.isNaN(end) || start > end || start >= size) {
+          res.writeHead(416, { 'Content-Range': 'bytes */' + size });
+          res.end();
+          return;
+        }
+        end = Math.min(end, size - 1);
+        res.writeHead(206, {
+          'Content-Type': mime, 'Accept-Ranges': 'bytes',
+          'Content-Range': 'bytes ' + start + '-' + end + '/' + size,
+          'Content-Length': end - start + 1,
+        });
+        fs.createReadStream(full, { start, end }).on('error', () => res.destroy()).pipe(res);
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': mime, 'Accept-Ranges': 'bytes', 'Content-Length': size });
+      fs.createReadStream(full).on('error', () => res.destroy()).pipe(res);
+      return;
+    }
+
+    // Static prework graphics (startscreen, top layer, logos).
+    if (url.pathname.startsWith('/prework/') && req.method === 'GET') {
+      let name = url.pathname.slice('/prework/'.length);
+      try { name = decodeURIComponent(name); } catch { sendJson(res, 400, { error: 'bad encoding' }); return; }
+      const ext = path.extname(name).toLowerCase();
+      const mime = ext === '.jpg' || ext === '.jpeg' ? 'image/jpeg'
+        : ext === '.png' ? 'image/png' : null;
+      if (!name || !mime) { sendJson(res, 404, { error: 'Not found' }); return; }
+      const full = resolveLocalPath('context/Grafik Prework for Web and Design/' + name);
       res.writeHead(200, { 'Content-Type': mime });
       res.end(fs.readFileSync(full));
       return;

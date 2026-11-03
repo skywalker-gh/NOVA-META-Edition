@@ -58,17 +58,17 @@ test('V6: chat layout — agents top, divider, buttons Reset/Image/Send', () => 
   assert.ok(d1 > -1 && d1 < agentsH, 'divider above agents header');
   assert.ok(agentsH < html.indexOf('id="techs"'), 'header above techs');
   assert.ok(html.indexOf('id="techs"') < html.indexOf('id="messages"'), 'techs above messages');
-  assert.equal(html.split('<div class="wf-divider"></div>').length - 1, 7, 'chat x5 + workflow x2 dividers');
+  assert.equal(html.split('<div class="wf-divider"').length - 1, 9, 'chat x5 + workflow x2 + player x1 + subtitle x1 dividers');
   const tail = html.slice(html.indexOf('margin-left:auto'));
   assert.ok(tail.indexOf('↺ Reset') < tail.indexOf('Generate Image'), 'Reset left of Image');
   assert.ok(tail.indexOf('Generate Image') < tail.indexOf('▶ Send'), 'Image left of Send');
   assert.ok(html.includes('Choose your Agent or Agents (For Multiple Answers)'), 'agent help text');
   assert.ok(html.includes('Activate your Agent to send him a message in the chat below.'), 'activation hint');
   assert.ok(!html.includes('Choose your Destiny'), 'old text gone');
-  assert.ok(html.includes('chat-pic-img'), 'portrait image beside chat');
+  assert.ok(!html.includes('<aside class="chat-pic">'), 'side portrait removed');
   assert.ok(html.includes('.chat-wrap>.card{flex:1;min-width:0;margin-bottom:0}'), 'card margin moved to wrap (flush bottom)');
-  assert.ok(html.includes('nova-new-chat-side3'), 'side artwork wired');
-  assert.ok(html.includes('Created with Muse Image'), 'hover caption');
+  assert.ok(!html.includes('nova-new-chat-side3'), 'side artwork unwired');
+  assert.ok(!html.includes('Created with Muse Image'), 'hover caption gone');
   assert.ok(html.includes('AI Agents & Models 🤖'), 'agents title one size');
   assert.ok(html.indexOf('addNewTech') < html.indexOf('AI Agents & Models'), 'plus left of title');
   assert.ok(html.includes('& Models 🤖'), 'agents title tail');
@@ -87,10 +87,41 @@ test('V6: aa5 dock cards with lamps and dots', () => {
   assert.ok(html.includes('Connector Problem! Check the Dockingstation below'), 'master red text');
 });
 
-test('V6: UI click sounds wired (audio + delegated playSfx)', () => {
-  assert.ok(html.includes('id="sfx-click"'), 'click audio element required');
-  assert.ok(html.includes('id="sfx-bass"'), 'bass audio element required');
-  assert.ok(html.includes('/nova-sounds/nova_ui_bass_hit.mp3'), 'click src must hit bridge route');
-  assert.ok(html.includes('function playSfx(id'), 'playSfx helper required');
-  assert.ok(html.includes("closest('button')"), 'delegated button click wiring required');
+test('V6: musicbox card in top layer, 2-track playlist, click sounds removed', () => {
+  assert.ok(html.includes('id="topLayer"'), 'top layer required');
+  assert.ok(html.includes('NOVA-SECOND-LAYER'), 'second layer background required');
+  assert.ok(html.includes('/prework/NOVA-TOP-LAYER%20Kopie.png'), 'banner uses top layer art');
+  assert.ok(html.includes('id="novaPlayer"'), 'player card required');
+  assert.ok(html.includes('NEON CITY'), 'track 1 name required');
+  assert.ok(html.includes('CYBERLOPOT'), 'track 1 artist required');
+  assert.ok(html.includes('youtube.com/watch?v=ZWyv_w_cFiw'), 'track 1 youtube required');
+  assert.ok(html.includes('GREEN SIGNAL'), 'track 2 name required');
+  assert.ok(html.includes('youtube.com/channel/UCuES77aLmrE7ApbwaUmpvaA'), 'track 2 youtube required');
+  assert.ok(html.includes('id="npPlay"') && html.includes('id="npPause"') && html.includes('id="npStop"') && html.includes('id="npNext"'), 'transport buttons required');
+  assert.ok(html.includes('id="npVol"'), 'volume control required');
+  assert.ok(html.includes('// Musicbox'), 'player header required');
+  assert.ok(html.includes('id="npStatus"'), 'player status line required');
+  assert.ok(html.includes('encodeURIComponent(tracks[ti].file)'), 'src must be encoded (spaces/%/emoji in name)');
+  assert.ok(!html.includes('playSfx'), 'click sounds removed');
+  assert.ok(!html.includes('id="sfx-click"'), 'sfx elements removed');
+});
+
+test('V6: layer strokes and glows (banner gray, chat hover gradient, cards gray until click)', () => {
+  assert.ok(html.includes('.banner-wrap{position:relative;border-radius:16px;overflow:hidden;margin-bottom:24px;background:#000;border:1px solid #333}'), 'banner gray stroke');
+  assert.ok(html.includes('id="chatLayer"'), 'chat layer id required');
+  assert.ok(html.includes('#chatLayer:hover{border:1px solid transparent;background:linear-gradient(#111,#111) padding-box,linear-gradient(135deg,#a3e635,#f97316) border-box'), 'chat hover gradient stroke green-orange');
+  assert.ok(html.includes('.wf-dock-card{position:relative;width:200px;background:#151515;border:1px solid #333;'), 'cards gray until click');
+  assert.ok(html.includes('.wf-dock-card.sel.tech-grad'), 'spark/code selected gradient required');
+  assert.ok(html.includes('.wf-dock-card.sel.tech-gold'), 'gemini/codex selected gold required');
+  assert.ok(html.includes('.wf-dock-card.sel.tech-green'), 'rest selected green required');
+  assert.ok(html.includes("t.id==='spark'||t.id==='code"), 'spark + code get blue-orange');
+  assert.ok(html.includes("t.id==='gemini'||t.id==='gemini-cli'||t.id==='codex"), 'gemini + codex get orange-gold');
+});
+
+test('V6: human trap startscreen (image -> black -> logo click opens page + sound)', () => {
+  assert.ok(html.includes('id="humanTrap"'), 'trap overlay required');
+  assert.ok(html.includes('Muse%20Image%20-%20Ygdrassil.png'), 'trap image required');
+  assert.ok(html.includes('NOVA%20-%20Meta%20Logo%20-%20Transparent%20Kopie.png'), 'trap logo (transparent) required');
+  assert.ok(html.includes("#trapLogo:hover"), 'logo hover glow required');
+  assert.ok(html.includes("trap.style.display = 'none'"), 'click must open the page');
 });

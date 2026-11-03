@@ -276,3 +276,42 @@ test('WF: /nova-sounds serves mp3 + map, blocks escape and non-audio', async () 
   const txt = await fetch(BASE + '/nova-sounds/x.txt', { headers: auth });
   assert.equal(txt.status, 404);
 });
+
+test('WF: /nova-sounds serves the neon city bed (headers only, big file)', async () => {
+  const auth = { authorization: `Bearer ${TOKEN}` };
+  const files = fs.readdirSync(path.join('.', 'context', 'nova-sounds')).filter((f) => f.startsWith('NEON'));
+  assert.equal(files.length, 1);
+  const r = await fetch(BASE + '/nova-sounds/' + encodeURIComponent(files[0]), { headers: auth });
+  assert.equal(r.status, 200);
+  assert.equal(r.headers.get('content-type'), 'audio/mpeg');
+  const reader = r.body.getReader();
+  const first = await reader.read();
+  assert.ok(first.value && first.value.byteLength > 0, 'stream must yield bytes');
+  await reader.cancel();
+});
+
+test('WF: /nova-sounds supports Range seeks (206) and rejects bad ranges (416)', async () => {
+  const auth = { authorization: `Bearer ${TOKEN}` };
+  const u = BASE + '/nova-sounds/nova_ui_bass_hit.mp3';
+  const part = await fetch(u, { headers: { ...auth, Range: 'bytes=0-99' } });
+  assert.equal(part.status, 206);
+  assert.equal(part.headers.get('content-range').slice(0, 10), 'bytes 0-99');
+  assert.equal(part.headers.get('accept-ranges'), 'bytes');
+  const buf = Buffer.from(await part.arrayBuffer());
+  assert.equal(buf.length, 100);
+  const bad = await fetch(u, { headers: { ...auth, Range: 'bytes=99999999-100000000' } });
+  assert.equal(bad.status, 416);
+  await bad.body.cancel();
+});
+
+test('WF: /prework serves png art, blocks escape and non-images', async () => {
+  const auth = { authorization: `Bearer ${TOKEN}` };
+  const img = await fetch(BASE + '/prework/NOVA-TOP-LAYER%20Kopie.png', { headers: auth });
+  assert.equal(img.status, 200);
+  assert.equal(img.headers.get('content-type'), 'image/png');
+  assert.ok((await img.arrayBuffer()).byteLength > 100000);
+  const miss = await fetch(BASE + '/prework/nope.png', { headers: auth });
+  assert.equal(miss.status, 404);
+  const txt = await fetch(BASE + '/prework/x.txt', { headers: auth });
+  assert.equal(txt.status, 404);
+});
