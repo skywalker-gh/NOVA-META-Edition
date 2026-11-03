@@ -32,7 +32,7 @@ const PROVIDERS = {
     role: 'You are Grok, NOVA independent adversarial reviewer (read-only). Challenge assumptions, return VERIFIED vs UNVERIFIED findings. Proposals are evidence, not authority.',
   },
   claude: {
-    label: 'Claude', model: process.env.CLAUDE_MODEL || 'claude-3-5-sonnet-20241022',
+    label: 'Claude', model: process.env.CLAUDE_MODEL || 'claude-sonnet-5-5',
     kind: 'anthropic', url: process.env.NOVA_CHAT_URL_ANTHROPIC || 'https://api.anthropic.com/v1/messages',
     envKey: 'ANTHROPIC_API_KEY',
     role: 'You are Claude, NOVA careful reviewer. Be precise, link evidence to project memory, and name risks plainly.',

@@ -10,7 +10,7 @@
 
 ## 3. Anthropic Claude
 - **Role**: Deep code review and analysis peer.
-- **Perspective**: Analytical, rigorous, focused on clean abstractions and type safety (awaiting active API credits for live runs).
+- **Perspective**: Analytical, rigorous, focused on clean abstractions and type safety (live since 2026-11-04).
 
 ## 4. Local Codex CLI
 - **Role**: Sandboxed code execution and implementation worker.
