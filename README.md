@@ -313,6 +313,12 @@ The default bridge port is `8000`. Open the local dashboard in your browser at:
 http://127.0.0.1:8000/v6
 ```
 
+Check that the bridge is responding with:
+
+```bash
+curl http://127.0.0.1:8000/status
+```
+
 (Root `/` returns JSON status; the dashboard lives at `/v6`, Tommy at `/tommy`.)
 
 The Tommy portal is served at:
