@@ -1,11 +1,11 @@
 # NOVA // Ygdrassil — 8-Minute Jury Click-Script
 
 Source: delegated agent inspection of index.html, tommy/index.html, bridge routes (night shift).
-Provider reality at write time: chatgpt+grok live, gemini quota-dead, claude broke, wonder fixed (needs restart).
+Provider reality 2026-11-04 (live probe: ALL 6 green): spark, wonder, chatgpt, grok, claude (sonnet-5-5, credits loaded), gemini (3.5-flash, paid tier). Llama/Code cards map to the Spark provider (no dedicated bridge — say so if asked). SAM parked (API 404, do not demo).
 
 **Setup before jury enters:** `node muse-spark-bridge.js` running (or `start.bat`), browser tabs open:
 `http://127.0.0.1:8000/v6` + `http://127.0.0.1:8000/tommy`. Keys in server `.env`:
-`OPENAI_API_KEY`, `XAI_API_KEY` (live), `META_API_KEY` (wonder, needs bridge restart after fix).
+`OPENAI_API_KEY`, `XAI_API_KEY`, `ANTHROPIC_API_KEY`, `GOOGLE_AI_KEY`, `META_API_KEY` (all live).
 
 ## 0:00 — Start (30s)
 Double-click `start.bat` → bridge console shows `[MUSE SPARK BRIDGE V2] 🟢`, Tommy portal auto-opens at `/tommy`.
@@ -19,15 +19,18 @@ Say: *"Rev 8, bridge connected, agents live-probed."*
 **Fallback:** if Connect fails → check Bridge-URL `http://127.0.0.1:8000` in Advanced; if 401 → paste `NOVA_BRIDGE_TOKEN` into token field (session-only).
 
 ## 1:00 — Chat fanout: WHICH agents to select (2 min)
-In **NOVA // Chat**, click agent cards to activate **exactly these two: 💬 ChatGPT + ⚡ Grok**
-(deselect others, incl. default spark). Type: *"Summarize our continuity strategy in 3 bullets, then
+In **NOVA // Chat**, click agent cards to activate **exactly these three: 💬 ChatGPT + ⚡ Grok + ✨ Gemini**
+(cards start gray/inactive — click to glow). Type: *"Summarize our continuity strategy in 3 bullets, then
 challenge one assumption."* → **▶ Send**.
-Result: two answer bubbles, memory badge shows context chars (`/api/chat` fan-out, memory-aware).
+Result: three answer bubbles, memory badge shows context chars (`/api/chat` fan-out, memory-aware).
 Say: *"Multi-select = parallel answers; green lamps = live via server env."*
-**Why these two:** chatgpt+grok are live via server env. Do NOT select: Gemini (API quota-dead, 429s),
-Claude (no credits), Wonder/Spark unless bridge was restarted after the wonder fix.
+**Go longer here (jury loves this):** after the first answers land, ask a follow-up (*"Now disagree with
+each other in one line each."*) and resend — same 3 cards, second round, zero setup. This is the centerpiece:
+one prompt, parallel brains, shared memory. Then continue to Source card.
+**Why these three:** fastest round-trip for the demo slot. All six are live — add Claude/Spark/Wonder
+if time allows. Llama/Code/Image cards: Image generates pictures; Llama/Code ride on the Spark provider.
 **Fallback:** if one returns `⚠️ failed` → point at the red lamp: *"Per-provider failure is isolated,
-the other answer still lands"* — continue with the survivor. If both fail → bridge down: restart
+the other answers still land"* — continue with the survivors. If all fail → bridge down: restart
 `node muse-spark-bridge.js`, legacy direct-browser fallback engages automatically.
 
 ## 3:00 — Source card (1 min)
@@ -41,10 +44,10 @@ type instruction (*"Append health-check line to README.md"*). **Wire:** click so
 **output dot → codex input dot**. Chain shows 1 wire, *"Port 1 defines the chain."*
 Say: *"N8N-style: drag, instruct, wire. Port 1 drives execution."*
 **Fallback:** if codex shows unavailable → click the card to cycle agent (codex→gemini→grok→muse);
-gemini CLI is local too. If dots don't respond → **⟳ Reset** wires, re-wire output→input.
+gemini CLI is local too. If dots don't respond → **↺ Reset** wires, re-wire output→input.
 
 ## 5:30 — Execute (1 min)
-Click **▶ Execute Workflow** → `POST /api/workflow` + `/run`; Run panel shows `Task t… • running`;
+Click **▶ Execute Workflow** (bottom-right under the canvas) → `POST /api/workflow` + `/run`; Run panel shows `Task t… • running`;
 chain runs on `task/<id>` branch, watch status flip to `review_ready`.
 Say: *"Runs isolated on a branch — nothing touches main yet."*
 **Fallback:** if `⛔ … none has instructions` → click the card, type instruction, Execute again.
@@ -69,10 +72,12 @@ re-check Tommy tab, hit YES, retry Merge. If `Already merged` → you're done, s
 |---|---|---|
 | ChatGPT (server env) | live | YES |
 | Grok (server env) | live | YES |
-| Wonder (server env) | fixed, needs bridge restart | only if restarted |
-| Spark (Meta key) | depends on Meta API | optional 3rd |
-| Gemini API | quota-dead (429) | NO |
-| Claude | no credits | NO |
+| Wonder (Meta key) | live | YES if time |
+| Spark (Meta key) | live | YES if time |
+| Gemini 3.5-flash (paid) | live | YES |
+| Claude sonnet-5-5 (€5 loaded) | live | YES if time |
+| Llama / Code cards | mapped to Spark provider | mention mapping if asked |
+| SAM | API 404, parked | NEVER |
 | Codex / Gemini CLI (workflow dock) | local CLIs | YES for canvas chain |
 
 ## Demo-day safety notes (from code review)

@@ -4,12 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NOVA // Ygdrassil - V6 Clean All Fixes</title>
+<link rel="icon" href="grafik/favicon.ico" type="image/x-icon">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Verdana, Geneva, sans-serif;background:#0a0a0a;color:#fff;line-height:1.6;padding:20px}
 .banner-wrap{position:relative;border-radius:16px;overflow:hidden;margin-bottom:24px;background:#000;border:1px solid #333}
 .banner-wrap img{width:100%;height:auto;max-height:420px;object-fit:contain;display:block;background:#000}
-.banner-wrap:hover{box-shadow:0 0 30px #a3e635, 0 0 60px rgba(163,230,53,0.4);transition:box-shadow 0.3s}
+.banner-wrap:hover{box-shadow:0 0 30px #a3e635, 0 0 60px rgba(163,230,53,0.4);transition:box-shadow 0.3s;border-color:#a3e635}
 .card{background:#111;border:1px solid #222;border-radius:16px;padding:20px;margin-bottom:20px;transition:box-shadow 0.3s ease, border-color 0.3s ease}
 .card:hover{box-shadow:0 0 30px #a3e635, 0 0 60px rgba(163,230,53,0.4);border-color:#a3e635}
 .badge{display:inline-block;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;margin-right:6px}
@@ -27,7 +28,7 @@ body{font-family:Verdana, Geneva, sans-serif;background:#0a0a0a;color:#fff;line-
 .textarea{width:100%;background:#151515;border:1px solid #333;color:#fff;border-radius:12px;padding:12px;min-height:90px;resize:vertical;font-family:Verdana, sans-serif}
 .messages{height:520px;overflow-y:auto;background:#0e0e0e;border:1px solid #222;border-radius:12px;padding:12px}
 .msg{margin-bottom:14px;padding:10px 14px;border-radius:12px;max-width:85%}
-.msg-user{background:#1f2a0f;margin-left:auto;border:1px solid #2a3f15}
+.msg-user{background:#0064e0;margin-left:auto;border:1px solid #004da8}
 .msg-assist{background:#151515;border:1px solid #222}
 .small{font-size:12px;color:#888}
 .link{color:#a3e635;text-decoration:none}
@@ -88,8 +89,7 @@ body{font-family:Verdana, Geneva, sans-serif;background:#0a0a0a;color:#fff;line-
 @media(max-width:1000px){.chat-wrap{flex-direction:column}.chat-pic{width:100%;max-width:340px}.chat-pic-img{height:auto;aspect-ratio:2/3}}
 #topLayer{background:linear-gradient(rgba(10,10,10,.8),rgba(10,10,10,.8)),url('/prework/NOVA-SECOND-LAYER.png') center/cover,#111}
 #topLayer:hover{border-color:#0064e0;box-shadow:0 0 18px rgba(0,100,224,.55),0 0 42px rgba(0,100,224,.25)}
-.wf-dock-card.sel.tech-grad{border:1px solid transparent;background:linear-gradient(#151515,#151515) padding-box,linear-gradient(135deg,#0064e0,#f97316) border-box;box-shadow:0 0 14px rgba(0,100,224,.5),0 0 30px rgba(249,115,22,.35)}
-.wf-dock-card.sel.tech-gold{border:1px solid transparent;background:linear-gradient(#151515,#151515) padding-box,linear-gradient(135deg,#f97316,#fbbf24) border-box;box-shadow:0 0 14px rgba(249,115,22,.5),0 0 30px rgba(251,191,36,.35)}
+.wf-dock-card.sel.tech-grad{border:1px solid transparent;background:linear-gradient(#151515,#151515) padding-box,linear-gradient(135deg,#0064e0,#a3e635) border-box;box-shadow:0 0 14px rgba(0,100,224,.5),0 0 30px rgba(163,230,53,.4)}
 .wf-dock-card.sel.tech-green{border-color:#a3e635;box-shadow:0 0 14px rgba(163,230,53,.5)}
 #chatLayer:hover{border:1px solid transparent;background:linear-gradient(#111,#111) padding-box,linear-gradient(135deg,#a3e635,#f97316) border-box;box-shadow:0 0 22px rgba(163,230,53,.4),0 0 55px rgba(249,115,22,.28)}
 .top-flex{display:flex;gap:20px;align-items:flex-start}
@@ -99,6 +99,11 @@ body{font-family:Verdana, Geneva, sans-serif;background:#0a0a0a;color:#fff;line-
 .np-btn{background:none;border:none;color:#fff;cursor:pointer;padding:2px 4px;line-height:1}
 @media(max-width:900px){.top-flex{flex-direction:column}#novaPlayer{width:100%}}
 #trapLogo:hover{filter:drop-shadow(0 0 24px #a855f7) drop-shadow(0 0 60px #a3e635)}
+.art-wrap{position:relative;border-radius:16px;overflow:hidden;margin-bottom:20px;background:#000;border:1px solid #333;transition:box-shadow .25s ease,border-color .25s ease}
+.art-wrap:hover{border-color:#0064e0;box-shadow:0 0 24px rgba(0,100,224,.45),0 0 60px rgba(0,100,224,.25)}
+.art-wrap img{width:100%;max-height:480px;object-fit:cover;object-position:center;display:block}
+.art-cap{position:absolute;top:10px;left:12px;font-size:11px;color:#9ca3af;background:rgba(0,0,0,.55);padding:2px 8px;border-radius:6px;pointer-events:none}
+.trap-cap{position:absolute;bottom:14px;left:0;right:0;display:flex;align-items:center;justify-content:center;gap:8px;font-size:11px;color:#9ca3af}
 @media (prefers-reduced-motion:reduce){#trapImg,#trapLogo{transition:none}}
 .wf-dock-card.sel{border-color:#a3e635;box-shadow:0 0 12px rgba(163,230,53,.35)}
 .wf-pin-row{display:flex;align-items:center;gap:6px;height:18px;font-size:9px;color:#9ca3af}
@@ -123,6 +128,7 @@ body{font-family:Verdana, Geneva, sans-serif;background:#0a0a0a;color:#fff;line-
 #wfFinish{position:absolute;right:10px;top:10px;background:#151515;border:2px solid #f59e0b;border-radius:10px;padding:6px 10px;font-size:12px;color:#fff;z-index:1}
 @media (prefers-reduced-motion:reduce){.blink{animation:none}}
 .wf-divider{height:2px;margin:14px 0 4px;background:linear-gradient(90deg,transparent,#a855f7,transparent);box-shadow:0 0 12px rgba(168,85,247,.6);border-radius:2px}
+.wf-divider-gray{height:2px;margin:14px 0 4px;background:linear-gradient(90deg,transparent,#6b7280,transparent);box-shadow:0 0 12px rgba(107,114,128,.6);border-radius:2px}
 .light-yellow{background:#facc15;box-shadow:0 0 8px rgba(250,204,21,.8)}
 .light-orange{background:#fb923c;box-shadow:0 0 8px rgba(251,146,60,.8)}
 .btn-dark,.btn-send,.btn-orange,.btn-neon,.btn-lila,.btn-plus{transition:box-shadow .15s ease}
@@ -137,10 +143,12 @@ body{font-family:Verdana, Geneva, sans-serif;background:#0a0a0a;color:#fff;line-
 <div id="humanTrap" style="position:fixed;inset:0;z-index:10000;background:#000;display:flex;align-items:center;justify-content:center">
 <img id="trapImg" src="/prework/Muse%20Image%20-%20Ygdrassil.png" alt="Ygdrassil" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity 1.2s ease">
 <img id="trapLogo" src="/prework/NOVA%20-%20Meta%20Logo%20-%20Transparent%20Kopie.png" alt="NOVA - click to enter" title="Click to enter" style="position:relative;max-width:min(420px,70vw);cursor:pointer;opacity:0;transition:opacity 1.2s ease">
+<div class="trap-cap"><a href="https://www.meta.ai/" target="_blank" rel="noopener" title="Meta"><img id="trapMeta" src="/prework/Meta%20-%20Logo.jpeg" alt="Meta" style="height:18px;border-radius:4px"></a><span>Image created with Muse Image · © Meta · 2026</span></div>
 </div>
 
 <div class="banner-wrap">
 <img id="bannerImg" src="/prework/NOVA-TOP-LAYER%20Kopie.png" alt="NOVA // Ygdrassil Banner">
+<div class="art-cap">Image created with Meta AI · © Meta · 2026</div>
 </div>
 
 <div class="card" id="topLayer">
@@ -148,6 +156,7 @@ body{font-family:Verdana, Geneva, sans-serif;background:#0a0a0a;color:#fff;line-
 <div class="top-main">
 <h2 style="font-size:38px"><span style="font-weight:800;color:#fff">NOVA</span> <span style="font-weight:400;font-size:30px;color:#fff">// Ygdrassil</span></h2>
 <p style="font-size:13px;margin-top:6px;color:#9ca3af"><span style="font-weight:800">Multi-Model AI Ecosystem</span> <span style="font-weight:400">// Multi-Agent Bus Chat, Workflow Manager & Human Authority</span><br><span style="font-weight:800;color:#0064e0">Muse Spark Version 1.0</span> <span style="font-weight:400">- Build for the Meta Global AI Developer Hackathon - 2026</span></p>
+<p style="font-size:13px;margin-top:8px;color:#fff"><i>Special thanks to everyone who made this Hackathon journey possible. Dear jury — enjoy the ride through my vision: NOVA unites 3.5 years of synergistic collaboration with the world's leading AI systems into one energy at maximum potential.</i></p>
 <div class="wf-divider" style="margin:12px 0"></div>
 <div style="margin-top:12px">
 <span class="badge badge-green">Public ✅ Jury</span>
@@ -159,8 +168,8 @@ body{font-family:Verdana, Geneva, sans-serif;background:#0a0a0a;color:#fff;line-
 <div id="novaPlayer">
 <h4 class="header-lila" style="font-size:16px;margin:0">NOVA <span style="font-weight:400;font-size:13px">// Musicbox 📻</span></h4>
 <div class="wf-divider" style="margin:8px 0"></div>
-<div style="font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><span id="npTrack">NEON CITY</span> <span id="npArtist" style="font-weight:400;color:#9ca3af">von CYBERLOPOT</span></div>
-<a id="npYt" href="https://www.youtube.com/watch?v=ZWyv_w_cFiw&list=RDZWyv_w_cFiw&start_radio=1" target="_blank" rel="noopener" style="color:#9ca3af;font-size:11px">Original auf YouTube</a>
+<div style="font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><span id="npTrack">GREEN SIGNAL</span> <span id="npArtist" style="font-weight:400;color:#9ca3af">Cyberpunk Coding Music</span></div>
+<a id="npYt" href="https://www.youtube.com/channel/UCuES77aLmrE7ApbwaUmpvaA" target="_blank" rel="noopener" style="color:#9ca3af;font-size:11px">Original auf YouTube</a>
 <div id="npStatus" class="small" style="margin-top:2px">paused</div>
 <div style="display:flex;align-items:center;gap:4px;margin-top:6px">
 <button id="npPlay" title="Play" class="np-btn" style="font-size:17px">▶</button>
@@ -168,7 +177,7 @@ body{font-family:Verdana, Geneva, sans-serif;background:#0a0a0a;color:#fff;line-
 <button id="npStop" title="Stop" class="np-btn" style="font-size:20px">■</button>
 <button id="npNext" title="Next track" class="np-btn" style="font-size:17px">⏩</button>
 <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff" style="flex-shrink:0;margin-left:2px"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path d="M16 8a5 5 0 010 8" stroke="#fff" stroke-width="2" fill="none"/></svg>
-<input id="npVol" type="range" min="0" max="100" value="60" title="Volume" style="flex:1;min-width:0">
+<input id="npVol" type="range" min="0" max="100" value="100" title="Volume" style="flex:1;min-width:0">
 </div>
 <audio id="npAudio" preload="none" loop></audio>
 </div>
@@ -178,10 +187,11 @@ body{font-family:Verdana, Geneva, sans-serif;background:#0a0a0a;color:#fff;line-
 <div class="chat-wrap">
 <div class="card" id="chatLayer">
 <h2 style="font-size:28px" class="header-lila">NOVA <span style='font-weight:400;font-size:20px'>// Chat 💻</span> <span id="chatLight" class="tech-light light-gray"></span> <span id="chatActive" class="small"></span></h2>
-<p style="font-size:13px;margin-top:6px;color:#9ca3af">Multi Agent Bus - Chat Bridge & MCP Tunnel</p>
-<div class="wf-divider"></div>
+<p style="font-size:13px;margin-top:6px;color:#9ca3af"><span style="font-weight:800">Multi-Agent Bus - Chat</span> <span style="font-weight:400">Bridge & MCP Tunnel</span><br><span style="font-weight:800;color:#0064e0">Muse Spark Version 1.0</span> <span style="font-weight:400">runs the Multi-Agent Bus: every selected agent answers in parallel from shared project memory</span></p>
+<p style="font-size:13px;margin-top:6px;color:#fff"><i>Lamps stay gray until first contact — green confirms a live reply, red flags a provider error.</i></p>
+<div class="wf-divider-gray"></div>
 <div style="display:flex;gap:10px;align-items:center;margin-top:12px">
-<button class="btn-plus" onclick="addNewTech()" title="Add custom agent"><span class="btn-plus-white">+</span></button>
+<button class="btn-dark" onclick="addNewTech()" title="Add custom agent">＋ Add Custom Agent</button>
 <h4 class="header-lila" style="font-size:18px;margin:0">AI Agents & Models 🤖</h4>
 </div>
 <p style="font-size:13px;margin-top:6px;color:#9ca3af">Choose your Agent or Agents (For Multiple Answers). Advanced Codepad with shared context memory.<br><i>Activate your Agent to send him a message in the chat below.</i></p>
@@ -206,13 +216,85 @@ body{font-family:Verdana, Geneva, sans-serif;background:#0a0a0a;color:#fff;line-
 <button class="btn-send" onclick="sendMessage()">▶ Send</button>
 </div>
 </div>
-<div class="wf-divider"></div>
+<div class="wf-divider-gray"></div>
 </div>
 
+</div>
+
+<div class="art-wrap">
+<img id="chatArt" src="/prework/cyberblick%202%20Kopie.png" alt="NOVA artwork">
+<div class="art-cap">Image created with Muse Image · © Meta · 2026</div>
 </div>
 
 <div class="card">
-<h3 class="header-lila" style="font-size:28px">NOVA <span style='font-weight:400;font-size:20px'>// API Keys 🔑</span></h3>
+<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+<h3 class="header-lila" style="font-size:28px;margin:0">NOVA <span style='font-weight:400;font-size:20px'>// Multi Agent-Bus / Workflow Manager ⛓️</span> <span id="wfMasterLight" class="tech-light light-gray"></span> <span id="wfMasterText" class="small"></span></h3>
+<span class="small" style="margin-left:auto;font-weight:800;color:#fff;text-shadow:0 1px 2px #000;border:1px solid #facc15;border-radius:8px;padding:2px 10px;background:repeating-linear-gradient(-45deg,#facc15 0 14px,#151515 14px 28px)">Under Construction</span>
+</div>
+<p style="font-size:13px;margin-top:6px;color:#9ca3af"><span style="font-weight:800;color:#0064e0">Muse Spark Version 1.0</span> <span style="font-weight:400">- Visual Workflow Manager to chain AI Agents and Task Sources seamlessly</span></p>
+<p style="font-size:13px;margin-top:6px;color:#fff"><i>Chains any agents into ordered task graphs on isolated git branches — one writer per task, every merge gated by human approval.</i></p>
+<div class="wf-divider-gray"></div>
+<div style="margin-top:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+<span id="wfBlinker" class="tech-light light-gray" title="connection"></span>
+<button class="btn-neon" onclick="wfRefresh()">▶ Connect</button>
+<details style="margin-left:8px"><summary class="small" style="cursor:pointer">Advanced</summary>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px">
+<div><div class="small">Bridge URL</div><input id="wfBridge" class="input" value="http://127.0.0.1:8000"></div>
+<div><div class="small">Bridge token (session only, never stored)</div><input id="wfToken" class="input" type="password" placeholder="NOVA_BRIDGE_TOKEN (only if set in .env)"></div>
+</div></details>
+</div>
+<div id="wfConn" class="small" style="margin-top:8px">Not connected.</div>
+<div style="margin-top:8px;display:flex;gap:10px;flex-wrap:wrap">
+<button class="btn-dark" onclick="wfTaskSource()">＋ Task Source</button>
+
+<button class="btn-orange" onclick="wfCancel()">⏹ Abort</button>
+</div>
+<div class="wf-divider" style="margin:12px 0"></div>
+<div style="display:flex;gap:10px;align-items:center;margin-top:12px">
+<button class="btn-dark" onclick="wfAddStep()">＋ Add Agent / Subagent</button>
+<h4 class="header-lila" style="font-size:18px;margin:0">Agent-Bus Dockingstation & Workflow Manager Box ⚙️</h4>
+</div>
+<p style="font-size:13px;margin-top:6px;color:#9ca3af">Advanced Codepad for workflow automations with different Agents & Models.</p>
+<p style="font-size:13px;margin-top:6px;color:#9ca3af"><i>Drag a card into the Workflow Manager Box below, or click it to add a step.</i></p>
+<div class="wf-divider" style="margin:12px 0"></div>
+<div id="wfGarage" class="tech-grid" style="margin-top:8px"></div>
+<div id="wfGarageNote" class="small" style="margin-top:6px"></div>
+<div class="wf-divider"></div>
+<div id="wfCanvas" style="margin-top:8px"><div id="wfFinish" title="Chain end lands here (approval)">🏁 Tommy / You</div></div>
+<div id="wfCanvasHint" class="small" style="margin-top:6px"></div>
+<div class="wf-divider" style="margin:12px 0"></div>
+<h4 class="header-lila" style="margin-top:16px;font-size:18px;font-weight:400">Create <b>Task Source</b> Card</h4>
+<p style="font-size:13px;margin-top:6px;color:#fff"><i>For the workflow manager above, just write your request and hit the button to its right.</i></p>
+<div style="margin-top:8px;display:flex;gap:10px;align-items:center;flex-wrap:nowrap">
+<button class="btn-plus" onclick="document.getElementById('wfFile').click()" title="Upload source file (.md/.txt/.png/.jpg)"><span class="btn-plus-white">+</span></button>
+<input id="wfFile" type="file" accept=".md,.txt,.png,.jpg,.jpeg,.gif,.webp" style="display:none" onchange="wfFilePicked(this)">
+<input id="wfAsk" class="input" style="flex:1;min-width:0" placeholder="Ask anything — Enter puts it on the canvas as the first card" onkeydown="if(event.key==='Enter')wfAskSend()">
+<button class="btn-plus" style="background:#a3e635" onclick="wfAskSend()" title="Send to canvas"><span style="color:#000;font-weight:900">▲</span></button>
+<button class="btn-orange" onclick="wfResetGraph()">↺ Reset</button>
+<button class="btn-send" style="margin-left:0" onclick="wfSave()">💾 Save</button>
+<button class="btn-send" style="margin-left:0" onclick="wfStart()">▶ Execute Workflow</button>
+</div>
+<div class="wf-divider"></div>
+<div style="display:flex;align-items:baseline;gap:10px">
+<h4 class="header-lila" style="margin:0;font-size:18px;white-space:nowrap">Run</h4>
+<details id="wfRunFold" style="flex:1;min-width:0">
+<summary class="small" style="cursor:pointer">Advanced</summary>
+<div style="margin-top:6px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn-dark" onclick="wfDownload()">⬇ Result (.md)</button>
+<button class="btn-send" onclick="wfMerge()" title="Merge the task retry branch into this checkout (needs Human Authority approval)">⑂ Merge retry branch</button></div>
+<div id="wfFlow" style="margin-top:8px"></div>
+<div id="wfRun" class="small" style="margin-top:8px">No task started yet.</div>
+<div id="wfTaskList" style="margin-top:8px"></div>
+<div class="small" style="margin-top:8px;color:#4b5563">V6 UI rev 8 · source-chat + pointer-drag</div>
+<div class="wf-divider-gray"></div>
+</details>
+</div>
+</div>
+
+<div class="card">
+<div style="display:flex;align-items:baseline;gap:10px">
+<h3 class="header-lila" style="font-size:28px;margin:0">NOVA <span style='font-weight:400;font-size:20px'>// API Keys 🔑</span></h3>
+<details id="wfKeysFold" style="flex:1;min-width:0">
+<summary class="small" style="cursor:pointer">Advanced</summary>
 <p style="font-size:13px;margin-top:6px;color:#9ca3af">Enter your API key in the boxes below to enable it for the Multi Agent Bus and the <span style="font-weight:800">NOVA // Ygdrassil Ecosystem.</span></p>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;margin-bottom:4px">
 <div style="display:flex;align-items:center;gap:10px;background:#151515;border:1px solid #222;border-radius:12px;padding:4px 12px"><input id="metaKey" class="input" style="border:none;background:transparent;padding:8px 0" placeholder="Meta API Key (Spark/Wonder)" oninput="updateKeyLights()"><span id="light-metaKey" class="tech-light light-gray" style="flex-shrink:0"></span></div>
@@ -229,10 +311,15 @@ body{font-family:Verdana, Geneva, sans-serif;background:#0a0a0a;color:#fff;line-
 <button class="btn-send" onclick="saveKeys();validateKeys()">💾 Speichern</button>
 </div>
 </div>
+</details>
+</div>
 </div>
 
 <div class="card">
-<h3 class="header-lila" style="font-size:28px">NOVA <span style='font-weight:400;font-size:20px'>// Build Log 📝</span></h3>
+<div style="display:flex;align-items:baseline;gap:10px">
+<h3 class="header-lila" style="font-size:28px;margin:0">NOVA <span style='font-weight:400;font-size:20px'>// Build Log 📝</span></h3>
+<details id="wfLogFold" style="flex:1;min-width:0">
+<summary class="small" style="cursor:pointer">Advanced</summary>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px">
 <div>
 <input id="todoInput" class="input" placeholder="Neues Todo..." onkeydown="if(event.key==='Enter')addTodo()">
@@ -243,64 +330,13 @@ body{font-family:Verdana, Geneva, sans-serif;background:#0a0a0a;color:#fff;line-
 <div style="margin-top:20px;display:flex"><button class="btn-send" onclick="saveLog()" style="margin-left:auto">💾 Speichern</button></div>
 </div>
 </div>
+</details>
 </div>
-
-<div class="card">
-<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-<h3 class="header-lila" style="font-size:28px;margin:0">NOVA <span style='font-weight:400;font-size:20px'>// Multi Agent-Bus / Workflow Manager ⛓️</span> <span id="wfMasterLight" class="tech-light light-gray"></span> <span id="wfMasterText" class="small"></span></h3>
-<span class="small" style="margin-left:auto;border:1px solid #a855f7;color:#d8b4fe;border-radius:8px;padding:2px 8px">N8N STYLE NODE GRAPH</span>
-</div>
-<p style="font-size:13px;margin-top:6px;color:#9ca3af">Visual Workflow Manager to chain AI Agents and Task Sources seamlessly.</p>
-<div style="margin-top:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-<span id="wfBlinker" class="tech-light light-gray" title="connection"></span>
-<button class="btn-neon" onclick="wfRefresh()">▶ Connect</button>
-<details style="margin-left:8px"><summary class="small" style="cursor:pointer">Advanced</summary>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px">
-<div><div class="small">Bridge URL</div><input id="wfBridge" class="input" value="http://127.0.0.1:8000"></div>
-<div><div class="small">Bridge token (session only, never stored)</div><input id="wfToken" class="input" type="password" placeholder="NOVA_BRIDGE_TOKEN (only if set in .env)"></div>
-</div></details>
-</div>
-<div id="wfConn" class="small" style="margin-top:8px">Not connected.</div>
-<div style="margin-top:8px;display:flex;gap:10px;flex-wrap:wrap">
-<button class="btn-dark" onclick="wfTaskSource()">＋ Task Source</button>
-<button class="btn-dark" onclick="wfAddStep()">＋ Add Agent / Subagent</button>
-<button class="btn-orange" onclick="wfCancel()">⏹ Abort</button>
-<button class="btn-send" onclick="wfStart()">▶ Execute Workflow</button>
-<button class="btn-dark" onclick="wfSave()">💾 Save</button>
-<button class="btn-dark" onclick="wfResetGraph()">⟳ Reset</button>
-</div>
-<h4 class="header-lila" style="margin-top:16px;font-size:18px">Agent-Bus Dockingstation</h4>
-<div id="wfGarage" class="tech-grid" style="margin-top:8px"></div>
-<div id="wfGarageNote" class="small" style="margin-top:6px"></div>
-<div class="wf-divider"></div>
-<h4 class="header-lila" style="margin-top:16px;font-size:18px">Flow canvas</h4>
-<div style="display:flex;gap:10px;align-items:center;margin-top:6px;flex-wrap:wrap">
-<span class="small">Drag a card from the Dockingstation onto the canvas (or click it). Move cards freely, click output → input to wire. Port 1 drives execution • ports 2–3: merge (Phase 2).</span>
-<button class="btn-dark" onclick="wfEdges=[];wfWireFrom=null;wfPersist();wfCanvasRender();wfSyncSteps();">✕ Clear wires</button>
-</div>
-<div id="wfCanvas" style="margin-top:8px"><div id="wfFinish" title="Chain end lands here (approval)">🏁 Tommy / You</div></div>
-<div id="wfCanvasHint" class="small" style="margin-top:6px"></div>
-<div class="wf-divider"></div>
-<h4 class="header-lila" style="margin-top:16px;font-size:18px">Task Source</h4>
-<div style="margin-top:8px;display:flex;gap:10px;align-items:center">
-<button class="btn-dark" onclick="document.getElementById('wfFile').click()" title="Upload source file (.md/.txt/.png/.jpg)">＋</button>
-<input id="wfFile" type="file" accept=".md,.txt,.png,.jpg,.jpeg,.gif,.webp" style="display:none" onchange="wfFilePicked(this)">
-<input id="wfAsk" class="input" style="flex:1" placeholder="Ask anything — Enter puts it on the canvas as the first card" onkeydown="if(event.key==='Enter')wfAskSend()">
-<button class="btn-dark" onclick="wfDemo()" title="Load demo chain">✨</button>
-<button class="btn-send" onclick="wfAskSend()">➤ Send</button>
-</div>
-<h4 class="header-lila" style="margin-top:16px;font-size:18px">Run</h4>
-<div style="margin-top:6px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn-dark" onclick="wfDownload()">⬇ Result (.md)</button>
-<button class="btn-send" onclick="wfMerge()" title="Merge the task retry branch into this checkout (needs Human Authority approval)">⑂ Merge retry branch</button></div>
-<div id="wfFlow" style="margin-top:8px"></div>
-<div id="wfRun" class="small" style="margin-top:8px">No task started yet.</div>
-<div id="wfTaskList" style="margin-top:8px"></div>
-<div class="small" style="margin-top:8px;color:#4b5563">V6 UI rev 8 · source-chat + pointer-drag</div>
 </div>
 
 <div class="card">
 <h3 class="header-lila" style="font-size:28px">NOVA <span style='font-weight:400;font-size:20px'>// Human Authority Module 🕵</span> <span id="apLamp" class="tech-light light-gray"></span> <span id="apLampText" class="small"></span></h3>
-<p style="font-size:13px;margin-top:6px;color:#9ca3af">Tommy - External Human Authority Node</p>
+<p style="font-size:13px;margin-top:6px;color:#9ca3af">Tommy - External Human Authority Node.</p>
 <div style="margin-top:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
 <input id="apBy" class="input" style="max-width:200px" value="Gürkan">
 <button class="btn-dark" onclick="apRefresh()">↻ Reload queue</button>
@@ -328,7 +364,7 @@ let DEFAULT_TECHS=[
 function loadTechs(){const raw=localStorage.getItem('nova_techs_v6');if(raw){try{return JSON.parse(raw);}catch(e){}}return DEFAULT_TECHS;}
 function saveTechsList(list){localStorage.setItem('nova_techs_v6',JSON.stringify(list));}
 let TECHS=loadTechs();
-let selected=new Set(JSON.parse(localStorage.getItem('nova_selected_v6')||'["spark"]'));
+let selected=new Set(); // all cards start gray + inactive on open
 let techStatus={};
 const TECH_EMOJI = { spark:'🌌', wonder:'🔮', image:'🎨', sam:'👁', code:'💻', llama:'🦙', chatgpt:'💬', grok:'⚡', gemini:'✨', codex:'🖥', claude:'📝', 'gemini-cli':'⌨' };
 function renderTechs(){
@@ -338,7 +374,7 @@ function renderTechs(){
     let lightClass='light-gray';
     if(isActive){const st=techStatus[t.id]||'gray';if(st==='green')lightClass='light-green';else if(st==='red')lightClass='light-red';}
     const div=document.createElement('div');
-    let glow=''; if(isActive){ if(t.id==='spark'||t.id==='code') glow=' tech-grad'; else if(t.id==='gemini'||t.id==='gemini-cli'||t.id==='codex') glow=' tech-gold'; else glow=' tech-green'; }
+    let glow=''; if(isActive){ if(t.id==='spark'||t.id==='code'||t.id==='gemini'||t.id==='gemini-cli'||t.id==='codex'||t.id==='chatgpt') glow=' tech-grad'; else glow=' tech-green'; }
     div.className='wf-dock-card'+(isActive?' sel':'')+glow;
     div.style.width='170px';
     div.title='Click: toggle (multi-select for multiple answers) • right-click: delete';
@@ -384,6 +420,7 @@ function wfChatBase() { const el = document.getElementById('wfBridge'); return (
 function wfChatHeaders() { const h = {'Content-Type':'application/json'}; try { if (wfTokenMem) h['Authorization'] = 'Bearer ' + wfTokenMem; } catch {} return h; }
 async function sendMessage(){
   const input=document.getElementById('input');const text=input.value.trim();if(!text)return;input.value='';
+  if(selected.size===0){ addMessage('assist','Please select at least 1 agent card above first — cards glow when active.','system'); return; }
   addMessage('user',text,Array.from(selected).join(','));
   const emailMatch=text.match(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i);if(emailMatch){const email=emailMatch[0];const subject=encodeURIComponent('Test von NOVA Ygdrassil - V6 Clean');const body=encodeURIComponent(`Hi,\n\nTest aus V6 Clean\nTech: ${Array.from(selected).join(', ')}\nZeit: ${new Date().toLocaleString()}\n\nGruß Gürkan`);const mailto=`mailto:${email}?subject=${subject}&body=${body}`;addMessage('assist','📧 Entwurf für '+email,'system');mailDraftLink(mailto);}
   const providers=[...new Set([...selected].map(t=>TECH_PROVIDER[t]).filter(Boolean))];
@@ -416,7 +453,7 @@ async function sendImage(){
 }
 
 async function sendMessageLegacy(){const input=document.getElementById('input');const text=input.value.trim();if(!text)return;input.value='';addMessage('user',text,Array.from(selected).join(','));const emailMatch=text.match(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i);if(emailMatch){const email=emailMatch[0];const subject=encodeURIComponent('Test von NOVA Ygdrassil - V6 Clean');const body=encodeURIComponent(`Hi,\n\nTest aus V6 Clean\nTech: ${Array.from(selected).join(', ')}\nZeit: ${new Date().toLocaleString()}\n\nGruß Gürkan`);const mailto=`mailto:${email}?subject=${subject}&body=${body}`;addMessage('assist','📧 Entwurf für '+email,'system');mailDraftLink(mailto);}
- const raw=localStorage.getItem('nova_keys_v6');const keys=raw?JSON.parse(raw):{};for(const techId of selected){let txt='';let failed=false;try{if((techId==='chatgpt'||techId==='codex')&&keys.openai){const model=techId==='codex'?'gpt-4o':'gpt-4o-mini';const res=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+keys.openai},body:JSON.stringify({model,messages:[{role:'user',content:text}]})});if(!res.ok)throw new Error('HTTP '+res.status);const d=await res.json();txt=d.choices?.[0]?.message?.content||'Keine Antwort';}else if(['spark','wonder','image','sam','code','llama'].includes(techId)&&keys.meta){const model=techId==='wonder'?'muse-wonder-1.0':'muse-spark-1.3-contributor';const res=await fetch('https://api.meta.ai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+keys.meta},body:JSON.stringify({model,messages:[{role:'user',content:text}]})});if(!res.ok)throw new Error('HTTP '+res.status);const d=await res.json();txt=d.choices?.[0]?.message?.content||d.message||'Keine Antwort';}else if(techId==='grok'&&keys.grok){const res=await fetch('https://api.x.ai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+keys.grok},body:JSON.stringify({model:'grok-4',messages:[{role:'user',content:text}]})});if(!res.ok)throw new Error('HTTP '+res.status);const d=await res.json();txt=d.choices?.[0]?.message?.content||'Keine Antwort';}else if(techId==='claude'&&keys.claude){const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':keys.claude,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-5-5',max_tokens:1024,messages:[{role:'user',content:text}]})});if(!res.ok)throw new Error('HTTP '+res.status);const d=await res.json();txt=d.content?.[0]?.text||'Keine Antwort';}else if(techId.includes('gemini')&&keys.gemini){const res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key='+keys.gemini,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:text}]}]})});if(!res.ok)throw new Error('HTTP '+res.status);const d=await res.json();txt=d.candidates?.[0]?.content?.parts?.[0]?.text||'Keine Antwort';}else{txt=`⚠️ Kein Key für ${techId}. Echo: "${text}"`;}}catch(e){txt=`⚠️ ${techId} fehlgeschlagen: ${e.message} | Echo: "${text}"`;failed=true;}techStatus[techId]=failed?'red':'green';addMessage('assist',txt,techId+(failed?' • ROT':' • GRÜN'));renderTechs();}}
+ const raw=localStorage.getItem('nova_keys_v6');const keys=raw?JSON.parse(raw):{};for(const techId of selected){let txt='';let failed=false;try{if((techId==='chatgpt'||techId==='codex')&&keys.openai){const model=techId==='codex'?'gpt-4o':'gpt-4o-mini';const res=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+keys.openai},body:JSON.stringify({model,messages:[{role:'user',content:text}]})});if(!res.ok)throw new Error('HTTP '+res.status);const d=await res.json();txt=d.choices?.[0]?.message?.content||'Keine Antwort';}else if(['spark','wonder','image','sam','code','llama'].includes(techId)&&keys.meta){const model=techId==='wonder'?'muse-wonder-1.0':'muse-spark-1.3-contributor';const res=await fetch('https://api.meta.ai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+keys.meta},body:JSON.stringify({model,messages:[{role:'user',content:text}]})});if(!res.ok)throw new Error('HTTP '+res.status);const d=await res.json();txt=d.choices?.[0]?.message?.content||d.message||'Keine Antwort';}else if(techId==='grok'&&keys.grok){const res=await fetch('https://api.x.ai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+keys.grok},body:JSON.stringify({model:'grok-4',messages:[{role:'user',content:text}]})});if(!res.ok)throw new Error('HTTP '+res.status);const d=await res.json();txt=d.choices?.[0]?.message?.content||'Keine Antwort';}else if(techId==='claude'&&keys.claude){const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':keys.claude,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-5-5',max_tokens:1024,messages:[{role:'user',content:text}]})});if(!res.ok)throw new Error('HTTP '+res.status);const d=await res.json();txt=d.content?.[0]?.text||'Keine Antwort';}else if(techId.includes('gemini')&&keys.gemini){const res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key='+keys.gemini,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:text}]}]})});if(!res.ok)throw new Error('HTTP '+res.status);const d=await res.json();txt=d.candidates?.[0]?.content?.parts?.[0]?.text||'Keine Antwort';}else{txt=`⚠️ Kein Key für ${techId}. Echo: "${text}"`;}}catch(e){txt=`⚠️ ${techId} fehlgeschlagen: ${e.message} | Echo: "${text}"`;failed=true;}techStatus[techId]=failed?'red':'green';addMessage('assist',txt,techId+(failed?' • ROT':' • GRÜN'));renderTechs();}}
 async function testAll(){document.getElementById('input').value='Hallo - Teste alle Techs V6 Clean';sendMessage();}
 function todoRow(t){const div=document.createElement('div');div.style.cssText='background:#151515;border:1px solid #222;border-radius:8px;padding:8px;margin-top:6px;display:flex;justify-content:space-between';const sp=document.createElement('span');sp.textContent=t;const del=document.createElement('span');del.style.cursor='pointer';del.textContent='✕';del.onclick=()=>{div.remove();saveTodos();};div.appendChild(sp);div.appendChild(del);return div;}
 function addTodo(){const inp=document.getElementById('todoInput');const txt=inp.value.trim();if(!txt)return;const list=document.getElementById('todoList');list.appendChild(todoRow(txt));inp.value='';saveTodos();}
@@ -456,9 +493,7 @@ async function wfRefresh() {
     const DOCK = [
       { agent: 'gemini', icon: '✨', name: 'Gemini CLI' },
       { agent: 'codex', icon: '💻', name: 'Codex Worker' },
-      { agent: null, icon: '🛡', name: 'Phobos CI', planned: true },
       { agent: 'grok', icon: '⚡', name: 'Grok Reviewer' },
-      { agent: null, icon: '👤', name: 'Tommy PC', human: true },
     ];
     const byId = {}; agents.forEach((a) => { byId[a.id] = a; });
     DOCK.forEach((c) => {
@@ -479,8 +514,8 @@ async function wfRefresh() {
     });
     try { wfTommyLamp(); } catch {}
     wfSetConn('Connected: ' + agents.length + ' orchestrators • ' + new Date().toLocaleTimeString());
-    try { document.getElementById('wfGarageNote').textContent = 'Drag a card onto the canvas, or click it to add a step.'; } catch {}
-    wfCanvasHint(wfNodes.length ? wfNodes.length + ' card(s) on canvas. Drag to move, output \u2192 input to wire.' : 'Garage is live \u2014 drag a card onto this canvas.');
+    try { document.getElementById('wfGarageNote').textContent = ''; } catch {}
+    wfCanvasHint(wfNodes.length ? wfNodes.length + ' card(s) on canvas. Drag to move, output \u2192 input to wire.' : '');
     wfSetBlinker(true); wfConnOk = true; wfEverConn = true; wfMasterUpdate(agents);
     wfLoadTasks(); apRefresh();
   } catch (e) { wfSetConn('⛔ Bridge unreachable (' + e.message + '). Start it with start.bat, then press Connect \u2014 or open http://127.0.0.1:8000/v6'); wfSetBlinker(false); wfMasterUpdate(null); wfConnOk = false; wfHumanLamp();
@@ -535,9 +570,11 @@ async function wfStart() {
   const __src = wfNodes.filter((x) => x.agent === 'source').sort((a, b) => a.x - b.x)[0];
   const goal = __src ? String(__src.text || '').trim().slice(0, 2000) : '';
 
+  wfSteps.forEach((s) => { if (!String(s.instruction || '').trim()) s.instruction = 'Execute Workflow'; });
+  try { wfCanvasRender(); wfPersist(); } catch {}
   const steps = wfSteps.map((s) => ({ agent: s.agent, instruction: s.instruction.trim() })).filter((s) => s.instruction);
   if (!goal) { wfSetConn('⛔ No source card on the canvas — ask below ⬇ (or ＋ upload) first.'); return; }
-  if (!steps.length) { wfSetConn('⛔ ' + wfSteps.length + ' step(s) on canvas, but none has instructions — click a card, type instructions, then Execute.'); return; }
+  if (!steps.length) { wfSetConn('⛔ No step cards on the canvas — drag one from the Dockingstation first.'); return; }
   try {
     const body = { goal, steps };
     let r = await fetch(wfBase() + '/api/workflow', { method: 'POST', headers: wfHeaders(), body: JSON.stringify(body) });
@@ -1026,6 +1063,8 @@ function wfPersist() {
     swap('trapImg', 'Muse Image - Ygdrassil.png');
     swap('trapLogo', 'NOVA - Meta Logo - Transparent Kopie.png');
     swap('bannerImg', 'NOVA-TOP-LAYER Kopie.png');
+    swap('chatArt', 'cyberblick 2 Kopie.png');
+    swap('trapMeta', 'Meta - Logo.jpeg');
     var top = document.getElementById('topLayer');
     if (top) top.style.background = "linear-gradient(rgba(10,10,10,.8),rgba(10,10,10,.8)),url('" + base + encodeURIComponent('NOVA-SECOND-LAYER.png') + "') center/cover,#111";
   } catch (e) {}
@@ -1045,18 +1084,45 @@ function wfPersist() {
     function enter() {
       try { trap.style.display = 'none'; } catch (e) {}
       try { document.body.style.overflow = ''; } catch (e) {}
+      try { if (typeof window !== 'undefined' && typeof window.scrollTo === 'function') window.scrollTo(0, 0); } catch (e) {}
       var audio = document.getElementById('npAudio');
-      if (audio && typeof audio.play === 'function') audio.play().catch(function () {});
+      if (audio && typeof audio.play === 'function') {
+        try {
+          var AC = (typeof window !== 'undefined') && (window.AudioContext || window.webkitAudioContext);
+          if (AC && !window.__novaAC) {
+            var nctx = new AC();
+            var nsrc = nctx.createMediaElementSource(audio);
+            var ng = nctx.createGain(); ng.gain.value = 1.4;
+            nsrc.connect(ng); ng.connect(nctx.destination);
+            window.__novaAC = nctx;
+          }
+          if (window.__novaAC && window.__novaAC.state === 'suspended') window.__novaAC.resume().catch(function () {});
+        } catch (e) {}
+        audio.play().catch(function () {});
+      }
     }
     if (typeof logo.addEventListener === 'function') logo.addEventListener('click', enter);
+    function glowFollow(ev) {
+      try {
+        var r = logo.getBoundingClientRect();
+        var w = (r.right - r.left) || 1;
+        var x = Math.max(0, Math.min(1, (ev.clientX - r.left) / w));
+        var lA = (0.9 - x * 0.55).toFixed(2), gA = (0.35 + x * 0.55).toFixed(2);
+        logo.style.filter = 'drop-shadow(-14px 0 26px rgba(168,85,247,' + lA + ')) drop-shadow(14px 0 26px rgba(163,230,53,' + gA + '))';
+      } catch (e) {}
+    }
+    if (trap && typeof trap.addEventListener === 'function') {
+      trap.addEventListener('mousemove', glowFollow);
+      trap.addEventListener('mouseleave', function () { try { logo.style.filter = ''; } catch (e) {} });
+    }
   } catch (e) {}
 })();
 // NOVA mini player: 2-track bed (NEON CITY / GREEN SIGNAL), card in the top layer.
 (function () {
   try {
     var tracks = [
-      { file: 'NEON CITY  Cyberpunk Night Flight  Blade Runner Ambience  100% AI-Free Music Visualizer.mp3', title: 'NEON CITY', artist: 'von CYBERLOPOT', yt: 'https://www.youtube.com/watch?v=ZWyv_w_cFiw&list=RDZWyv_w_cFiw&start_radio=1' },
-      { file: 'GREEN SIGNAL \uD83E\uDDEA  Cyberpunk Hacker Ambient for Coding & Deep Focus.mp3', title: 'GREEN SIGNAL', artist: 'Cyberpunk Coding Music', yt: 'https://www.youtube.com/channel/UCuES77aLmrE7ApbwaUmpvaA' }
+      { file: 'GREEN SIGNAL \uD83E\uDDEA  Cyberpunk Hacker Ambient for Coding & Deep Focus.mp3', title: 'GREEN SIGNAL', artist: 'Cyberpunk Coding Music', yt: 'https://www.youtube.com/channel/UCuES77aLmrE7ApbwaUmpvaA' },
+      { file: 'NEON CITY  Cyberpunk Night Flight  Blade Runner Ambience  100% AI-Free Music Visualizer.mp3', title: 'NEON CITY', artist: 'von CYBERLOPOT', yt: 'https://www.youtube.com/watch?v=ZWyv_w_cFiw&list=RDZWyv_w_cFiw&start_radio=1' }
     ];
     var audio = document.getElementById('npAudio');
     if (!audio || typeof audio.play !== 'function') return;
@@ -1073,14 +1139,15 @@ function wfPersist() {
       if (autoplay) audio.play().catch(function () {});
     }
     loadTrack(0, false);
-    audio.loop = true;
-    audio.volume = 0.6;
+    audio.loop = false;
+    audio.volume = 1;
     var status = document.getElementById('npStatus');
     function setStatus(x) { if (status) status.textContent = x; }
     if (typeof audio.addEventListener === 'function') {
       audio.addEventListener('playing', function () { setStatus('playing'); });
       audio.addEventListener('pause', function () { setStatus('paused'); });
       audio.addEventListener('waiting', function () { setStatus('loading...'); });
+      audio.addEventListener('ended', function () { loadTrack(ti + 1, true); });
       audio.addEventListener('error', function () { setStatus('track error - bridge running?'); });
     }
     var vol = document.getElementById('npVol');

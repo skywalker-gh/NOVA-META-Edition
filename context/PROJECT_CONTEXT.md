@@ -1,6 +1,6 @@
 # Nova–Ygdrassil Project Context (Extended Memory)
 
-*Last Synchronized:* 2026-10-25  
+*Last Synchronized:* 2026-11-04  
 *System Status:* All multi-model bridges active, tested, and versioned.
 
 ## 1. Executive Summary
@@ -13,6 +13,9 @@ Nova-Ygdrassil is an advanced multi-model AI agent-bus and orchestration platfor
 | **ChatGPT & Claude Connector** | `chatgpt-claude-connector-3000/` | Stdio MCP / OpenAI & Anthropic APIs | Dual-model peer reviewer & reasoning assistant |
 | **Codex Connector V3** | `connector-v3/` | Streamable HTTP Gateway + WSS Worker + PostgreSQL | Secure sandboxed code implementation & execution |
 | **Gemini CLI (Orchestrator)** | Root session | Interactive Agent CLI | Strategic orchestration, planning, and implementation |
+| **Meta Chat Providers** | `nova-chat.js` via bridge `/api/chat` | Meta API (`META_API_KEY`) | Spark (`muse-spark-1.3-contributor`, verified), Wonder (`muse-wonder-1.0`, verified), Llama/Code (mapped to Spark provider, no dedicated bridge) |
+| **Meta Image** | bridge `/api/image` | Meta API (`muse-image-1.0`, verified 200) | Jury/traditional artwork generation |
+| **Meta SAM** | — | — | PARKED: API 404, not available. Do not demo. |
 | **NOVA UI Sound Pack** | `nova-sounds/` | Static assets + GEMINI.md | UI clicks, bass, whooshes, ambient intro for browser dashboard |
 
 ## 3. Security & Governance Rules
@@ -25,10 +28,11 @@ Nova-Ygdrassil is an advanced multi-model AI agent-bus and orchestration platfor
 - **Grok Bridge**: Tested and verified ("Ja, die Brücke steht.").
 - **ChatGPT Bridge**: Tested and verified ("Ja, die Brücke steht. Wie kann ich Ihnen helfen?").
 - **Claude Bridge**: Tested and verified live on 2026-11-04 (model `claude-sonnet-5-5`, credits loaded).
+- **Gemini Bridge**: Tested and verified live on 2026-11-04 (model `gemini-3.5-flash`, paid tier; `gemini-3.8-flash` is overload-dead, `gemini-2.5-flash` 404 for new users).
 - **Codex V3**: 32/32 unit tests passing, local worker configuration ready.
-- **UI Sound Pack**: 8 MP3s in `context/nova-sounds/` (user pruned silent ones 2026-11-04) + 3 original tracks in `context/Sounds/`. V6 UI clicks REMOVED (sounded like abort). V6 banner = `NOVA-TOP-LAYER` art; second layer card (`#topLayer`, `NOVA-SECOND-LAYER` bg via `/prework/*`, blue hover glow+stroke) holds a `NOVA // Musicbox` card (agent-card style, lila hover glow+stroke) with 2-track playlist (`NEON CITY`/CYBERLOPOT + `GREEN SIGNAL`/Coding Music, ⏩ next, play/pause/stop/volume/status, per-track YouTube links) streamed via `/nova-sounds/*` (Range/206). Human Trap startscreen: Ygdrassil image -> black -> Black logo click (lila-green hover glow) opens page + starts sound (user gesture). Side portrait beside chat removed. Wired into `context/dashboard/index.html` and V6 (`index.html`: playSfx + delegated button clicks via bridge `/nova-sounds/*`). Needs bridge restart to go live.
+- **UI Sound Pack**: 9 MP3s in `context/nova-sounds/` (2 beds cut to 10:00/256k/Fades am 2026-11-04, committed) + 3 original tracks in `context/Sounds/`. V6 UI clicks REMOVED (sounded like abort). V6 banner = `NOVA-TOP-LAYER` art; second layer card (`#topLayer`, `NOVA-SECOND-LAYER` bg via `/prework/*`, blue hover glow+stroke) holds a `NOVA // Musicbox` card (agent-card style, lila hover glow+stroke) with 2-track playlist (GREEN SIGNAL first, ⏩ next, play/pause/stop/volume/status, per-track YouTube links) streamed via `/nova-sounds/*` (Range/206). Human Trap startscreen: Ygdrassil image -> black -> Black logo click (lila-green hover glow) opens page + starts sound (user gesture). Side portrait beside chat removed. Pages fallback: prework art + tracks committed, static paths via JS swap.
 
 ## 5. Aggregated Model Handoffs
-No active handoff artifacts currently found in root.
+Active: `SWARM_SYNTHESIS_2026-11-04.md` (root, ALL GREEN verdict + paste-backs, round closed) + `context/HANDOFF_TEMPLATE.md` (mandatory template).
 
-*Last Auto-Sync:* 2026-11-04 (Claude verified, Human Trap + Musicbox card + playlist)
+*Last Auto-Sync:* 2026-11-04 (dock trimmed to 3 working cards, headers merged, combined action row; 57/57)

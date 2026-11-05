@@ -506,6 +506,14 @@ function createWorkflow(opts) {
     }
     const br = await git(['rev-parse', '--verify', t.branch], projectRoot);
     if (!br.ok) return { error: 'retry branch gone: ' + t.branch + ' (cleaned up?)', code: 409 };
+    const st = await git(['status', '--porcelain'], projectRoot);
+    const dirty = st.ok ? st.stdout.trim().split('\n').map((s) => s.trim()).filter(Boolean) : [];
+    if (dirty.length) {
+      return {
+        error: 'merge blocked: commit or stash local changes first (' + dirty.length + ' open file(s): '
+          + trunc(dirty.slice(0, 5).join(', '), 200) + ')', code: 409,
+      };
+    }
     const mg = await git(['merge', '--no-ff', '--no-edit', t.branch,
       '-m', `Merge ${t.branch} (NOVA task ${t.id})`], projectRoot);
     if (!mg.ok) {

@@ -38,7 +38,7 @@ const PROVIDERS = {
     role: 'You are Claude, NOVA careful reviewer. Be precise, link evidence to project memory, and name risks plainly.',
   },
   gemini: {
-    label: 'Gemini', model: process.env.GEMINI_MODEL || 'gemini-3.8-flash',
+    label: 'Gemini', model: process.env.GEMINI_MODEL || 'gemini-3.5-flash',
     kind: 'google', url: process.env.NOVA_CHAT_URL_GOOGLE || 'https://generativelanguage.googleapis.com/v1beta/models',
     envKey: 'GOOGLE_AI_KEY', fileKey: { file: 'gemini-connector-3000/.env', name: 'GOOGLE_AI_KEY' },
     role: 'You are Gemini, NOVA high-context architecture auditor. Synthesize broadly from project memory and flag inconsistencies.',

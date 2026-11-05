@@ -170,10 +170,10 @@ test('V6drag: boot waits for bridge with empty canvas', () => {
   assert.equal(T.canvas.querySelectorAll('.wf-node').length, 0);
 });
 
-test('V6drag: dock renders 5 cards after connect', async () => {
+test('V6drag: dock renders 3 working cards after connect', async () => {
   await T.sb.wfRefresh();
   const garage = T.doc.getElementById('wfGarage');
-  assert.equal(garage.children.length, 5);
+  assert.equal(garage.children.length, 3);
   assert.match(garage.children[1].textContent, /Codex Worker/);
   assert.ok(garage.children[1].querySelector('.tech-light').className.includes('light-green'));
 });
@@ -235,34 +235,32 @@ test('V6drag: node dragged back to dock snaps out of the canvas', () => {
   assert.match(T.doc.getElementById('wfCanvasHint').textContent, /snapped back/);
 });
 
-test('V6drag: execute validates source and instructions, then starts', async () => {
+test('V6drag: execute auto-fills empty instructions, validates source, then starts', async () => {
   const conn = () => T.doc.getElementById('wfConn').textContent;
   // state: gemini agent node without instructions + source 'hello world'
   await T.sb.wfStart();
-  assert.match(conn(), /none has instructions/);
+  assert.match(conn(), /Task t9 running/);
+  const agent = T.canvas.querySelectorAll('.wf-node').find((e) => !e.textContent.includes('hello world'));
+  assert.equal(agent.querySelector('textarea').value, 'Execute Workflow');
   // delete the source -> source error
   const nodes = T.canvas.querySelectorAll('.wf-node');
   const src = nodes.find((e) => e.textContent.includes('hello world'));
   src.querySelector('.wf-node-x').onclick({ stopPropagation: () => {} });
   await T.sb.wfStart();
   assert.match(conn(), /No source card/);
-  // restore source + type instructions -> starts
+  // restore source -> starts again on the auto-filled instruction
   T.doc.getElementById('wfAsk').value = 'ship it';
   T.sb.wfAskSend();
-  const agent = T.canvas.querySelectorAll('.wf-node').find((e) => !e.textContent.includes('ship it'));
-  const ta = agent.querySelector('textarea');
-  ta.value = 'do review';
-  ta.oninput();
   await T.sb.wfStart();
   assert.match(conn(), /Task t9 running/);
 });
 
-test('V6chat: agents render as cards with emoji and light, spark preselected', () => {
+test('V6chat: agents render as cards with emoji and light, all gray on open', () => {
   const techs = T.doc.getElementById('techs');
   assert.equal(techs.children.length, 12);
   const c0 = techs.children[0];
   assert.ok(c0.className.includes('wf-dock-card'));
-  assert.ok(c0.className.includes('sel'));
+  assert.ok(!c0.className.includes('sel'));
   assert.match(c0.textContent, /🌌/);
   assert.match(c0.textContent, /Muse Spark/);
   assert.ok(c0.querySelector('.tech-light'));
@@ -273,7 +271,7 @@ test('V6chat: card click toggles multi-select', () => {
   const techs = T.doc.getElementById('techs');
   techs.children[7].onclick();
   assert.ok(T.doc.getElementById('techs').children[7].className.includes('sel'));
-  assert.ok(T.doc.getElementById('techs').children[0].className.includes('sel'));
+  assert.ok(!T.doc.getElementById('techs').children[0].className.includes('sel'));
   T.doc.getElementById('techs').children[7].onclick();
   assert.ok(!T.doc.getElementById('techs').children[7].className.includes('sel'));
 });
@@ -297,6 +295,7 @@ test('V6chat: send fans out to selected agents and lights them green', async () 
   T.doc.getElementById('techs').children[7].onclick();
   T.doc.getElementById('input').value = 'hi';
   const before = T.doc.getElementById('messages').children.length;
+  T.doc.getElementById('techs').children[0].onclick();
   await T.sb.sendMessage();
   const msgs = T.doc.getElementById('messages').children;
   assert.equal(msgs.length, before + 3);
