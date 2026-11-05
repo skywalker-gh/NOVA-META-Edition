@@ -179,7 +179,8 @@ test('V6: jury intro, banner stroke, chat art, captions', () => {
   assert.ok(html.includes('.banner-wrap:hover{box-shadow:0 0 30px #a3e635, 0 0 60px rgba(163,230,53,0.4);transition:box-shadow 0.3s;border-color:#a3e635}'), 'banner hover green stroke');
   assert.ok(html.includes('enjoy the ride through my vision'), 'jury intro line required');
   assert.ok(html.includes('id="chatArt"'), 'chat art required');
-  assert.ok(html.includes('/prework/grokbaum.jpg'), 'chat art src required');
+  assert.ok(html.includes('/prework/grokbaum-hd.jpg'), 'chat art src required');
+  assert.ok(html.includes("font-family:Verdana,Geneva,sans-serif;font-style:italic;font-weight:700"), 'poem in Verdana italic bold');
   assert.ok(html.includes('Muse Image &amp; Grok'), 'layer-4 caption names Muse Image + Grok');
   assert.ok(html.includes('© Meta · xAI · 2026'), 'layer-4 caption copyright Meta + xAI');
   assert.ok(html.includes('Twelve voices weave into a single trunk.') && html.includes('— By Gemini'), 'layer-4 poem + Gemini credit required');
